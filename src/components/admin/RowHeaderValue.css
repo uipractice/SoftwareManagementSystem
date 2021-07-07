@@ -1,0 +1,39 @@
+.totalCount {
+    color:#A37EF1;
+    font-family: Lato;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 32px;
+    line-height: 38px;
+
+}
+
+.submitCount {
+    color: #0066FF;
+    font-family: Lato;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 32px;
+    line-height: 38px;
+
+}
+
+.completCount {
+    color: #13BC86;
+    font-family: Lato;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 32px;
+    line-height: 38px;
+
+}
+
+.pendingCount {
+    color: #F16A21;
+    font-family: Lato;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 32px;
+    line-height: 38px;
+
+}
