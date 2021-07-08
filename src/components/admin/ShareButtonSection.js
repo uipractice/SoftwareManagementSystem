@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import Modal from "./modal/Modal";
 import "./modal/Container.css";
-import ToggleButton from "@material-ui/lab/ToggleButton";
-import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
 
 export class ShareModalContainer extends Component {
   state = { isShown: false };
@@ -30,27 +28,11 @@ export class ShareModalContainer extends Component {
     document.querySelector("html").classList.toggle("scroll-lock");
   };
 
-  // const [alignment, setAlignment] = React.useState('left');
-  //   const handleAlignment = (event, newAlignment) => {
-  //       setAlignment(newAlignment);
-  //   };
-
   render() {
     return (
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 mb-3">
-        <ToggleButtonGroup
-          // value={alignment}
-          exclusive
-          // onChange={handleAlignment}
-          aria-label="text alignment"
-        >
-          <ToggleButton value="left" aria-label="left aligned" className="Mui-selected">
-            Client Project
-          </ToggleButton>
-          <ToggleButton value="center" aria-label="centered">
-            Internal Project
-          </ToggleButton>
-        </ToggleButtonGroup>
+
+        <h5>LICENSING DETAILS</h5>
 
         <div className="btn-toolbar mb-2 mb-md-0">
           <button
@@ -59,7 +41,7 @@ export class ShareModalContainer extends Component {
             ref={this.buttonRef}
             onClick={this.showModal}
           >
-            SHARE PROJECT FORM
+            + ADD SOFTWARE
           </button>
 
           {this.state.isShown ? (

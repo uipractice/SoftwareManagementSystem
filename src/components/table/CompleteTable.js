@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import DeleteImg from "../../assets/images/delete.svg";
+import EditImg from "../../assets/images/edit.svg";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import Modal from "react-modal";
@@ -85,7 +86,7 @@ function CompleteTable({ data }) {
       },
 
       {
-        Header: "PROJECT NAME",
+        Header: "SOFTWARE",
         accessor: "projectNameByIT",
         Cell: ({ row }) => {
           return (
@@ -134,17 +135,17 @@ function CompleteTable({ data }) {
         sticky: "left",
       },
       {
-        Header: "PROJECT MANAGER",
+        Header: "TYPE",
         accessor: "projectManager",
         sticky: "left",
       },
       {
-        Header: "PRACTICE NAME",
+        Header: "TEAM",
         accessor: "practice",
         sticky: "left",
       },
       {
-        Header: "ASSIGN DATE",
+        Header: "OWNER",
         accessor: "createdAt",
         Cell: ({ value }) => {
           return format(new Date(value), "dd/MM/yyyy");
@@ -154,15 +155,31 @@ function CompleteTable({ data }) {
         width: 100,
       },
       {
-        Header: "UPDATED DATE",
+        Header: "BILLIG CYCLE",
         accessor: "updatedAt",
         Cell: ({ value }) => {
           return format(new Date(value), "dd/MM/yyyy");
         },
       },
       {
-        Header: "STATUS",
+        Header: "PRICING IN $",
         accessor: "status",
+      },
+      {
+        Header: "PRICING IN Rs",
+        accessor: "statusSD",
+      },
+      {
+        Header: "AMOUNT",
+        accessor: "statusDS",
+      },
+      {
+        Header: "NEXT BILL",
+        accessor: "statusA",
+      },
+      {
+        Header: "TIMELINE",
+        accessor: "statusAB",
       },
       {
         Header: "ACTION",
@@ -176,7 +193,11 @@ function CompleteTable({ data }) {
               setIsModalOpen(true);
             }}
           >
+            
+            <img src={EditImg} alt="Evoke Technologies" />
+            {" "}
             <img src={DeleteImg} alt="Evoke Technologies" />
+           
           </a>
         ),
       },
@@ -206,19 +227,13 @@ function CompleteTable({ data }) {
     <>
       <br></br>
       <div className="filter-row">
-        <h5>PROJECTS DETAILS</h5>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eros leo suscipit ipsum id ut. <br/>  
+           Et consectetur convallis etiam auctor ut orci. Sed id ac quis tristique vehicula.<br/>  
+           Leo magna posuere pellentesque malesuada. 
+        </p>
         <div >
-          <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
           
-{/* FIXME: */}
-          {/* <select name="hall" id="hall" style={{ marginLeft: "12px" }}>
-            <option> All Records </option>
-            <option> Pending </option>
-            <option> Completed </option>
-            <option> Submitted </option>
-            <option> Active </option>
-            <option> Deleted </option>
-          </select> */} 
+          
           <FormControl className={classes.formControl}>
             <Select
               value={age}
@@ -237,6 +252,8 @@ function CompleteTable({ data }) {
               <MenuItem value={50}>Deleted</MenuItem>
             </Select>
           </FormControl>
+
+          <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
 
         </div>
       </div>
@@ -368,7 +385,7 @@ function CompleteTable({ data }) {
           onChange={(e) => setPageSize(Number(e.target.value))}
           className="pageNum"
         >
-          {[8, 15, 25, 50, 100].map((pageSize) => (
+          {[8, 10, 20, 50, 100].map((pageSize) => (
             <option key={pageSize} value={pageSize}>
               {pageSize}
             </option>
