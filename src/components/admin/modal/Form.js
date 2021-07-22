@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "./Container.css";
+import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup';
+import ToggleButton from 'react-bootstrap/ToggleButton';
 
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -92,8 +94,8 @@ function Form({ closeModal }) {
   return (
     <form>
       <div className="row">
-        <div className="form-group col-md-6">
-          <label htmlFor="projectNameByIT">Project Name</label>
+        <div className="form-group col-md-5">
+          <label htmlFor="projectNameByIT">Tool/Software</label>
           <input
             type="text"
             ref={inputRef}
@@ -104,8 +106,8 @@ function Form({ closeModal }) {
           />
         </div>
 
-        <div className="form-group col-md-6">
-          <label htmlFor="projectManager">Project Manager</label>
+        <div className="form-group col-md-4">
+          <label htmlFor="projectManager">Team</label>
           <input
             type="text"
             className="form-control"
@@ -114,17 +116,53 @@ function Form({ closeModal }) {
             value={state.projectManager}
           />
         </div>
+
+        <div className="form-group col-md-3">
+          <label htmlFor="Type">Type</label>
+          <input 
+            type="text"
+            className="form-control"
+            onChange={handleOnChange}
+            name="Type"
+            value=""
+          />
+        </div>
       </div>
 
-      <div className="form-group col-md-12">
-        <label>Email address</label>
-        <input
-          type="email"
+      <div class="row">
+        <div className="form-group col-md-5">
+          <label>User/Owner</label>
+          <input
+            type="text"
+            className="form-control"
+            onChange={handleOnChange}
+            name="email"
+            value={state.email}
+          />
+        </div>
+        <div className="form-group col-md-4">
+          <label>Billing Cycle</label>
+          <ToggleButtonGroup type="radio" name="options" defaultValue={1} className="mb-2">
+            <ToggleButton value={1}> Monthly</ToggleButton>
+            <ToggleButton value={2}> Yearly</ToggleButton>
+          </ToggleButtonGroup>
+        </div>
+        <div className="form-group col-md-3">
+          <label>For the month of</label>
+          <select
           className="form-control"
           onChange={handleOnChange}
-          name="email"
-          value={state.email}
-        />
+          name="month"
+          value=""
+        >
+          <option value=""></option>
+          <option value="QA Practice">QA Practice</option>
+          <option value="Oracle Practice">Oracle Practice</option>
+          <option value="Java Practice">Java Practice</option>
+          <option value="Microsoft Practice">Microsoft Practice</option>
+          <option value="Other">Other Practice</option>
+        </select>
+        </div>
       </div>
       <div className="row">
       <div className="form-group col-md-6">

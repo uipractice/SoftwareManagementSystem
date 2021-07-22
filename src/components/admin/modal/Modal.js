@@ -21,7 +21,7 @@ export const Modal = ({
         onKeyDown={onKeyDown}
       >
         <div className="modal-area" ref={modalRef}>
-          <h3>Share Project Form</h3>
+          <h3>Add Tool/Software</h3>
           <button
             ref={buttonRef}
             aria-label="Close Modal"

@@ -122,11 +122,12 @@ table th {
   margin-bottom: 15px;
 }
 .filter-row input{
-  font-size: 12px;
+  font-size: 14px;
   line-height: 18px;
   letter-spacing: 0.1px;
   color: #757575;
-  height: 28px;
+  height: 44px;
+  width:253px;
   padding: 0 10px;
   background: #fff url("../../assets/images/search.svg") no-repeat 95%;
   box-shadow: 0px 0px 2px rgb(0 0 0 / 35%);
@@ -144,6 +145,13 @@ table th {
 }
 .filter-row input:focus-visible, .filter-row select:focus-visible{
   outline: 0 !important;
+}
+.filter-row p{
+  font-family: Lato;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 24px;
+  color: #929292;
 }
 table tr:nth-child(even) {
   background-color: #fafafa;
