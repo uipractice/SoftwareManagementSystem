@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import DeleteImg from "../../assets/images/delete.svg";
-import EditImg from "../../assets/images/edit.svg";
+import DeleteImg from "../../assets/images/delete-icon.svg"
+import EditImg from "../../assets/images/edit-icon.svg";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import Modal from "react-modal";
@@ -225,7 +225,6 @@ function CompleteTable({ data }) {
 
   return (
     <>
-      <br></br>
       <div className="filter-row">
         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eros leo suscipit ipsum id ut. <br/>  
            Et consectetur convallis etiam auctor ut orci. Sed id ac quis tristique vehicula.<br/>  

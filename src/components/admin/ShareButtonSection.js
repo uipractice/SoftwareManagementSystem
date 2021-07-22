@@ -30,18 +30,18 @@ export class ShareModalContainer extends Component {
 
   render() {
     return (
-      <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 mb-3">
+      <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3">
 
-        <h5>LICENSING DETAILS</h5>
+        <h5 className="project-head">LICENSING DETAILS</h5>
 
         <div className="btn-toolbar mb-2 mb-md-0">
           <button
             type="button"
-            className="btn btn-light work_btn work_btn_blue center modal-button"
+            className="btn work_btn work_btn_blue center modal-button"
             ref={this.buttonRef}
             onClick={this.showModal}
           >
-            + ADD SOFTWARE
+            + ADD SOFTWARE TOOL
           </button>
 
           {this.state.isShown ? (
