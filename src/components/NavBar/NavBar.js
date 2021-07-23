@@ -8,6 +8,7 @@ import Paper from '@material-ui/core/Paper';
 import Popper from '@material-ui/core/Popper';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
+import NotificationIcon from "../../assets/images/bell.svg";
 
 const NavBar = ({validate}) => {
   function handleLogout() {
@@ -37,6 +38,9 @@ const NavBar = ({validate}) => {
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
   const handleToggle = () => {
+    setOpen((prevOpen) => !prevOpen);
+  };
+  const handleToggleLogout = () => {
     setOpen((prevOpen) => !prevOpen);
   };
   const handleClose = (event) => {
@@ -72,12 +76,38 @@ const NavBar = ({validate}) => {
         </div>
 
         <ul className="navbar-nav px-3">
+        <li className="notification-btn"><Button
+          ref={anchorRef}
+          aria-controls={open ? 'menu-list-grow' : undefined}
+          aria-haspopup="true"
+          onClick={handleToggle}
+        >
+          <img src={NotificationIcon} alt="notification" />
+        </Button></li>
+        <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
+          {({ TransitionProps, placement }) => (
+            <Grow
+              {...TransitionProps}
+              style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
+            >
+              <Paper>
+                <ClickAwayListener onClickAway={handleClose}>
+                  <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
+                    <MenuItem onClick={handleClose}>Lorem ipsum dolur sitLorem ipsum dolur sitLorem ipsum dolur sit</MenuItem>
+                    <MenuItem onClick={handleClose}>My account</MenuItem>
+                    <MenuItem onClick={handleClose}>Logout</MenuItem>
+                  </MenuList>
+                </ClickAwayListener>
+              </Paper>
+            </Grow>
+          )}
+        </Popper>
           <li className="nav-item text-nowrap">
             <Button
               ref={anchorRef}
               aria-controls={open ? 'menu-list-grow' : undefined}
               aria-haspopup="true"
-              onClick={handleToggle}
+               onClick={handleToggleLogout}
             >
             </Button>
             <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
