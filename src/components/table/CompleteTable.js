@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import DeleteImg from "../../assets/images/delete-icon.svg"
 import EditImg from "../../assets/images/edit-icon.svg";
 import axios from "axios";
-import { Link } from "react-router-dom";
 import Modal from "react-modal";
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
@@ -88,50 +87,6 @@ function CompleteTable({ data }) {
       {
         Header: "SOFTWARE",
         accessor: "projectNameByIT",
-        Cell: ({ row }) => {
-          return (
-            
-              
-              <Link
-                to={{
-                  pathname: `/formv/${row.original._id}`,
-                  state: {
-                    projectNameByIT: row.original.projectNameByIT,
-                    projectManager: row.original.projectManager,
-                    email: row.original.email,
-                    practice: row.original.practice,
-                    status: row.original.status,
-                    id: row.original._id,
-
-                    projectName: row.original.projectName,
-                    securityMeasure: row.original.securityMeasure,
-                    informIT: row.original.informIT,
-                    workStationSelected: row.original.workStationSelected,
-                    devTypeSelected: row.original.devTypeSelected,
-                    allowedWebsite: row.original.allowedWebsite,
-                    isNDAsigned: row.original.isNDAsigned,
-                    isGDPRcompliance: row.original.isGDPRcompliance,
-                    isCyberSecConducted: row.original.isCyberSecConducted,
-                    securityBreach: row.original.securityBreach,
-                    isDisasterInsuCovered: row.original.isDisasterInsuCovered,
-                    disasterDetails: row.original.disasterDetails,
-                    showInsuranceDetails: row.original.showInsuranceDetails,
-                    isIsolatedEnvReq: row.original.isIsolatedEnvReq,
-                    isolationDetails: row.original.isolationDetails,
-                    showIsolatedDetails: row.original.showIsolatedDetails,
-                    isDLPreq: row.original.isDLPreq,
-                    isClientEmailProvided: row.original.isClientEmailProvided,
-                    deleteReason: row.original.deleteReason,
-                    reshareReason: row.original.reshareReason,
-                  },
-                }}
-              >
-                {row.original.projectNameByIT}
-              </Link>
- 
-           
-          );
-        },
         sticky: "left",
       },
       {

@@ -448,6 +448,7 @@ body {
     border: 0;
     vertical-align: middle;
     background-size: 100%;
+    min-width: 32px;
 }
 .navbar h3{
     font-family: Lato;
