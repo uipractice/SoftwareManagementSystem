@@ -72,7 +72,7 @@ function Login() {
             <div className="form_main">
               <div className="login-form-title ">
                 <h3>Sign in</h3>
-                <p>Welcome to Project Management System</p>
+                <p>Welcome to Software Management System</p>
               </div>
 
               <div className="validate-input m-b-20">
