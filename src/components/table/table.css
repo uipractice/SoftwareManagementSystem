@@ -102,7 +102,7 @@ table td,
 table th {
   border: none;
   padding: 8px;
-  padding: 0 15px !important;
+  padding: 0 10px !important;
   height: 40px;
   line-height: 40px;
 }
@@ -206,4 +206,39 @@ table th, tfoot td {
 }
 .padding0{
   padding:0;
+}
+.tableFixHead{ 
+  overflow: auto; 
+  height:calc(100vh - 310px);
+  scrollbar-width: thin;
+  scrollbar-color: #afaeae #e3e1e1;
+}
+.tableFixHead::-webkit-scrollbar {
+  width: 5px;
+}
+.tableFixHead::-webkit-scrollbar-track {
+  background: #e3e1e1;
+  border-radius: 15px;
+}
+.tableFixHead::-webkit-scrollbar-thumb {
+  background: #afaeae;
+  border-radius: 15px;
+  height: 5%;
+}
+.tableFixHead::-webkit-scrollbar-thumb:hover {
+  background: #afaeae;
+}
+.tableFixHead thead th { 
+  position: sticky; 
+  top: 0; 
+  z-index: 1;
+}
+.tableFixHead thead th:first-child, .tableFixHead thead th:last-child{
+  text-align: center;
+}
+.tableFixHead tr td:first-child, .tableFixHead tr td:last-child{
+  text-align: center !important;
+}
+.table-pagination .pageNum:focus-visible{
+  outline: none !important;
 }

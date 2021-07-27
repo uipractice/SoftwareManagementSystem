@@ -45,8 +45,8 @@ body {
     .header_nav .navbar-nav .MuiPaper-root::before{
         content: "";
         position: absolute;
-        top: -11%;
-        left: 35%;
+        top: -15%;
+        left: 55%;
         margin-left: 43px;
         border-width: 10px;
         border-bottom: 16px solid #f8f8fb;
@@ -463,6 +463,50 @@ body {
 .navbar-brand img{
     border-right: 2px solid #7B7B7B;
     padding-right: 15px;
+}
+.navbar-brand{
+    margin-right: 10px;
+}
+.nav-item>div{
+    top: 10px !important;
+    left:0 !important;
+}
+.navbar-nav .MuiList-padding {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+.header_nav .navbar-nav .MuiPaper-root{
+    background-color: #fff !important;
+    border-radius: 4px !important;
+    box-shadow: 0 2px 16px 0 rgba(0, 0, 0, 0.2) !important;
+    z-index: 1 !important;
+}
+.header_nav .navbar-nav .MuiPaper-root li{
+    padding-left: 40px;   
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+
+.header_nav .navbar-nav .MuiPaper-root li.logout{
+    background: url('./assets/images/Logout_icon.svg') no-repeat left #fff;
+    background-size: 13px;
+    background-origin: content-box;
+    background-position: -25px;
+}
+.header_nav .navbar-nav .MuiPaper-root li.myprofile{
+    background: url('./assets/images/myprofile.svg') no-repeat left #fff;
+    background-size: 13px;
+    background-origin: content-box;
+    background-position: -25px;
+}
+.header_nav .navbar-nav .MuiPaper-root li.feedback{
+    background: url('./assets/images/feedback.svg') no-repeat left #fff;
+    background-size: 13px;
+    background-origin: content-box;
+    background-position: -25px;
+}
+.header_nav .navbar-nav .MuiPaper-root li:hover{
+    background-color: #f2f6fa;
 }
 .MuiToggleButton-root{
     height: 36px;
