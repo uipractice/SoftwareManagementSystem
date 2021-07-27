@@ -80,11 +80,11 @@ const NavBar = ({validate}) => {
           ref={anchorRef}
           aria-controls={open ? 'menu-list-grow' : undefined}
           aria-haspopup="true"
-          onClick={handleToggle}
+          // onClick={handleToggle}
         >
           <img src={NotificationIcon} alt="notification" />
-        </Button></li>
-        <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
+        </Button>
+        {/* <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
           {({ TransitionProps, placement }) => (
             <Grow
               {...TransitionProps}
@@ -101,7 +101,9 @@ const NavBar = ({validate}) => {
               </Paper>
             </Grow>
           )}
-        </Popper>
+        </Popper> */}
+        </li>
+        
           <li className="nav-item text-nowrap">
             <Button
               ref={anchorRef}
@@ -118,8 +120,10 @@ const NavBar = ({validate}) => {
                 >
                   <Paper>
                     <ClickAwayListener onClickAway={handleClose}>
-                      <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
-                        <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                    <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
+                      <MenuItem className="myprofile" onClick={handleLogout}>My profile</MenuItem>
+                      <MenuItem className="feedback" onClick={handleLogout}>Provide Feedback</MenuItem>
+                        <MenuItem className="logout" onClick={handleLogout}>Logout</MenuItem>
                       </MenuList>
                     </ClickAwayListener>
                   </Paper>
