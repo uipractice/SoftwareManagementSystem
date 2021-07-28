@@ -19,47 +19,6 @@ body {
         outline: none !important;
     }
 
-    .header_nav {
-        background: #023047;
-        padding: 8px 0 !important;
-    }
-    .header_nav .navbar-nav{
-        flex-direction: row;
-    }
-    .header_nav .navbar-nav .notification-btn{
-        border-right: 2px solid #ACACAC;
-        padding-right: 20px;
-        line-height: 30px;
-    }
-    .header_nav .navbar-nav .notification-btn .MuiButton-root{
-        min-width: 100%;
-        padding:0;
-    }
-    .header_nav .navbar-nav .MuiPaper-root{
-        background-color: #fff !important;
-        border-radius: 0 0 4px 4px !important;
-        box-shadow: 0 2px 16px 0 rgba(0, 0, 0, 0.2) !important;
-        z-index: 1 !important;
-        max-width: 250px;
-    }
-    .header_nav .navbar-nav .MuiPaper-root::before{
-        content: "";
-        position: absolute;
-        top: -15%;
-        left: 55%;
-        margin-left: 43px;
-        border-width: 10px;
-        border-bottom: 16px solid #f8f8fb;
-        border-style: solid;
-        border-color: transparent transparent #f8f8fb transparent;
-    }
-    .header_nav .navbar-nav .MuiMenuItem-root{
-        white-space: inherit !important;
-        overflow: auto !important;
-    }
-    .header_nav .navbar-nav .nav-item{
-        padding-left: 20px;
-    }
     .user_ico {
         color: #B4B0B0;
     }
@@ -441,73 +400,7 @@ body {
 .ms-sm-auto {
     padding-bottom: 30px;
 }
-.nav-item button{
-    background:url("./assets/images/user-icon.svg") no-repeat center center;
-    height: 32px;
-    width: 32px;
-    border: 0;
-    vertical-align: middle;
-    background-size: 100%;
-    min-width: 32px;
-}
-.navbar h3{
-    font-family: Lato;
-    font-weight: 900;
-    font-size: 20px;
-    line-height: 24px;
-    color: #F8A066;
-    align-items: center;
-    display: flex;
-    margin-bottom: 0;
-}
-.navbar-brand img{
-    border-right: 2px solid #7B7B7B;
-    padding-right: 15px;
-}
-.navbar-brand{
-    margin-right: 10px;
-}
-.nav-item>div{
-    top: 10px !important;
-    left:0 !important;
-}
-.navbar-nav .MuiList-padding {
-    padding-top: 0;
-    padding-bottom: 0;
-}
-.header_nav .navbar-nav .MuiPaper-root{
-    background-color: #fff !important;
-    border-radius: 4px !important;
-    box-shadow: 0 2px 16px 0 rgba(0, 0, 0, 0.2) !important;
-    z-index: 1 !important;
-}
-.header_nav .navbar-nav .MuiPaper-root li{
-    padding-left: 40px;   
-    padding-top: 12px;
-    padding-bottom: 12px;
-}
 
-.header_nav .navbar-nav .MuiPaper-root li.logout{
-    background: url('./assets/images/Logout_icon.svg') no-repeat left #fff;
-    background-size: 13px;
-    background-origin: content-box;
-    background-position: -25px;
-}
-.header_nav .navbar-nav .MuiPaper-root li.myprofile{
-    background: url('./assets/images/myprofile.svg') no-repeat left #fff;
-    background-size: 13px;
-    background-origin: content-box;
-    background-position: -25px;
-}
-.header_nav .navbar-nav .MuiPaper-root li.feedback{
-    background: url('./assets/images/feedback.svg') no-repeat left #fff;
-    background-size: 13px;
-    background-origin: content-box;
-    background-position: -25px;
-}
-.header_nav .navbar-nav .MuiPaper-root li:hover{
-    background-color: #f2f6fa;
-}
 .MuiToggleButton-root{
     height: 36px;
     border-radius: 0px 2px 2px 0px !important;
@@ -651,7 +544,7 @@ body {
 .filter-row .MuiInput-underline:before, .MuiInput-underline:hover:not(.Mui-disabled):before, .MuiInput-underline:after{
     border-bottom: 0 !important;
 }
-.MuiPaper-root{
+#menu- .MuiPaper-root{
     top:180px !important;
 }
 .MuiPopover-paper{
@@ -673,6 +566,7 @@ body {
 }
 .ReactModal__Overlay {
     background: rgba(83, 83, 83, 0.3) !important;
+    z-index: 2;
 }
 .ReactModalPortal ._modal-close{
     background: transparent !important;
@@ -727,6 +621,75 @@ body {
     font-size: 16px;
     line-height: 19px;
     color: #023047;
+}
+.feedback-close{
+    position: absolute !important;
+    top: 4px !important;
+    right: 0 !important;
+}
+#alert-dialog-title{
+    padding: 11px 20px;
+    background: #F8F8F8;
+    box-shadow: 0px 1px 0px rgb(0 0 0 / 15%);
+    border-radius: 4px 4px 0px 0px;
+}
+#alert-dialog-title h2{
+    font-family: Lato;
+    font-weight: bold;
+    font-size: 18px;
+    line-height: 22px;
+    color: #209EC5;
+}
+.feedback-modal .MuiDialogActions-root{
+    justify-content: center;
+}
+.feedback-modal textarea{
+    border: 1px solid #BDBDBD;
+    box-sizing: border-box;
+    border-radius: 4px;
+    height: 73px;
+    width: 100%;
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.01em;
+    color: #E0E0E0;
+}
+.feedback-modal button.feedback-submit{
+    background: #209EC5;
+    border-radius: 2px;
+    font-size: 14px;
+    line-height: 18px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    letter-spacing: 0.1px;
+    color: #FFFFFF;
+    width: 170px;
+    height: 44px;
+    margin-bottom: 25px;
+}
+.feedback-modal button.feedback-submit:hover{
+    background: #209EC5 !important;
+    color: #FFFFFF;
+}
+.feedback-modal h3{
+    font-size: 18px;
+    line-height: 22px;
+    letter-spacing: 0.01em;
+    color: #626364;
+    font-family: Lato;
+    margin-bottom: 30px;
+}
+.feedback-modal #alert-dialog-description p{
+    margin-bottom: 20px;
+    font-size: 16px;
+    line-height: 24px;
+    text-align: center;
+    letter-spacing: 0.01em;
+    color: #626364;
+}
+.feedback-modal .MuiDialogContent-root{
+    padding-top: 25px;
 }
 @media(max-width:448px){
     .footer{

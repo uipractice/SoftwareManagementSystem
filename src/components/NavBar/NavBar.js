@@ -9,6 +9,12 @@ import Popper from '@material-ui/core/Popper';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
 import NotificationIcon from "../../assets/images/bell.svg";
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import "./NavBar.css"
 
 const NavBar = ({validate}) => {
   function handleLogout() {
@@ -44,11 +50,26 @@ const NavBar = ({validate}) => {
     setOpen((prevOpen) => !prevOpen);
   };
   const handleClose = (event) => {
-    if (anchorRef.current && anchorRef.current.contains(event.target)) {
-      return;
-    }
+    // if (anchorRef.current && anchorRef.current.contains(event.target)) {
+    //   return;
+    // }
     setOpen(false);
+    setFeedback(false);
   };
+  
+  const [feedback, setFeedback] = React.useState(false);
+  const handleClickOpen = () => {
+    setFeedback(!feedback);
+    // setFeedback("");
+  };
+  const prevOpenfeedback = React.useRef(feedback);
+  React.useEffect(() => {
+    if (prevOpenfeedback.current === true && feedback === false) {
+      anchorRef.current.focus();
+    }
+    prevOpenfeedback.current = feedback;
+  }, [feedback]);
+
   function handleListKeyDown(event) {
     if (event.key === 'Tab') {
       event.preventDefault();
@@ -108,7 +129,7 @@ const NavBar = ({validate}) => {
             <Button
               ref={anchorRef}
               aria-controls={open ? 'menu-list-grow' : undefined}
-              aria-haspopup="true"
+              aria-haspopup="false"
                onClick={handleToggleLogout}
             >
             </Button>
@@ -122,8 +143,43 @@ const NavBar = ({validate}) => {
                     <ClickAwayListener onClickAway={handleClose}>
                     <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
                       <MenuItem className="myprofile" onClick={handleLogout}>My profile</MenuItem>
-                      <MenuItem className="feedback" onClick={handleLogout}>Provide Feedback</MenuItem>
-                        <MenuItem className="logout" onClick={handleLogout}>Logout</MenuItem>
+                      <MenuItem className="feedback" onClick={handleClickOpen}>Provide Feedback</MenuItem>
+                      <Dialog
+                        open={feedback}
+                        onClose={handleClose}
+                        aria-labelledby="alert-dialog-title"
+                        aria-describedby="alert-dialog-description"
+                        className="feedback-modal"
+                    >
+                        <DialogTitle id="alert-dialog-title">{"Feedback"}</DialogTitle>
+                        <Button onClick={handleClose} color="primary" className="feedback-close">
+                            <svg className="_modal-close-icon" viewBox="0 0 40 40">
+                                <path d="M 10,10 L 30,30 M 30,10 L 10,30" />
+                            </svg>
+                        </Button>
+                        <DialogContent>
+                        <DialogContentText id="alert-dialog-description">
+                            <h3>Hello Friends</h3>
+                            <p>Your review will help us go give you the better experience</p>
+                            <textarea
+                            type="text"
+                            autoFocus={true}
+                            style={{ color: "black" }}
+                            // onChange={handleInputChange}
+                            name="feedbackReason"
+                            />
+                        </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                        {/* <Button onClick={handleClose} color="primary">
+                            Disagree
+                        </Button> */}
+                        <Button onClick={handleClose} color="primary" autoFocus className="feedback-submit">
+                            Submit
+                        </Button>
+                        </DialogActions>
+                    </Dialog>
+                      <MenuItem className="logout" onClick={handleLogout}>Logout</MenuItem>
                       </MenuList>
                     </ClickAwayListener>
                   </Paper>
