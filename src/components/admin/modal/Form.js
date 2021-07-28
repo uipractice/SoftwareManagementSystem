@@ -3,14 +3,12 @@ import axios from "axios";
 import "./Container.css";
 import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup';
 import ToggleButton from 'react-bootstrap/ToggleButton';
-
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 toast.configure();
 
 function Form({ closeModal }) {
-
 
   const inputRef = useRef(null);
 
@@ -65,7 +63,7 @@ function Form({ closeModal }) {
 
     if (ValidateEmail(state.email))  {
       axios
-            .post("http://localhost:5000/clientInfo/email", state)
+            .post("http://localhost:5000/softwareInfo/email", state)
             .then((res) => {
               if (res.data === "success") {
                 closeModal();
@@ -165,26 +163,40 @@ function Form({ closeModal }) {
         </div>
       </div>
       <div className="row">
-      <div className="form-group col-md-6">
-        <label>Practice Name </label>
-        <select
-          className="form-control"
-          onChange={handleOnChange}
-          name="practice"
-          value={state.practice}
-        >
-          <option value=""></option>
-          <option value="QA Practice">QA Practice</option>
-          <option value="Oracle Practice">Oracle Practice</option>
-          <option value="Java Practice">Java Practice</option>
-          <option value="Microsoft Practice">Microsoft Practice</option>
-          <option value="Other">Other Practice</option>
-        </select>
+      <div className="form-group col-md-3">
+        <label>Pricing in $</label>
+        <input
+            type="text"
+            className="form-control"
+            onChange={handleOnChange}
+            name="pricing in"
+            value=''
+          />
       </div>
-      <div className="form-group col-md-6">
-          <label htmlFor="projectManager">Other Practice</label>
+      <div className="form-group col-md-3">
+          <label>Pricing in Rs.</label>
           <input
             type="text"
+            className="form-control"
+            onChange={handleOnChange}
+            name="other practice"
+            value=''
+          />
+        </div>
+        <div className="form-group col-md-3">
+          <label>Total Amount</label>
+          <input
+            type="text"
+            className="form-control"
+            onChange={handleOnChange}
+            name="other practice"
+            value=''
+          />
+        </div>
+        <div className="form-group col-md-3">
+          <label>Next Billing Date</label>
+          <input
+            type="date"
             className="form-control"
             onChange={handleOnChange}
             name="other practice"
@@ -219,7 +231,7 @@ function Form({ closeModal }) {
               onClick={handleSubmit}
               disabled
             >
-              Share
+              Save
             </button>
           )}
         </div>
