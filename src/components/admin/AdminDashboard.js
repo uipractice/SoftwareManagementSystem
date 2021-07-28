@@ -10,7 +10,7 @@ export default function AdminDashboard() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    axios("http://localhost:5000/clientInfo/")
+    axios("http://localhost:5000/softwareInfo/")
       .then((res) => {
         setData(res.data);
         // console.log("respose data", res.data)

@@ -58,7 +58,7 @@ function CompleteTable({ data }) {
     rowOriginal.status = "Deleted";
     const id = rowOriginal._id;
     axios
-      .post("http://localhost:5000/clientInfo/deleteStatus/" + id, rowOriginal)
+      .post("http://localhost:5000/softwareInfo/deleteStatus/" + id, rowOriginal)
       .then((res) => {
         toast.warn("Record has been marked DELETED !", {
           autoClose: 2900,
@@ -86,55 +86,55 @@ function CompleteTable({ data }) {
 
       {
         Header: "SOFTWARE",
-        accessor: "projectNameByIT",
+        accessor: "softwareName",
         sticky: "left",
       },
       {
         Header: "TYPE",
-        accessor: "projectManager",
+        accessor: "type",
         sticky: "left",
       },
       {
         Header: "TEAM",
-        accessor: "practice",
+        accessor: "teamName",
         sticky: "left",
       },
       {
-        Header: "OWNER",
-        accessor: "createdAt",
-        Cell: ({ value }) => {
-          return format(new Date(value), "dd/MM/yyyy");
-        },
-        maxWidth: 200,
-        minWidth: 80,
-        width: 100,
+        Header: "USER/OWNER",
+        accessor: "owner",
+        // Cell: ({ value }) => {
+        //   return format(new Date(value), "dd/MM/yyyy");
+        // },
+        // maxWidth: 200,
+        // minWidth: 80,
+        // width: 100,
       },
       {
         Header: "BILLIG CYCLE",
-        accessor: "updatedAt",
-        Cell: ({ value }) => {
-          return format(new Date(value), "dd/MM/yyyy");
-        },
+        accessor: "billingCycle",
+        // Cell: ({ value }) => {
+        //   return format(new Date(value), "dd/MM/yyyy");
+        // },
       },
       {
         Header: "PRICING IN $",
-        accessor: "status",
+        accessor: "pricingInDollar",
       },
       {
-        Header: "PRICING IN Rs",
-        accessor: "statusSD",
+        Header: "PRICING IN ₹",
+        accessor: "pricingInRupee",
       },
       {
-        Header: "AMOUNT",
-        accessor: "statusDS",
+        Header: "AMOUNT IN ₹",
+        accessor: "totalAmount",
       },
       {
-        Header: "NEXT BILL",
-        accessor: "statusA",
+        Header: "NEXT BILLING",
+        accessor: "nextBilling",
       },
       {
         Header: "TIMELINE",
-        accessor: "statusAB",
+        accessor: "timeline",
       },
       {
         Header: "ACTION",
