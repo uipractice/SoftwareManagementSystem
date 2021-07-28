@@ -3,14 +3,12 @@ import axios from "axios";
 import "./Container.css";
 import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup';
 import ToggleButton from 'react-bootstrap/ToggleButton';
-
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 toast.configure();
 
 function Form({ closeModal }) {
-
 
   const inputRef = useRef(null);
 
@@ -65,7 +63,7 @@ function Form({ closeModal }) {
 
     if (ValidateEmail(state.email))  {
       axios
-            .post("http://localhost:5000/clientInfo/email", state)
+            .post("http://localhost:5000/softwareInfo/email", state)
             .then((res) => {
               if (res.data === "success") {
                 closeModal();
