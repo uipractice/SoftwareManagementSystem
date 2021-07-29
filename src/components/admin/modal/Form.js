@@ -18,14 +18,19 @@ function Form({ closeModal }) {
 
 
   const [state, setState] = useState({
-    projectNameByIT: "",
-    projectManager: "",
-    email: "",
-    practice: "",
-    status: "Pending",
-    deleteReason: "",
-    restoreReason: "",
-    reshareReason: "",
+    softwareName: "",
+    teamName: "",
+    type: "",
+    owner: "",
+    billingCycle: "",
+    pricingInDollar: "",
+    pricingInRupee: "",
+    totalAmount: "",
+    nextBilling: "",
+    timeline: "",
+    // deleteReason: "",
+    // restoreReason: "",
+    // reshareReason: "",
   });
 
   function handleOnChange(e) {
@@ -38,108 +43,74 @@ function Form({ closeModal }) {
   const handleReset = (e) => {
     e.preventDefault();
     setState({
-      projectNameByIT: "",
-      projectManager: "",
-      email: "",
-      practice: "",
+      softwareName: "",
+      teamName: "",
+      type: "",
+      owner: "",
+      pricingInDollar: "",
+      pricingInRupee: "",
+      totalAmount: "",
     });
   };
 
-  function ValidateEmail(inputText) {
-    const mailformat = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
-    // const mailformat = /^\w+@evoketechnologies.com/;
-    if (inputText.match(mailformat)) {
-      return true;
-    } else {
-      toast.error("Invalid email ID !", {
-        autoClose: 1800,
-      });
-      return false;
-    }
-  }
+
 
   function handleSubmit(e) {
     e.preventDefault();
-
-    if (ValidateEmail(state.email))  {
-      axios
-            .post("http://localhost:5000/softwareInfo/email", state)
-            .then((res) => {
-              if (res.data === "success") {
-                closeModal();
-                toast.success("Data Saved Successfully !", {
-                  autoClose: 2000,
-                });
-                console.log(state);
-
-                setTimeout(() => {
-                  window.location.reload();
-                }, 2000);
-              } else {
-                toast.error("Data Saved FAILED !", {
-                  autoClose: 2000,
-                });
-                console.log(state);
-              }
-            })
-
-            .catch((err) => console.log(err.response));
-      }
   }
-
-   
 
   return (
     <form>
       <div className="row">
-        <div className="form-group col-md-5">
-          <label htmlFor="projectNameByIT">Tool/Software</label>
-          <input
-            type="text"
+      <div className="form-group col-md-3">
+          <label htmlFor="type">Select Type</label>
+          <select
             ref={inputRef}
             className="form-control"
             onChange={handleOnChange}
-            name="projectNameByIT"
-            value={state.projectNameByIT}
-          />
+            name="type"
+            value={state.type}
+          >
+          <option value="Software">Software</option>
+          <option value="Certificate">Certificate</option>
+          <option value="Domain">Domain</option>
+          </select>
         </div>
-
-        <div className="form-group col-md-4">
-          <label htmlFor="projectManager">Team</label>
+        <div className="form-group col-md-5">
+          <label htmlFor="softwareName">Tool/Software</label>
           <input
             type="text"
             className="form-control"
             onChange={handleOnChange}
-            name="projectManager"
-            value={state.projectManager}
+            name="softwareName"
+            value={state.softwareName}
           />
         </div>
-
-        <div className="form-group col-md-3">
-          <label htmlFor="Type">Type</label>
-          <input 
+        <div className="form-group col-md-4">
+          <label htmlFor="teamName">Team</label>
+          <input
             type="text"
             className="form-control"
             onChange={handleOnChange}
-            name="Type"
-            value=""
+            name="teamName"
+            value={state.teamName}
           />
         </div>
       </div>
 
       <div class="row">
         <div className="form-group col-md-5">
-          <label>User/Owner</label>
+        <label htmlFor="type">User/Owner</label>
           <input
             type="text"
             className="form-control"
             onChange={handleOnChange}
-            name="email"
-            value={state.email}
+            name="owner"
+            value={state.owner}
           />
         </div>
         <div className="form-group col-md-4">
-          <label>Billing Cycle</label>
+        <label htmlFor="billingCycle">Billing Cycle</label>
           <ToggleButtonGroup type="radio" name="options" defaultValue={1} className="mb-2">
             <ToggleButton value={1}> Monthly</ToggleButton>
             <ToggleButton value={2}> Yearly</ToggleButton>
@@ -164,43 +135,43 @@ function Form({ closeModal }) {
       </div>
       <div className="row">
       <div className="form-group col-md-3">
-        <label>Pricing in $</label>
+      <label htmlFor="pricingInDollar">Pricing in $</label>
         <input
             type="text"
             className="form-control"
             onChange={handleOnChange}
-            name="pricing in"
-            value=''
+            name="pricingInDollar"
+            value={state.pricingInDollar}
           />
       </div>
       <div className="form-group col-md-3">
-          <label>Pricing in Rs.</label>
+      <label htmlFor="pricingInRupee">Pricing in ₹</label>
           <input
             type="text"
             className="form-control"
             onChange={handleOnChange}
-            name="other practice"
-            value=''
+            name="pricingInRupee"
+            value={state.pricingInRupee}
           />
         </div>
         <div className="form-group col-md-3">
-          <label>Total Amount</label>
+        <label htmlFor="totalAmount">Total Amount</label>
           <input
             type="text"
             className="form-control"
             onChange={handleOnChange}
-            name="other practice"
-            value=''
+            name="totalAmount"
+            value={state.totalAmount}
           />
         </div>
         <div className="form-group col-md-3">
-          <label>Next Billing Date</label>
+        <label htmlFor="nextBilling">Next Billing Date</label>
           <input
             type="date"
             className="form-control"
             onChange={handleOnChange}
-            name="other practice"
-            value=''
+            name="nextBilling"
+            value={state.nextBilling}
           />
         </div>
       </div>
