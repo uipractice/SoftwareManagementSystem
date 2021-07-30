@@ -5,6 +5,7 @@ import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup';
 import ToggleButton from 'react-bootstrap/ToggleButton';
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import TextField from '@material-ui/core/TextField';
 
 toast.configure();
 
@@ -20,7 +21,7 @@ function Form({ closeModal }) {
   const [state, setState] = useState({
     softwareName: "",
     teamName: "",
-    type: "",
+    selectType: "",
     owner: "",
     billingCycle: "",
     pricingInDollar: "",
@@ -45,11 +46,12 @@ function Form({ closeModal }) {
     setState({
       softwareName: "",
       teamName: "",
-      type: "",
+      selectType: "",
       owner: "",
       pricingInDollar: "",
       pricingInRupee: "",
       totalAmount: "",
+      month: "",
     });
   };
 
@@ -57,20 +59,54 @@ function Form({ closeModal }) {
 
   function handleSubmit(e) {
     e.preventDefault();
+    const formData = {
+      softwareName: state.softwareName,
+      teamName: state.teamName,
+      selectType: state.selectType,
+      owner: state.owner,
+      billingCycle: state.billingCycle,
+      pricingInDollar: state.pricingInDollar,
+      pricingInRupee: state.pricingInRupee,
+      totalAmount: state.totalAmount,
+      nextBilling: state.nextBilling,
+      // timeline: state.timeline,
+      month: state.month,
+    }
+    axios
+      .post(`http://localhost:5000/softwareInfo/addNewSoftware`, formData)
+      .then((res) =>{
+        if (res.data === "success") {
+          closeModal();
+          toast.success("Data Saved Successfully !", {
+            autoClose: 2000,
+          });
+          console.log(state);
+
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
+        } else {
+          toast.error("Data Saved FAILED !", {
+            autoClose: 2000,
+          });
+          console.log(state);
+        }
+      })
   }
 
   return (
     <form>
       <div className="row">
       <div className="form-group col-md-3">
-          <label htmlFor="type">Select Type</label>
+          <label htmlFor="selectType">Select Type</label>
           <select
             ref={inputRef}
             className="form-control"
             onChange={handleOnChange}
-            name="type"
-            value={state.type}
+            name="selectType"
+            value={state.selectType}
           >
+          <option value=""></option>
           <option value="Software">Software</option>
           <option value="Certificate">Certificate</option>
           <option value="Domain">Domain</option>
@@ -98,9 +134,9 @@ function Form({ closeModal }) {
         </div>
       </div>
 
-      <div class="row">
+      <div className="row">
         <div className="form-group col-md-5">
-        <label htmlFor="type">User/Owner</label>
+        <label htmlFor="owner">User/Owner</label>
           <input
             type="text"
             className="form-control"
@@ -117,19 +153,26 @@ function Form({ closeModal }) {
           </ToggleButtonGroup>
         </div>
         <div className="form-group col-md-3">
-          <label>For the month of</label>
+          <label htmlFor="month">For the month of</label>
           <select
           className="form-control"
           onChange={handleOnChange}
           name="month"
-          value=""
+          value={state.month}
         >
           <option value=""></option>
-          <option value="QA Practice">QA Practice</option>
-          <option value="Oracle Practice">Oracle Practice</option>
-          <option value="Java Practice">Java Practice</option>
-          <option value="Microsoft Practice">Microsoft Practice</option>
-          <option value="Other">Other Practice</option>
+          <option value="January">January</option>
+          <option value="February">February</option>
+          <option value="March">March</option>
+          <option value="April">April</option>
+          <option value="May">May</option>
+          <option value="June">June</option>
+          <option value="July">July</option>
+          <option value="August">August</option>
+          <option value="September">September</option>
+          <option value="October">October</option>
+          <option value="November">November</option>
+          <option value="December">December</option>
         </select>
         </div>
       </div>
@@ -137,7 +180,7 @@ function Form({ closeModal }) {
       <div className="form-group col-md-3">
       <label htmlFor="pricingInDollar">Pricing in $</label>
         <input
-            type="text"
+            type="number"
             className="form-control"
             onChange={handleOnChange}
             name="pricingInDollar"
@@ -147,7 +190,7 @@ function Form({ closeModal }) {
       <div className="form-group col-md-3">
       <label htmlFor="pricingInRupee">Pricing in ₹</label>
           <input
-            type="text"
+            type="number"
             className="form-control"
             onChange={handleOnChange}
             name="pricingInRupee"
@@ -157,7 +200,7 @@ function Form({ closeModal }) {
         <div className="form-group col-md-3">
         <label htmlFor="totalAmount">Total Amount</label>
           <input
-            type="text"
+            type="number"
             className="form-control"
             onChange={handleOnChange}
             name="totalAmount"
@@ -173,6 +216,16 @@ function Form({ closeModal }) {
             name="nextBilling"
             value={state.nextBilling}
           />
+          {/* <TextField
+            id="date"
+            label="Next Billing Date"
+            type="date"
+            defaultValue="2017-05-24"
+            className="form-control"
+            InputLabelProps={{
+              shrink: true,
+            }}
+          /> */}
         </div>
       </div>
       
@@ -186,15 +239,21 @@ function Form({ closeModal }) {
             Reset
           </button>
 
-          {state.projectNameByIT &&
-          state.projectManager &&
-          state.email &&
-          state.practice ? (
+          {state.softwareName &&
+          state.teamName &&
+          state.selectType &&
+          state.owner &&
+          // state.billingCycle &&
+          state.month &&
+          state.pricingInDollar &&
+          state.pricingInRupee && 
+          state.totalAmount &&
+          state.nextBilling ? (
             <button
               className="form-control btn btn-primary share-btn"
               onClick={handleSubmit}
             >
-              Share
+              Save
             </button>
           ) : (
             <button

@@ -139,6 +139,8 @@ function CompleteTable({ data }) {
       {
         Header: "ACTION",
         Cell: ({ row }) => (
+          <div>
+            <img src={EditImg} alt="Evoke Technologies" />
           <a
             {...(row.original.status === "Deleted" || row.original.status === "Pending" 
               ? { className: "delete-icon disableDeleteBtn" }
@@ -149,11 +151,12 @@ function CompleteTable({ data }) {
             }}
           >
             
-            <img src={EditImg} alt="Evoke Technologies" />
+            
             {" "}
             <img src={DeleteImg} alt="Evoke Technologies" />
            
           </a>
+          </div>
         ),
       },
     ],

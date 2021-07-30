@@ -253,8 +253,8 @@ body {
     .grid tr td a{
         padding: 0;
     }
-    .grid tr td a.delete-icon img:first-child{
-        padding-right: 15px;
+    .grid tr td a.delete-icon img{
+        padding-left: 10px;
     }
     .grid .table-striped>tbody>tr:nth-of-type(odd) {
         background: rgb(242 242 242 / 50%);
