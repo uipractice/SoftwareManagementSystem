@@ -1,6 +1,6 @@
-import React, { Component } from "react";
-import Modal from "./modal/Modal";
-import "./modal/Container.css";
+import React, { Component } from 'react';
+import Modal from './modal/Modal';
+import './modal/Container.css';
 
 export class ShareModalContainer extends Component {
   state = { isShown: false };
@@ -25,26 +25,25 @@ export class ShareModalContainer extends Component {
   };
 
   toggleScrollLock = () => {
-    document.querySelector("html").classList.toggle("scroll-lock");
+    document.querySelector('html').classList.toggle('scroll-lock');
   };
 
   render() {
     return (
-      <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3">
+      <div className='d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3'>
+        <h5 className='project-head'>LICENSING DETAILS</h5>
 
-        <h5 className="project-head">LICENSING DETAILS</h5>
-
-        <div className="btn-toolbar mb-2 mb-md-0">
+        <div className='btn-toolbar mb-2 mb-md-0'>
           <button
-            type="button"
-            className="btn work_btn work_btn_blue center modal-button"
+            type='button'
+            className='btn work_btn work_btn_blue center modal-button'
             ref={this.buttonRef}
             onClick={this.showModal}
           >
             + ADD SOFTWARE TOOL
           </button>
 
-          {this.state.isShown ? (
+          {this.state.isShown && (
             <Modal
               modalRef={(n) => (this.modal = n)}
               buttonRef={(n) => (this.closeButton = n)}
@@ -52,7 +51,7 @@ export class ShareModalContainer extends Component {
               onKeyDown={this.onKeyDown}
               onClickOutside={this.onClickOutside}
             />
-          ) : null}
+          )}
         </div>
       </div>
     );
