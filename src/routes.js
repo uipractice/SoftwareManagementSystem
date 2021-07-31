@@ -1,7 +1,7 @@
 import React from 'react';
 import Login from './components/login/Login';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import AdminDashboard from './components/admin/AdminDashboard';
+import AdminDashboard from './components/admin/Dashboard';
 
 function Routes() {
   return (

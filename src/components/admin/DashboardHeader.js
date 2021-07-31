@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
-import Modal from './modal/Modal';
-import './modal/Container.css';
+import './Container.css';
+import { Modal } from 'react-bootstrap';
+import Form from './Form';
 
-export class ShareModalContainer extends Component {
+export class DashboardHeader extends Component {
   state = { isShown: false };
   showModal = () => {
-    this.setState({ isShown: true }, () => {
-      this.closeButton.focus();
-    });
+    this.setState({ isShown: true });
     this.toggleScrollLock();
   };
   closeModal = () => {
@@ -45,12 +44,19 @@ export class ShareModalContainer extends Component {
 
           {this.state.isShown && (
             <Modal
-              modalRef={(n) => (this.modal = n)}
-              buttonRef={(n) => (this.closeButton = n)}
-              closeModal={this.closeModal}
-              onKeyDown={this.onKeyDown}
-              onClickOutside={this.onClickOutside}
-            />
+              centered
+              size='lg'
+              style={{ borderRadius: '0 !important' }}
+              show={this.state.isShown}
+              onHide={this.closeModal}
+            >
+              <Modal.Header closeButton className='modal-area'>
+                <h3>Add Tool/Software</h3>
+              </Modal.Header>
+              <Modal.Body className='modal-body'>
+                <Form closeModal={this.closeModal} />
+              </Modal.Body>
+            </Modal>
           )}
         </div>
       </div>
@@ -58,4 +64,4 @@ export class ShareModalContainer extends Component {
   }
 }
 
-export default ShareModalContainer;
+export default DashboardHeader;

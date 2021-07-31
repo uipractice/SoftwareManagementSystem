@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import ShareButtonSection from './ShareButtonSection';
-import Footer from './Footer';
-import CompleteTable from '../table/CompleteTable';
+import DashboardHeader from './DashboardHeader';
+import Footer from '../NavBar/Footer';
+import CompleteTable from '../table';
 import axios from 'axios';
-import NavBar from '../NavBar/NavBar';
+import Header from '../NavBar/Header';
 
 export default function AdminDashboard() {
   const [data, setData] = useState([]);
@@ -19,11 +19,11 @@ export default function AdminDashboard() {
 
   return (
     <div>
-      <NavBar />
+      <Header />
       <div className='container-fluid'>
         <div className='row'>
           <div className='col-md-12 ms-sm-auto col-lg-12'>
-            <ShareButtonSection />
+            <DashboardHeader />
             <CompleteTable data={data} />
           </div>
         </div>

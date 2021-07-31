@@ -14,7 +14,7 @@ import {
   usePagination,
 } from 'react-table';
 import './table.css';
-import GlobalFilter from './GlobalFilter';
+import GlobalFilter from './filter';
 
 import rightIcon from '../../assets/images/right-icon.svg';
 import leftIcon from '../../assets/images/left-icon.svg';
