@@ -137,11 +137,33 @@ function CompleteTable({ data }) {
           row: {
             original: { nextBilling },
           },
-        }) => <p>{moment(nextBilling).format('DD-MM-YYYY')}</p>,
+        }) => moment(nextBilling).format('DD-MM-YYYY'),
       },
       {
         Header: 'TIMELINE',
         accessor: 'timeline',
+        Cell: ({
+          row: {
+            original: { nextBilling },
+          },
+        }) => {
+          const days = moment(nextBilling).diff(moment(), 'days');
+          return (
+            <div
+              className={`timeline ${
+                days >= 20
+                  ? `timelineGreen`
+                  : days >= 5
+                  ? `timelineYellow`
+                  : `timelineRed`
+              }`}
+            >
+              <p>
+                {days === 0 ? `Today` : days < 0 ? `Expired` : `${days} days`}
+              </p>
+            </div>
+          );
+        },
       },
       {
         Header: 'ACTION',
