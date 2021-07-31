@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import DeleteImg from "../../assets/images/delete-icon.svg"
-import EditImg from "../../assets/images/edit-icon.svg";
-import axios from "axios";
-import Modal from "react-modal";
+import React, { useState } from 'react';
+import DeleteImg from '../../assets/images/delete-icon.svg';
+import EditImg from '../../assets/images/edit-icon.svg';
+import axios from 'axios';
+import Modal from 'react-modal';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
@@ -12,20 +12,20 @@ import {
   useSortBy,
   useGlobalFilter,
   usePagination,
-} from "react-table";
-import { format } from "date-fns";
-import "./table.css";
-import GlobalFilter from "./GlobalFilter";
+} from 'react-table';
+import './table.css';
+import GlobalFilter from './GlobalFilter';
 
-import rightIcon from "../../assets/images/right-icon.svg";
-import leftIcon from "../../assets/images/left-icon.svg";
+import rightIcon from '../../assets/images/right-icon.svg';
+import leftIcon from '../../assets/images/left-icon.svg';
 
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import moment from 'moment';
 
 toast.configure();
 
-Modal.setAppElement("#root");
+Modal.setAppElement('#root');
 const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(1),
@@ -36,9 +36,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 function CompleteTable({ data }) {
-
   const [rowOriginal, setRowOriginal] = useState({});
- 
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const classes = useStyles();
   const [age, setAge] = React.useState('');
@@ -55,12 +54,15 @@ function CompleteTable({ data }) {
 
   const handleUpdateStatus = (e) => {
     e.preventDefault();
-    rowOriginal.status = "Deleted";
+    rowOriginal.status = 'Deleted';
     const id = rowOriginal._id;
     axios
-      .post("http://localhost:5000/softwareInfo/deleteStatus/" + id, rowOriginal)
+      .post(
+        'http://localhost:5000/softwareInfo/deleteStatus/' + id,
+        rowOriginal
+      )
       .then((res) => {
-        toast.warn("Record has been marked DELETED !", {
+        toast.warn('Record has been marked DELETED !', {
           autoClose: 2900,
         });
         setIsModalOpen(false);
@@ -79,29 +81,29 @@ function CompleteTable({ data }) {
   const columns = React.useMemo(
     () => [
       {
-        Header: "SL.NO",
-        accessor: "serial",
+        Header: 'SL.NO',
+        accessor: 'serial',
         // filterable: false,
       },
 
       {
-        Header: "SOFTWARE",
-        accessor: "softwareName",
-        sticky: "left",
+        Header: 'SOFTWARE',
+        accessor: 'softwareName',
+        sticky: 'left',
       },
       {
-        Header: "TYPE",
-        accessor: "type",
-        sticky: "left",
+        Header: 'TYPE',
+        accessor: 'type',
+        sticky: 'left',
       },
       {
-        Header: "TEAM",
-        accessor: "teamName",
-        sticky: "left",
+        Header: 'TEAM',
+        accessor: 'teamName',
+        sticky: 'left',
       },
       {
-        Header: "USER/OWNER",
-        accessor: "owner",
+        Header: 'USER/OWNER',
+        accessor: 'owner',
         // Cell: ({ value }) => {
         //   return format(new Date(value), "dd/MM/yyyy");
         // },
@@ -110,52 +112,77 @@ function CompleteTable({ data }) {
         // width: 100,
       },
       {
-        Header: "BILLIG CYCLE",
-        accessor: "billingCycle",
+        Header: 'BILLIG CYCLE',
+        accessor: 'billingCycle',
         // Cell: ({ value }) => {
         //   return format(new Date(value), "dd/MM/yyyy");
         // },
       },
       {
-        Header: "PRICING IN $",
-        accessor: "pricingInDollar",
+        Header: 'PRICING IN $',
+        accessor: 'pricingInDollar',
       },
       {
-        Header: "PRICING IN ₹",
-        accessor: "pricingInRupee",
+        Header: 'PRICING IN ₹',
+        accessor: 'pricingInRupee',
       },
       {
-        Header: "AMOUNT IN ₹",
-        accessor: "totalAmount",
+        Header: 'AMOUNT IN ₹',
+        accessor: 'totalAmount',
       },
       {
-        Header: "NEXT BILLING",
-        accessor: "nextBilling",
+        Header: 'NEXT BILLING',
+        accessor: 'nextBilling',
+        Cell: ({
+          row: {
+            original: { nextBilling },
+          },
+        }) => moment(nextBilling).format('DD-MM-YYYY'),
       },
       {
-        Header: "TIMELINE",
-        accessor: "timeline",
+        Header: 'TIMELINE',
+        accessor: 'timeline',
+        Cell: ({
+          row: {
+            original: { nextBilling },
+          },
+        }) => {
+          const days = moment(nextBilling).diff(moment(), 'days');
+          return (
+            <div
+              className={`timeline ${
+                days >= 20
+                  ? `timelineGreen`
+                  : days >= 5
+                  ? `timelineYellow`
+                  : `timelineRed`
+              }`}
+            >
+              <p>
+                {days === 0 ? `Today` : days < 0 ? `Expired` : `${days} days`}
+              </p>
+            </div>
+          );
+        },
       },
       {
-        Header: "ACTION",
+        Header: 'ACTION',
         Cell: ({ row }) => (
           <div>
-            <img src={EditImg} alt="Evoke Technologies" />
-          <a
-            {...(row.original.status === "Deleted" || row.original.status === "Pending" 
-              ? { className: "delete-icon disableDeleteBtn" }
-              : { className: "delete-icon " })}
-            onClick={(e) => {
-              setRowOriginal(row.original);
-              setIsModalOpen(true);
-            }}
-          >
-            
-            
-            {" "}
-            <img src={DeleteImg} alt="Evoke Technologies" />
-           
-          </a>
+            <img src={EditImg} alt='Evoke Technologies' />
+            <a
+              {...(row.original.status === 'Deleted' ||
+              row.original.status === 'Pending'
+                ? { className: 'delete-icon disableDeleteBtn' }
+                : { className: 'delete-icon ' })}
+              onClick={(e) => {
+                setRowOriginal(row.original);
+                setIsModalOpen(true);
+              }}
+            >
+              {' '}
+              <img src={DeleteImg} alt='Evoke Technologies' />
+            </a>
           </div>
         ),
       },
@@ -177,20 +204,27 @@ function CompleteTable({ data }) {
     prepareRow,
     state,
     setGlobalFilter,
-  } = useTable({ columns, data , initialState: { pageSize: 8 }}, useGlobalFilter, useSortBy, usePagination);
+  } = useTable(
+    { columns, data, initialState: { pageSize: 8 } },
+    useGlobalFilter,
+    useSortBy,
+    usePagination
+  );
 
   const { globalFilter, pageIndex, pageSize } = state;
 
   return (
     <>
-      <div className="filter-row">
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eros leo suscipit ipsum id ut. <br/>  
-           Et consectetur convallis etiam auctor ut orci. Sed id ac quis tristique vehicula.<br/>  
-           Leo magna posuere pellentesque malesuada. 
+      <div className='filter-row'>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eros leo
+          suscipit ipsum id ut. <br />
+          Et consectetur convallis etiam auctor ut orci. Sed id ac quis
+          tristique vehicula.
+          <br />
+          Leo magna posuere pellentesque malesuada.
         </p>
-        <div >
-          
-          
+        <div>
           <FormControl className={classes.formControl}>
             <Select
               value={age}
@@ -199,8 +233,8 @@ function CompleteTable({ data }) {
               className={classes.selectEmpty}
               inputProps={{ 'aria-label': 'Without label' }}
             >
-              <MenuItem value="" disabled>
-              All Records
+              <MenuItem value='' disabled>
+                All Records
               </MenuItem>
               <MenuItem value={10}>Pending</MenuItem>
               <MenuItem value={20}>Completed</MenuItem>
@@ -211,7 +245,6 @@ function CompleteTable({ data }) {
           </FormControl>
 
           <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
-
         </div>
       </div>
 
@@ -221,40 +254,40 @@ function CompleteTable({ data }) {
           onRequestClose={() => {
             setIsModalOpen(false);
           }}
-          className="modalDesign deleteModal"
+          className='modalDesign deleteModal'
         >
           <h2>Are you sure?</h2>
           <button
-            className="_modal-close"
+            className='_modal-close'
             onClick={() => {
               setIsModalOpen(false);
             }}
           >
-            <svg className="_modal-close-icon" viewBox="0 0 40 40">
-              <path d="M 10,10 L 30,30 M 30,10 L 10,30" />
+            <svg className='_modal-close-icon' viewBox='0 0 40 40'>
+              <path d='M 10,10 L 30,30 M 30,10 L 10,30' />
             </svg>
           </button>
           <form>
             <p>Please enter the reason to delete the record.</p>
             <textarea
-              type="text"
+              type='text'
               autoFocus={true}
-              style={{ color: "black" }}
+              style={{ color: 'black' }}
               onChange={handleInputChange}
-              name="deleteReason"
+              name='deleteReason'
             />
             <br></br>
-            <p className="descr">
-              {" "}
+            <p className='descr'>
+              {' '}
               Do you really want to delete the records? This process cannot be
               undone.
             </p>
             <br></br>
 
-            <div className="row">
-              <div className="col-md-6 text-right padding0">
+            <div className='row'>
+              <div className='col-md-6 text-right padding0'>
                 <button
-                  className="form-control btn btn-primary"
+                  className='form-control btn btn-primary'
                   onClick={() => {
                     setIsModalOpen(false);
                   }}
@@ -262,17 +295,17 @@ function CompleteTable({ data }) {
                   Cancel
                 </button>
               </div>
-              <div className="col-md-6">
+              <div className='col-md-6'>
                 {rowOriginal.deleteReason ? (
                   <button
                     onClick={handleUpdateStatus}
-                    className="form-control btn btn-primary delete-btn"
+                    className='form-control btn btn-primary delete-btn'
                   >
                     Delete
                   </button>
                 ) : (
                   <button
-                    className="form-control btn btn-primary delete-btn"
+                    className='form-control btn btn-primary delete-btn'
                     disabled
                   >
                     Delete
@@ -284,20 +317,24 @@ function CompleteTable({ data }) {
         </Modal>
       </div>
 
-      <div className="table-responsive grid tableFixHead">
-        <table {...getTableProps()} className="table table-striped ">
+      <div className='table-responsive grid tableFixHead'>
+        <table {...getTableProps()} className='table table-striped '>
           <thead>
             {headerGroups.map((headerGroup) => (
               <tr {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map((column) => (
-                  <th {...column.getHeaderProps(column.getSortByToggleProps({ title: undefined }))} >
-                    {column.render("Header")}
+                  <th
+                    {...column.getHeaderProps(
+                      column.getSortByToggleProps({ title: undefined })
+                    )}
+                  >
+                    {column.render('Header')}
                     <span>
                       {column.isSorted
                         ? column.isSortedDesc
-                          ? " 🔽"
-                          : " 🔼"
-                        : ""}
+                          ? ' 🔽'
+                          : ' 🔼'
+                        : ''}
                     </span>
                   </th>
                 ))}
@@ -311,21 +348,21 @@ function CompleteTable({ data }) {
                 <tr {...row.getRowProps()}>
                   {row.cells.map((cell) => {
                     let style = {};
-                    style = { textAlign: "left" };
-                    if (cell.column.id === "status") {
-                      if (cell.value === "Pending") {
-                        style = { color: "#F16A21", textAlign: "left" };
-                      } else if (cell.value === "Submitted") {
-                        style = { color: "#0066FF", textAlign: "left" };
-                      } else if (cell.value === "Completed") {
-                        style = { color: "#13BC86", textAlign: "left" };
-                      } else if (cell.value === "Approved") {
-                        style = { color: "green", textAlign: "left" };
+                    style = { textAlign: 'left' };
+                    if (cell.column.id === 'status') {
+                      if (cell.value === 'Pending') {
+                        style = { color: '#F16A21', textAlign: 'left' };
+                      } else if (cell.value === 'Submitted') {
+                        style = { color: '#0066FF', textAlign: 'left' };
+                      } else if (cell.value === 'Completed') {
+                        style = { color: '#13BC86', textAlign: 'left' };
+                      } else if (cell.value === 'Approved') {
+                        style = { color: 'green', textAlign: 'left' };
                       }
                     }
                     return (
                       <td {...cell.getCellProps({ style })}>
-                        {cell.render("Cell")}
+                        {cell.render('Cell')}
                       </td>
                     );
                   })}
@@ -335,12 +372,12 @@ function CompleteTable({ data }) {
           </tbody>
         </table>
       </div>
-      <div className="table-pagination">
+      <div className='table-pagination'>
         <label>Rows per page:</label>
         <select
           value={pageSize}
           onChange={(e) => setPageSize(Number(e.target.value))}
-          className="pageNum"
+          className='pageNum'
         >
           {[8, 10, 20, 50, 100].map((pageSize) => (
             <option key={pageSize} value={pageSize}>
@@ -349,18 +386,18 @@ function CompleteTable({ data }) {
           ))}
         </select>
         <span>
-          Page{" "}
+          Page{' '}
           <strong>
             {pageIndex + 1} of {pageOptions.length}
-          </strong>{" "}
+          </strong>{' '}
         </span>
-        <div className="prev-next">
+        <div className='prev-next'>
           <button onClick={() => previousPage()} disabled={!canPreviousPage}>
-            <img src={leftIcon} alt="prev" />
-          </button>{" "}
+            <img src={leftIcon} alt='prev' />
+          </button>{' '}
           <button onClick={() => nextPage()} disabled={!canNextPage}>
-            <img src={rightIcon} alt="next" />
-          </button>{" "}
+            <img src={rightIcon} alt='next' />
+          </button>{' '}
         </div>
       </div>
     </>

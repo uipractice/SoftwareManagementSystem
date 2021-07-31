@@ -8,7 +8,7 @@
 .modalDesign.deleteModal {
   width: 532px;
   align-items: center;
-  background: #FFFFFF;
+  background: #ffffff;
   box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.35);
   border-radius: 4px;
   position: absolute;
@@ -17,22 +17,22 @@
   margin: auto;
   top: 20%;
 }
-.modalDesign.deleteModal h2{
-  background: #F8F8F8;
+.modalDesign.deleteModal h2 {
+  background: #f8f8f8;
   box-shadow: 0px 1px 0px rgb(0 0 0 / 15%);
   border-radius: 4px 4px 0px 0px;
   font-family: Lato;
   font-weight: bold;
   font-size: 18px;
   line-height: 44px;
-  color: #209EC5;
+  color: #209ec5;
   padding: 0 20px;
 }
-.modalDesign.deleteModal form{
+.modalDesign.deleteModal form {
   padding: 20px;
   position: relative;
 }
-.modalDesign.deleteModal p{
+.modalDesign.deleteModal p {
   font-family: Lato;
   font-weight: normal;
   font-size: 14px;
@@ -41,8 +41,8 @@
   color: #626364;
   margin-bottom: 10px;
 }
-.modalDesign.deleteModal textarea{
-  border: 1px solid #BDBDBD;
+.modalDesign.deleteModal textarea {
+  border: 1px solid #bdbdbd;
   box-sizing: border-box;
   border-radius: 4px;
   height: 73px;
@@ -50,13 +50,13 @@
   font-size: 14px;
   line-height: 20px;
   letter-spacing: 0.01em;
-  color: #E0E0E0;
+  color: #e0e0e0;
 }
-.modalDesign.deleteModal textarea:focus-visible{
-  border: 1px solid #BDBDBD;
+.modalDesign.deleteModal textarea:focus-visible {
+  border: 1px solid #bdbdbd;
   outline: none;
 }
-.modalDesign.deleteModal .descr{
+.modalDesign.deleteModal .descr {
   font-family: Lato;
   font-weight: normal;
   font-size: 16px;
@@ -66,29 +66,30 @@
   color: #626364;
   padding: 20px 50px 0;
 }
-.modalDesign.deleteModal button{
-  background: #FFFFFF;
-    border: 1px solid #209EC5;
-    box-sizing: border-box;
-    border-radius: 2px;
-    color: #209EC5;
-    width: 115px;
-
+.modalDesign.deleteModal button {
+  background: #ffffff;
+  border: 1px solid #209ec5;
+  box-sizing: border-box;
+  border-radius: 2px;
+  color: #209ec5;
+  width: 115px;
 }
-.modalDesign.deleteModal .delete-btn{
-  background: #209EC5;
+.modalDesign.deleteModal .delete-btn {
+  background: #209ec5;
   color: #fff;
 }
-.modalDesign.deleteModal .btn-primary:not(:disabled):not(.disabled).active, .modalDesign.deleteModal .btn-primary:not(:disabled):not(.disabled):active, .modalDesign.deleteModal .show>.btn-primary.dropdown-toggle{
-  background:transparent;
-  border-color: #209EC5;
-  color: #209EC5;
+.modalDesign.deleteModal .btn-primary:not(:disabled):not(.disabled).active,
+.modalDesign.deleteModal .btn-primary:not(:disabled):not(.disabled):active,
+.modalDesign.deleteModal .show > .btn-primary.dropdown-toggle {
+  background: transparent;
+  border-color: #209ec5;
+  color: #209ec5;
 }
-.modalDesign.deleteModal .error-msg{
+.modalDesign.deleteModal .error-msg {
   position: absolute;
-    font-size: 10px;
-    top: 43%;
-    left: 4%;
+  font-size: 10px;
+  top: 43%;
+  left: 4%;
 }
 table {
   font-family: 'Lato', sans-serif;
@@ -106,8 +107,8 @@ table th {
   height: 40px;
   line-height: 40px;
 }
-.filter-row h5{
-  float:left;
+.filter-row h5 {
+  float: left;
   font-family: Lato;
   font-weight: bold;
   font-size: 14px;
@@ -115,38 +116,39 @@ table th {
   color: #757575;
   margin: 0;
 }
-.filter-row{
+.filter-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 15px;
 }
-.filter-row input{
+.filter-row input {
   font-size: 14px;
   line-height: 18px;
   letter-spacing: 0.1px;
   color: #757575;
   height: 44px;
-  width:253px;
+  width: 253px;
   padding: 0 10px;
-  background: #fff url("../../assets/images/search.svg") no-repeat 95%;
+  background: #fff url('../../assets/images/search.svg') no-repeat 95%;
   box-shadow: 0px 0px 2px rgb(0 0 0 / 35%);
   border-radius: 2px;
   border: 1px solid transparent;
 }
-.filter-row select{
+.filter-row select {
   font-size: 14px;
   line-height: 18px;
   letter-spacing: 0.1px;
   color: #757575;
   border: none;
-  background:transparent url("../../assets/images/filter.svg") no-repeat;
+  background: transparent url('../../assets/images/filter.svg') no-repeat;
   padding-left: 16px;
 }
-.filter-row input:focus-visible, .filter-row select:focus-visible{
+.filter-row input:focus-visible,
+.filter-row select:focus-visible {
   outline: 0 !important;
 }
-.filter-row p{
+.filter-row p {
   font-family: Lato;
   font-weight: normal;
   font-size: 16px;
@@ -161,55 +163,55 @@ table tr:hover {
   background-color: #ddd;
 }
 
-table th, tfoot td {
+table th,
+tfoot td {
   padding-top: 12px;
   padding-bottom: 12px;
   text-align: left;
   background-color: #4caf50;
   color: white;
 }
-.table-pagination{
+.table-pagination {
   text-align: right;
   padding: 10px 15px;
   background: #fff;
   border: 1px solid #dee2e6;
-  border-top:0;
+  border-top: 0;
 }
-.table-pagination .pageNum{
-  border:0;
+.table-pagination .pageNum {
+  border: 0;
   font-size: 14px;
   line-height: 16px;
   color: #757575;
   margin-right: 10px;
 }
-.table-pagination label{
-  font-size: 14px;
-  line-height: 16px;
-  color: #757575;
-
-}
-.table-pagination span{
+.table-pagination label {
   font-size: 14px;
   line-height: 16px;
   color: #757575;
 }
-.prev-next{
+.table-pagination span {
+  font-size: 14px;
+  line-height: 16px;
+  color: #757575;
+}
+.prev-next {
   display: inline;
   padding-left: 10px;
 }
-.prev-next button{
+.prev-next button {
   border: 0;
   font-size: 23px;
-    line-height: 23px;
-    color: #757575;
-    background:transparent;
+  line-height: 23px;
+  color: #757575;
+  background: transparent;
 }
-.padding0{
-  padding:0;
+.padding0 {
+  padding: 0;
 }
-.tableFixHead{ 
-  overflow: auto; 
-  height:calc(100vh - 310px);
+.tableFixHead {
+  overflow: auto;
+  height: calc(100vh - 310px);
   scrollbar-width: thin;
   scrollbar-color: #afaeae #e3e1e1;
 }
@@ -228,17 +230,44 @@ table th, tfoot td {
 .tableFixHead::-webkit-scrollbar-thumb:hover {
   background: #afaeae;
 }
-.tableFixHead thead th { 
-  position: sticky; 
-  top: 0; 
+.tableFixHead thead th {
+  position: sticky;
+  top: 0;
   z-index: 1;
 }
-.tableFixHead thead th:first-child, .tableFixHead thead th:last-child{
+.tableFixHead thead th:first-child,
+.tableFixHead thead th:last-child {
   text-align: center;
 }
-.tableFixHead tr td:first-child, .tableFixHead tr td:last-child{
+.tableFixHead tr td:first-child,
+.tableFixHead tr td:last-child {
   text-align: center !important;
 }
-.table-pagination .pageNum:focus-visible{
+.table-pagination .pageNum:focus-visible {
   outline: none !important;
+}
+.timeline {
+  padding: 0;
+  width: 75%;
+  margin: 8px 0;
+  height: 24px;
+  border-radius: 15px;
+  text-align: center;
+  line-height: 2;
+  font-size: 12px;
+}
+
+.timelineGreen {
+  background: #eaffed;
+  color: #03ae78;
+}
+
+.timelineYellow {
+  background: #ffefaf;
+  color: #ac6e18;
+}
+
+.timelineRed {
+  background: #ffe9da;
+  color: #f16a21;
 }
