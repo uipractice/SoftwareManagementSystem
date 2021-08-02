@@ -52,6 +52,7 @@ function Form({ closeModal }) {
   };
 
   function handleSubmit(e) {
+    console.log('data', state);
     e.preventDefault();
     const formData = {
       softwareName: state.softwareName,
@@ -144,11 +145,12 @@ function Form({ closeModal }) {
           <ToggleButtonGroup
             type='radio'
             name='options'
-            defaultValue={1}
+            defaultValue={'monthly'}
             className='mb-2'
+            onChange={(val) => setState({ ...state, billingCycle: val })}
           >
-            <ToggleButton value={1}> Monthly</ToggleButton>
-            <ToggleButton value={2}> Yearly</ToggleButton>
+            <ToggleButton value={'monthly'}>Monthly</ToggleButton>
+            <ToggleButton value={'yearly'}>Yearly</ToggleButton>
           </ToggleButtonGroup>
         </div>
         <div className='form-group col-md-3'>
