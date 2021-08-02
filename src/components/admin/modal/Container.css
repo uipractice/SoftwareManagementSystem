@@ -131,6 +131,8 @@
 }
 .form-group select, .form-group .form-control{
     height: 44px;
+    font-size: 14px;
+    padding-left: 5px;
 }
 .form-group select{
     appearance: none;

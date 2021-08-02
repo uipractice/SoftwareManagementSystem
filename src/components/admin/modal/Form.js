@@ -17,7 +17,7 @@ function Form({ closeModal }) {
     inputRef.current.focus();
   }, []);
 
-
+  const [month, setMonth] = useState("")
   const [state, setState] = useState({
     softwareName: "",
     teamName: "",
@@ -41,6 +41,10 @@ function Form({ closeModal }) {
     });
   }
 
+  function handleMonth(e){
+    setMonth(e.target.value);
+  }
+
   const handleReset = (e) => {
     e.preventDefault();
     setState({
@@ -53,6 +57,7 @@ function Form({ closeModal }) {
       totalAmount: "",
       month: "",
     });
+    setMonth("");
   };
 
 
@@ -147,34 +152,44 @@ function Form({ closeModal }) {
         </div>
         <div className="form-group col-md-4">
         <label htmlFor="billingCycle">Billing Cycle</label>
-          <ToggleButtonGroup type="radio" name="options" defaultValue={1} className="mb-2">
-            <ToggleButton value={1}> Monthly</ToggleButton>
-            <ToggleButton value={2}> Yearly</ToggleButton>
+          <ToggleButtonGroup 
+          onChange={handleOnChange}
+          type='radio'
+          name='options'
+          defaultValue={'Yearly'}
+          className='mb-2'
+          onChange={(val) => setState({...state, billingCycle: val})}
+          >
+            <ToggleButton value={'Monthly'}> Monthly</ToggleButton>
+            <ToggleButton value={'Yearly'}> Yearly</ToggleButton>
           </ToggleButtonGroup>
         </div>
-        <div className="form-group col-md-3">
-          <label htmlFor="month">For the month of</label>
-          <select
-          className="form-control"
-          onChange={handleOnChange}
-          name="month"
-          value={state.month}
-        >
-          <option value=""></option>
-          <option value="January">January</option>
-          <option value="February">February</option>
-          <option value="March">March</option>
-          <option value="April">April</option>
-          <option value="May">May</option>
-          <option value="June">June</option>
-          <option value="July">July</option>
-          <option value="August">August</option>
-          <option value="September">September</option>
-          <option value="October">October</option>
-          <option value="November">November</option>
-          <option value="December">December</option>
-        </select>
-        </div>
+        {state.billingCycle == "Monthly" && (
+          <div className="form-group col-md-3">
+            <label htmlFor="month">For the month of</label>
+            <select
+            className="form-control"
+            onChange={handleMonth}
+            name="month"
+            value={state.month}
+          >
+            <option value=""></option>
+            <option value="January">January</option>
+            <option value="February">February</option>
+            <option value="March">March</option>
+            <option value="April">April</option>
+            <option value="May">May</option>
+            <option value="June">June</option>
+            <option value="July">July</option>
+            <option value="August">August</option>
+            <option value="September">September</option>
+            <option value="October">October</option>
+            <option value="November">November</option>
+            <option value="December">December</option>
+          </select>
+          </div>
+        )}
+        
       </div>
       <div className="row">
       <div className="form-group col-md-3">
@@ -243,8 +258,9 @@ function Form({ closeModal }) {
           state.teamName &&
           state.selectType &&
           state.owner &&
-          // state.billingCycle &&
-          state.month &&
+          state.billingCycle &&
+          (state.billingCycle !== "Monthly" ||
+            (state.billingCycle === "Monthly" && month)) &&
           state.pricingInDollar &&
           state.pricingInRupee && 
           state.totalAmount &&
