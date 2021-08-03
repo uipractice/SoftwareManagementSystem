@@ -71,9 +71,9 @@ function CompleteTable({ data }) {
         sticky: 'left',
       },
       {
-        Header: 'TYPE',
-        accessor: 'type',
-        sticky: 'left',
+        Header: "TYPE",
+        accessor: "selectType",
+        sticky: "left",
       },
       {
         Header: 'TEAM',

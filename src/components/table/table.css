@@ -75,7 +75,7 @@
   width: 115px;
 }
 .modalDesign.deleteModal .delete-btn {
-  background: #209ec5;
+  background: #209ec5 !important;
   color: #fff;
 }
 .modalDesign.deleteModal .btn-primary:not(:disabled):not(.disabled).active,
@@ -232,7 +232,7 @@ tfoot td {
 }
 .tableFixHead thead th {
   position: sticky;
-  top: 0;
+  top: -1px;
   z-index: 1;
 }
 .tableFixHead thead th:first-child,
