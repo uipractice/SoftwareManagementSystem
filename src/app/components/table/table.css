@@ -119,7 +119,7 @@ table th {
 .filter-row {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-end;
   margin-bottom: 15px;
 }
 .filter-row input {
@@ -258,7 +258,7 @@ tfoot td {
 }
 
 .timelineGreen {
-  background: #eaffed;
+  background: #d9f7dd;
   color: #03ae78;
 }
 

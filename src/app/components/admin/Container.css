@@ -1,0 +1,183 @@
+.text-denger {
+  color: red;
+  position: absolute;
+  font-size: 10px;
+  bottom: -17px;
+}
+
+.modal-cover {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  transform: translateZ(0);
+  background: rgba(83, 83, 83, 0.3);
+}
+
+.modal-area {
+  padding: 0.75rem 1rem !important;
+  background: #f8f8f8 !important;
+  -webkit-overflow-scrolling: touch;
+}
+.modal-area h3 {
+  font-family: Lato;
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 22px;
+  color: #209ec5;
+  margin: 0;
+}
+.modal-content {
+  border: none;
+  border-radius: 0;
+}
+.modal-backdrop {
+  opacity: 0.3 !important;
+}
+
+.modal-body .row {
+  margin: auto;
+  background: #ffffff;
+}
+.form-group.share button {
+  background: #ffffff;
+  border: 1px solid #209ec5;
+  box-sizing: border-box;
+  border-radius: 2px;
+  font-size: 14px;
+  line-height: 18px;
+  text-align: center;
+  letter-spacing: 0.1px;
+  color: #209ec5;
+  width: 150px;
+  text-transform: uppercase;
+}
+.form-group .share-btn {
+  margin-left: 20px;
+  background: #209ec5 !important;
+  border: 1px solid #209ec5 !important;
+  color: #fff !important;
+}
+.btn-primary:hover {
+  background: transparent;
+  color: #209ec5;
+  border: 1px solid #209ec5;
+}
+@media screen and (min-width: 500px) {
+  /* Center the Modal! */
+  /* .modal {
+    left: 50%;
+    top: 50%;
+    height: auto;
+    transform: translate(-50%, -50%);
+    max-width: 48em;
+    max-height: calc(100% - 1em);
+  } */
+}
+
+._modal-close {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  padding: 0.5em;
+  line-height: 1;
+  background: #f6f6f7;
+  border: 0;
+  box-shadow: 0;
+  cursor: pointer;
+}
+
+._modal-close-icon {
+  width: 25px;
+  height: 25px;
+  fill: transparent;
+  stroke: black;
+  stroke-linecap: round;
+  stroke-width: 2;
+}
+
+.modal-body {
+  padding-top: 0.25em !important;
+  padding: 20px;
+}
+
+._hide-visual {
+  border: 0 !important;
+  clip: rect(0 0 0 0) !important;
+  height: 1px !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  position: absolute !important;
+  width: 1px !important;
+  white-space: nowrap !important;
+}
+
+.scroll-lock {
+  overflow: hidden;
+  /* margin-right: 17px; */
+}
+.form-group label,
+.form-group select {
+  font-family: Lato;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0.01em;
+  color: #626364;
+}
+.form-group select,
+.form-group .form-control {
+  height: 44px;
+  font-size: 14px;
+  padding-left: 5px;
+}
+.form-group select {
+  appearance: none;
+  position: relative;
+  background: url('../../assets/images/down-arrow.svg') no-repeat 96%;
+}
+.btn-group-toggle label {
+  height: 44px;
+  width: 50%;
+  line-height: 30px;
+}
+.btn-group-toggle {
+  width: 100%;
+}
+.btn-group-toggle .btn-primary:not(:disabled):not(.disabled).active,
+.btn-group-toggle .btn-primary:not(:disabled):not(.disabled):active,
+.btn-group-toggle .show > .btn-primary.dropdown-toggle {
+  background: #c4c4c4;
+  border: 1px solid #c4c4c4;
+}
+.btn-group-toggle .btn-primary {
+  background: transparent;
+  border: 1px solid #c4c4c4;
+  color: #57565c;
+}
+.btn-primary:not(:disabled):not(.disabled).active:focus,
+.btn-primary:not(:disabled):not(.disabled):active:focus,
+.show > .btn-primary.dropdown-toggle:focus,
+.btn-primary.focus,
+.btn-primary:focus {
+  box-shadow: 0 0 0 0 !important;
+}
+.form-control:focus,
+.form-control:active,
+.form-control:-internal-autofill-selected {
+  box-shadow: 0 0 0;
+  border-color: #209ec5;
+  background-color: rgba(32, 158, 197, 0.05) !important;
+}
+select.form-control:focus,
+select.form-control:active,
+select.form-control:-internal-autofill-selected {
+  background-color: transparent !important;
+}
+.share {
+  margin-top: 15px !important;
+  margin-bottom: 10px !important;
+}

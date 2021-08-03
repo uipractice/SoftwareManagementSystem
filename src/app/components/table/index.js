@@ -3,10 +3,6 @@ import DeleteImg from '../../assets/images/delete-icon.svg';
 import EditImg from '../../assets/images/edit-icon.svg';
 import axios from 'axios';
 import Modal from 'react-modal';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import { makeStyles } from '@material-ui/core/styles';
 import {
   useTable,
   useSortBy,
@@ -14,36 +10,19 @@ import {
   usePagination,
 } from 'react-table';
 import './table.css';
-import GlobalFilter from './GlobalFilter';
-
+import GlobalFilter from './filter';
 import rightIcon from '../../assets/images/right-icon.svg';
 import leftIcon from '../../assets/images/left-icon.svg';
-
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import moment from 'moment';
 
 toast.configure();
 
-Modal.setAppElement('#root');
-const useStyles = makeStyles((theme) => ({
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
-  },
-  selectEmpty: {
-    marginTop: theme.spacing(2),
-  },
-}));
 function CompleteTable({ data }) {
   const [rowOriginal, setRowOriginal] = useState({});
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const classes = useStyles();
-  const [age, setAge] = React.useState('');
-  const handleChange = (event) => {
-    setAge(event.target.value);
-  };
 
   function handleInputChange(evt) {
     setRowOriginal({
@@ -104,19 +83,10 @@ function CompleteTable({ data }) {
       {
         Header: 'USER/OWNER',
         accessor: 'owner',
-        // Cell: ({ value }) => {
-        //   return format(new Date(value), "dd/MM/yyyy");
-        // },
-        // maxWidth: 200,
-        // minWidth: 80,
-        // width: 100,
       },
       {
         Header: 'BILLIG CYCLE',
         accessor: 'billingCycle',
-        // Cell: ({ value }) => {
-        //   return format(new Date(value), "dd/MM/yyyy");
-        // },
       },
       {
         Header: 'PRICING IN $',
@@ -175,7 +145,7 @@ function CompleteTable({ data }) {
               row.original.status === 'Pending'
                 ? { className: 'delete-icon disableDeleteBtn' }
                 : { className: 'delete-icon ' })}
-              onClick={(e) => {
+              onClick={() => {
                 setRowOriginal(row.original);
                 setIsModalOpen(true);
               }}
@@ -216,16 +186,16 @@ function CompleteTable({ data }) {
   return (
     <>
       <div className='filter-row'>
-        <p>
+        <div>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eros leo
           suscipit ipsum id ut. <br />
           Et consectetur convallis etiam auctor ut orci. Sed id ac quis
           tristique vehicula.
           <br />
           Leo magna posuere pellentesque malesuada.
-        </p>
+        </div>
         <div>
-          <FormControl className={classes.formControl}>
+          {/* <FormControl className={classes.formControl}>
             <Select
               value={age}
               onChange={handleChange}
@@ -242,7 +212,7 @@ function CompleteTable({ data }) {
               <MenuItem value={40}>Active</MenuItem>
               <MenuItem value={50}>Deleted</MenuItem>
             </Select>
-          </FormControl>
+          </FormControl> */}
 
           <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
         </div>
