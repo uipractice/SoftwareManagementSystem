@@ -69,10 +69,12 @@ const Header = ({ validate }) => {
                         className='menu-list-item'
                         onClick={() => setFeedback(true)}
                       >
-                        <img src={FeedbackIcon} /> <span>Provide Feedback</span>
+                        <img src={FeedbackIcon} alt='feedback' />{' '}
+                        <span>Provide Feedback</span>
                       </div>
                       <div className='menu-list-item' onClick={handleLogout}>
-                        <img src={LogoutIcon} /> <span>Logout</span>
+                        <img src={LogoutIcon} alt='logout' />{' '}
+                        <span>Logout</span>
                       </div>
                     </div>
                   </Popover.Content>

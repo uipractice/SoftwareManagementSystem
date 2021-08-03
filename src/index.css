@@ -186,10 +186,15 @@ a:focus {
   color: #7b7b7b;
   text-align: left;
 }
+.link-btn {
+  color: #0088d1;
+  border: none;
+  background: none;
+}
 
 .dd .dropdown-toggle::after {
   border: 0;
-  background: url('assets/images/dropdown.svg') no-repeat;
+  background: url('./app/assets/images/dropdown.svg') no-repeat;
   width: 15px;
   height: 8px;
   vertical-align: middle;
@@ -460,7 +465,7 @@ a:focus {
   border-color: #ecedf1;
 }
 .project-details-form .btn-info {
-  background: #209ec5 url('./assets/images/Subtract.svg') no-repeat 4px;
+  background: #209ec5 url('./app/assets/images/Subtract.svg') no-repeat 4px;
   /* padding-left: 22px; */
   border-color: #209ec5;
 }
@@ -483,7 +488,7 @@ a:focus {
 .project-details-form.formView .form-group button,
 .project-details-form.formView .form-group button:active,
 .project-details-form.formView .form-group button:hover {
-  background: #209ec5 url('./assets/images/Subtract.svg') no-repeat 7px;
+  background: #209ec5 url('./app/assets/images/Subtract.svg') no-repeat 7px;
   border-radius: 4px;
   height: 30px;
   color: #fff;

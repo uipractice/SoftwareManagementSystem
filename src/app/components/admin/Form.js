@@ -148,18 +148,17 @@ function Form({ closeModal }) {
         <div className='form-group col-md-4'>
           <label htmlFor='billingCycle'>Billing Cycle</label>
           <ToggleButtonGroup
-            onChange={handleOnChange}
             type='radio'
             name='options'
-            defaultValue={'Yearly'}
+            defaultValue={'yearly'}
             className='mb-2'
             onChange={(val) => setState({ ...state, billingCycle: val })}
           >
-            <ToggleButton value={'Monthly'}> Monthly</ToggleButton>
-            <ToggleButton value={'Yearly'}> Yearly</ToggleButton>
+            <ToggleButton value={'monthly'}> Monthly</ToggleButton>
+            <ToggleButton value={'yearly'}> Yearly</ToggleButton>
           </ToggleButtonGroup>
         </div>
-        {state.billingCycle == 'Monthly' && (
+        {state.billingCycle === 'monthly' && (
           <div className='form-group col-md-3'>
             <label htmlFor='month'>For the month of</label>
             <select
@@ -253,8 +252,8 @@ function Form({ closeModal }) {
           state.selectType &&
           state.owner &&
           state.billingCycle &&
-          (state.billingCycle !== 'Monthly' ||
-            (state.billingCycle === 'Monthly' && month)) &&
+          (state.billingCycle !== 'monthly' ||
+            (state.billingCycle === 'monthly' && month)) &&
           state.pricingInDollar &&
           state.pricingInRupee &&
           state.totalAmount &&
