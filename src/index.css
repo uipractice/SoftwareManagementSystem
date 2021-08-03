@@ -525,32 +525,11 @@ a:focus {
   font-size: 14px;
   letter-spacing: 0.1px;
 }
-.filter-row .MuiFormControl-root,
-.filter-row .MuiInput-root {
-  margin: 0;
-}
-.filter-row .MuiFormControl-root {
-  margin-right: 15px;
-}
-.filter-row .MuiSelect-selectMenu {
-  font-size: 14px;
-  line-height: 30px;
-  letter-spacing: 0.1px;
-  color: #757575;
-  border: none;
-  background: transparent url('./assets/images/filter.svg') no-repeat 0 11px;
-  padding-left: 20px;
-}
 .MuiMenuItem-root {
   font-size: 14px !important;
   line-height: 18px !important;
   letter-spacing: 0.1px !important;
   color: #757575 !important;
-}
-.filter-row .MuiInput-underline:before,
-.MuiInput-underline:hover:not(.Mui-disabled):before,
-.MuiInput-underline:after {
-  border-bottom: 0 !important;
 }
 #menu- .MuiPaper-root {
   top: 180px !important;
@@ -664,6 +643,7 @@ a:focus {
   line-height: 20px;
   letter-spacing: 0.01em;
   color: #e0e0e0;
+  margin-bottom: 10px;
 }
 .feedback-modal button.feedback-submit {
   background: #209ec5;
@@ -672,12 +652,12 @@ a:focus {
   line-height: 18px;
   display: flex;
   align-items: center;
-  text-align: center;
+  justify-content: center;
   letter-spacing: 0.1px;
   color: #ffffff;
   width: 170px;
   height: 44px;
-  margin-bottom: 25px;
+  margin: auto;
 }
 .feedback-modal button.feedback-submit:hover {
   background: #209ec5 !important;

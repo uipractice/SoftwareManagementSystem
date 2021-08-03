@@ -4,16 +4,26 @@
 }
 .header_nav .navbar-nav {
   flex-direction: row;
+  align-items: center;
 }
-.header_nav .navbar-nav .notification-btn {
+
+.vertical-line {
   border-right: 2px solid #acacac;
-  padding-right: 20px;
-  line-height: 30px;
+  margin: 0 20px;
+  height: 35px;
 }
-.header_nav .navbar-nav .notification-btn .MuiButton-root {
-  min-width: 100%;
-  padding: 0;
+.nav-menu-icon {
+  height: 32px;
+  width: 32px;
+  border: 0;
+  vertical-align: middle;
+  background-size: 100%;
+  min-width: 100% !important;
 }
+.notification-btn .nav-menu-icon {
+  background: url('../../assets/images/bell.svg') no-repeat center center;
+}
+
 .header_nav .navbar-nav .MuiPaper-root {
   background-color: #fff !important;
   border-radius: 0 0 4px 4px !important;
@@ -36,17 +46,10 @@
   white-space: inherit !important;
   overflow: auto !important;
 }
-.header_nav .navbar-nav .nav-item {
-  padding-left: 20px;
-}
-.nav-item button {
+
+.nav-item .nav-menu-icon {
+  padding: 20px !important;
   background: url('../../assets/images/user-icon.svg') no-repeat center center;
-  height: 32px;
-  width: 32px;
-  border: 0;
-  vertical-align: middle;
-  background-size: 100%;
-  min-width: 32px;
 }
 .navbar h3 {
   font-family: Lato;
@@ -74,36 +77,20 @@
   padding-top: 0;
   padding-bottom: 0;
 }
-.header_nav .navbar-nav .MuiPaper-root {
-  background-color: #fff !important;
-  border-radius: 4px !important;
-  box-shadow: 0 2px 16px 0 rgba(0, 0, 0, 0.2) !important;
-  z-index: 1 !important;
+.menu-list {
+  font-size: 14px !important;
+  letter-spacing: 0.1px !important;
+  color: #757575 !important;
 }
-.header_nav .navbar-nav .MuiPaper-root li {
-  padding-left: 40px;
-  padding-top: 12px;
-  padding-bottom: 12px;
+.menu-list-item {
+  padding: 10px 0;
+  font-weight: 500;
+  cursor: pointer;
 }
-
-.header_nav .navbar-nav .MuiPaper-root li.logout {
-  background: url('../../assets/images/Logout_icon.svg') no-repeat left #fff;
-  background-size: 13px;
-  background-origin: content-box;
-  background-position: -25px;
+.menu-list-item img {
+  height: 15px;
+  width: 15px;
 }
-.header_nav .navbar-nav .MuiPaper-root li.myprofile {
-  background: url('../../assets/images/myprofile.svg') no-repeat left #fff;
-  background-size: 13px;
-  background-origin: content-box;
-  background-position: -25px;
-}
-.header_nav .navbar-nav .MuiPaper-root li.feedback {
-  background: url('../../assets/images/feedback.svg') no-repeat left #fff;
-  background-size: 13px;
-  background-origin: content-box;
-  background-position: -25px;
-}
-.header_nav .navbar-nav .MuiPaper-root li:hover {
-  background-color: #f2f6fa;
+.menu-list-item span {
+  padding-left: 8px;
 }

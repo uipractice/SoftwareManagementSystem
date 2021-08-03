@@ -53,7 +53,7 @@ export class DashboardHeader extends Component {
               <Modal.Header closeButton className='modal-area'>
                 <h3>Add Tool/Software</h3>
               </Modal.Header>
-              <Modal.Body className='modal-body'>
+              <Modal.Body>
                 <Form closeModal={this.closeModal} />
               </Modal.Body>
             </Modal>

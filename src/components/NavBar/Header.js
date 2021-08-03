@@ -1,20 +1,13 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import Logo from '../../assets/images/eoke_logo.svg';
-import { Redirect, useHistory } from 'react-router-dom';
-import Button from '@material-ui/core/Button';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-import Grow from '@material-ui/core/Grow';
-import Paper from '@material-ui/core/Paper';
-import Popper from '@material-ui/core/Popper';
-import MenuItem from '@material-ui/core/MenuItem';
-import MenuList from '@material-ui/core/MenuList';
 import NotificationIcon from '../../assets/images/bell.svg';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import ProfileIcon from '../../assets/images/user-icon.svg';
+import FeedbackIcon from '../../assets/images/feedback.svg';
+import LogoutIcon from '../../assets/images/Logout_icon.svg';
+import { Redirect, useHistory } from 'react-router-dom';
 import './NavBar.css';
+import Feedback from '../admin/Feedback';
+import { OverlayTrigger, Popover } from 'react-bootstrap';
 
 const Header = ({ validate }) => {
   function handleLogout() {
@@ -40,50 +33,9 @@ const Header = ({ validate }) => {
   if (validate) {
     checkAuth();
   }
+  const [feedback, setFeedback] = useState(false);
 
-  const [open, setOpen] = React.useState(false);
-  const anchorRef = React.useRef(null);
-  const handleToggle = () => {
-    setOpen((prevOpen) => !prevOpen);
-  };
-  const handleToggleLogout = () => {
-    setOpen((prevOpen) => !prevOpen);
-  };
-  const handleClose = (event) => {
-    // if (anchorRef.current && anchorRef.current.contains(event.target)) {
-    //   return;
-    // }
-    setOpen(false);
-    setFeedback(false);
-  };
-
-  const [feedback, setFeedback] = React.useState(false);
-  const handleClickOpen = () => {
-    setFeedback(!feedback);
-    // setFeedback("");
-  };
-  const prevOpenfeedback = React.useRef(feedback);
-  React.useEffect(() => {
-    if (prevOpenfeedback.current === true && feedback === false) {
-      anchorRef.current.focus();
-    }
-    prevOpenfeedback.current = feedback;
-  }, [feedback]);
-
-  function handleListKeyDown(event) {
-    if (event.key === 'Tab') {
-      event.preventDefault();
-      setOpen(false);
-    }
-  }
-  // return focus to the button when we transitioned from !open -> open
-  const prevOpen = React.useRef(open);
-  React.useEffect(() => {
-    if (prevOpen.current === true && open === false) {
-      anchorRef.current.focus();
-    }
-    prevOpen.current = open;
-  }, [open]);
+  const anchorRef = useRef(null);
 
   return (
     <div>
@@ -97,135 +49,43 @@ const Header = ({ validate }) => {
 
         <ul className='navbar-nav px-3'>
           <li className='notification-btn'>
-            <Button
-              ref={anchorRef}
-              aria-controls={open ? 'menu-list-grow' : undefined}
-              aria-haspopup='true'
-              // onClick={handleToggle}
-            >
-              <img src={NotificationIcon} alt='notification' />
-            </Button>
-            {/* <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
-          {({ TransitionProps, placement }) => (
-            <Grow
-              {...TransitionProps}
-              style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
-            >
-              <Paper>
-                <ClickAwayListener onClickAway={handleClose}>
-                  <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
-                    <MenuItem onClick={handleClose}>Lorem ipsum dolur sitLorem ipsum dolur sitLorem ipsum dolur sit</MenuItem>
-                    <MenuItem onClick={handleClose}>My account</MenuItem>
-                    <MenuItem onClick={handleClose}>Logout</MenuItem>
-                  </MenuList>
-                </ClickAwayListener>
-              </Paper>
-            </Grow>
-          )}
-        </Popper> */}
+            <div clasName='nav-menu-icon'>
+              <img src={NotificationIcon} alt='NoticicationIcon' />
+            </div>
           </li>
+          <li className='vertical-line'></li>
 
-          <li className='nav-item text-nowrap'>
-            <Button
-              ref={anchorRef}
-              aria-controls={open ? 'menu-list-grow' : undefined}
-              aria-haspopup='false'
-              onClick={handleToggleLogout}
-            ></Button>
-            <Popper
-              open={open}
-              anchorEl={anchorRef.current}
-              role={undefined}
-              transition
-              disablePortal
-            >
-              {({ TransitionProps, placement }) => (
-                <Grow
-                  {...TransitionProps}
-                  style={{
-                    transformOrigin:
-                      placement === 'bottom' ? 'center top' : 'center bottom',
-                  }}
-                >
-                  <Paper>
-                    <ClickAwayListener onClickAway={handleClose}>
-                      <MenuList
-                        autoFocusItem={open}
-                        id='menu-list-grow'
-                        onKeyDown={handleListKeyDown}
+          <li className='nav-item text-nowrap' ref={anchorRef}>
+            <OverlayTrigger
+              trigger='click'
+              key={'bottom'}
+              placement={'bottom'}
+              rootClose={true}
+              overlay={
+                <Popover id={`popover-positioned-${'bottom'}`}>
+                  <Popover.Content>
+                    <div className='menu-list'>
+                      <div
+                        className='menu-list-item'
+                        onClick={() => setFeedback(true)}
                       >
-                        <MenuItem className='myprofile' onClick={handleLogout}>
-                          My profile
-                        </MenuItem>
-                        <MenuItem
-                          className='feedback'
-                          onClick={handleClickOpen}
-                        >
-                          Provide Feedback
-                        </MenuItem>
-                        <Dialog
-                          open={feedback}
-                          onClose={handleClose}
-                          aria-labelledby='alert-dialog-title'
-                          aria-describedby='alert-dialog-description'
-                          className='feedback-modal'
-                        >
-                          <DialogTitle id='alert-dialog-title'>
-                            {'Feedback'}
-                          </DialogTitle>
-                          <Button
-                            onClick={handleClose}
-                            color='primary'
-                            className='feedback-close'
-                          >
-                            <svg
-                              className='_modal-close-icon'
-                              viewBox='0 0 40 40'
-                            >
-                              <path d='M 10,10 L 30,30 M 30,10 L 10,30' />
-                            </svg>
-                          </Button>
-                          <DialogContent>
-                            <DialogContentText id='alert-dialog-description'>
-                              <h3>Hello Friends</h3>
-                              <p>
-                                Your review will help us go give you the better
-                                experience
-                              </p>
-                              <textarea
-                                type='text'
-                                autoFocus={true}
-                                style={{ color: 'black' }}
-                                // onChange={handleInputChange}
-                                name='feedbackReason'
-                              />
-                            </DialogContentText>
-                          </DialogContent>
-                          <DialogActions>
-                            {/* <Button onClick={handleClose} color="primary">
-                            Disagree
-                        </Button> */}
-                            <Button
-                              onClick={handleClose}
-                              color='primary'
-                              autoFocus
-                              className='feedback-submit'
-                            >
-                              Submit
-                            </Button>
-                          </DialogActions>
-                        </Dialog>
-                        <MenuItem className='logout' onClick={handleLogout}>
-                          Logout
-                        </MenuItem>
-                      </MenuList>
-                    </ClickAwayListener>
-                  </Paper>
-                </Grow>
-              )}
-            </Popper>
+                        <img src={FeedbackIcon} /> <span>Provide Feedback</span>
+                      </div>
+                      <div className='menu-list-item' onClick={handleLogout}>
+                        <img src={LogoutIcon} /> <span>Logout</span>
+                      </div>
+                    </div>
+                  </Popover.Content>
+                </Popover>
+              }
+            >
+              <div clasName='nav-menu-icon'>
+                <img src={ProfileIcon} alt='ProfileIcon' />
+              </div>
+            </OverlayTrigger>
           </li>
         </ul>
+        <Feedback isOpen={feedback} closeModal={() => setFeedback(false)} />
       </div>
     </div>
   );
