@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import DeleteImg from '../../assets/images/delete-icon.svg';
 import EditImg from '../../assets/images/edit-icon.svg';
+import UpDownImg from '../../assets/images/up-down.png' ;
 import axios from 'axios';
 import Modal from 'react-modal';
 import {
@@ -36,10 +37,7 @@ function CompleteTable({ data }) {
     rowOriginal.status = 'Deleted';
     const id = rowOriginal._id;
     axios
-      .post(
-        'http://localhost:5000/softwareInfo/deleteStatus/' + id,
-        rowOriginal
-      )
+      .post('http://localhost:5000/softwareInfo/updateStatus/' + id, rowOriginal)
       .then((res) => {
         toast.warn('Record has been marked DELETED !', {
           autoClose: 2900,
@@ -141,8 +139,7 @@ function CompleteTable({ data }) {
           <div>
             <img src={EditImg} alt='Evoke Technologies' />
             <a
-              {...(row.original.status === 'Deleted' ||
-              row.original.status === 'Pending'
+              {...(row.original.status === 'Deleted'
                 ? { className: 'delete-icon disableDeleteBtn' }
                 : { className: 'delete-icon ' })}
               onClick={() => {
@@ -302,8 +299,8 @@ function CompleteTable({ data }) {
                     <span>
                       {column.isSorted
                         ? column.isSortedDesc
-                          ? ' 🔽'
-                          : ' 🔼'
+                          ? <img src={UpDownImg} />
+                          : <img src={UpDownImg} />
                         : ''}
                     </span>
                   </th>

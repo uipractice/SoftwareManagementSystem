@@ -271,3 +271,12 @@ tfoot td {
   background: #ffe9da;
   color: #f16a21;
 }
+.tableFixHead th span{
+  position: relative;
+  width: 12px;
+}
+.tableFixHead th span img{
+ width: 12px;
+ position: absolute;
+ top: 2px;
+}

@@ -60,10 +60,17 @@
   border: 1px solid #209ec5 !important;
   color: #fff !important;
 }
+.form-group{
+  padding-left: 10px;
+  padding-right: 10px;
+}
 .btn-primary:hover {
   background: transparent;
   color: #209ec5;
   border: 1px solid #209ec5;
+}
+input[type="date"]{
+  text-transform: uppercase;
 }
 @media screen and (min-width: 500px) {
   /* Center the Modal! */
