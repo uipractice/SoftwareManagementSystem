@@ -158,31 +158,53 @@ function Form({ closeModal }) {
             <ToggleButton value={'yearly'}> Yearly</ToggleButton>
           </ToggleButtonGroup>
         </div>
-        {state.billingCycle === 'monthly' && (
           <div className='form-group col-md-3'>
             <label htmlFor='month'>For the month of</label>
+            {state.billingCycle === "monthly" ? (
             <select
-              className='form-control'
+            className="form-control"
+            onChange={handleMonth}
+            name="month"
+            value={state.month}
+          >
+            <option value=""></option>
+            <option value="January">January</option>
+            <option value="February">February</option>
+            <option value="March">March</option>
+            <option value="April">April</option>
+            <option value="May">May</option>
+            <option value="June">June</option>
+            <option value="July">July</option>
+            <option value="August">August</option>
+            <option value="September">September</option>
+            <option value="October">October</option>
+            <option value="November">November</option>
+            <option value="December">December</option>
+          </select>
+            )  : (
+              <select
+              className="form-control"
               onChange={handleMonth}
-              name='month'
+              name="month"
               value={state.month}
+              disabled
             >
-              <option value=''></option>
-              <option value='January'>January</option>
-              <option value='February'>February</option>
-              <option value='March'>March</option>
-              <option value='April'>April</option>
-              <option value='May'>May</option>
-              <option value='June'>June</option>
-              <option value='July'>July</option>
-              <option value='August'>August</option>
-              <option value='September'>September</option>
-              <option value='October'>October</option>
-              <option value='November'>November</option>
-              <option value='December'>December</option>
+              <option value=""></option>
+              <option value="January">January</option>
+              <option value="February">February</option>
+              <option value="March">March</option>
+              <option value="April">April</option>
+              <option value="May">May</option>
+              <option value="June">June</option>
+              <option value="July">July</option>
+              <option value="August">August</option>
+              <option value="September">September</option>
+              <option value="October">October</option>
+              <option value="November">November</option>
+              <option value="December">December</option>
             </select>
+          )}
           </div>
-        )}
       </div>
       <div className='row'>
         <div className='form-group col-md-3'>
