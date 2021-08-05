@@ -47,7 +47,7 @@ const Header = ({ validate }) => {
 
         <ul className='navbar-nav px-3'>
           <li className='notification-btn'>
-            <div className='nav-menu-icon'>
+            <div>
               <img src={NotificationIcon} alt='NoticicationIcon' />
             </div>
           </li>
@@ -79,7 +79,7 @@ const Header = ({ validate }) => {
                 </Popover>
               }
             >
-              <div className='nav-menu-icon'>
+              <div>
                 <img src={ProfileIcon} alt='ProfileIcon' />
               </div>
             </OverlayTrigger>

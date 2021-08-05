@@ -92,14 +92,43 @@ function CompleteTable({ data }) {
       {
         Header: 'PRICING IN $',
         accessor: 'pricingInDollar',
+        Cell: ({
+          row: {
+            original: { billingDetails },
+          },
+        }) =>
+          `${
+            billingDetails?.length
+              ? billingDetails[billingDetails.length - 1]?.pricingInDollar
+              : ''
+          }`,
       },
       {
         Header: 'PRICING IN ₹',
         accessor: 'pricingInRupee',
+        Cell: ({
+          row: {
+            original: { billingDetails },
+          },
+        }) =>
+          `${
+            billingDetails?.length
+              ? billingDetails[billingDetails.length - 1]?.pricingInRupee
+              : ''
+          }`,
       },
       {
         Header: 'AMOUNT IN ₹',
         accessor: 'totalAmount',
+        Cell: ({
+          row: {
+            original: { billingDetails },
+          },
+        }) =>
+          `${billingDetails.reduce(
+            (result, item) => (result += item.pricingInRupee),
+            [0]
+          )}`,
       },
       {
         Header: 'NEXT BILLING',

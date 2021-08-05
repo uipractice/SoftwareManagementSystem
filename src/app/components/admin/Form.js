@@ -13,7 +13,7 @@ const defaultFormData = {
   softwareType: '',
   team: '',
   owner: '',
-  billingCycle: '',
+  billingCycle: 'monthly',
   billingDetails: [], // pricingInDollar pricingInRupee billingMonth nextBilling
 };
 
@@ -56,7 +56,10 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    state.billingDetails.push(billingDetails);
+    state.billingDetails.push({
+      ...billingDetails,
+      nextBilling: state.nextBilling,
+    });
     axios
       .post(
         `${
@@ -157,12 +160,24 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                 type='radio'
                 name='billingCycle'
                 value={state?.billingCycle}
-                className='mb-2'
                 disabled={isEdit}
+                className='mb-2'
                 onChange={(val) => setState({ ...state, billingCycle: val })}
               >
-                <ToggleButton value={'monthly'}> Monthly</ToggleButton>
-                <ToggleButton value={'yearly'}> Yearly</ToggleButton>
+                <ToggleButton
+                  disabled={isEdit}
+                  checked={state?.billingCycle === 'monthly'}
+                  value={'monthly'}
+                >
+                  Monthly
+                </ToggleButton>
+                <ToggleButton
+                  disabled={isEdit}
+                  checked={state?.billingCycle === 'yearly'}
+                  value={'yearly'}
+                >
+                  Yearly
+                </ToggleButton>
               </ToggleButtonGroup>
             </div>
             {state?.billingCycle === 'monthly' && (
@@ -172,9 +187,15 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                   className='form-control'
                   onChange={(e) => handleOnChange(e, 'billingDetails')}
                   name='billingMonth'
-                  value={billingDetails?.billingMonth}
+                  value={
+                    rowData?.nextBilling
+                      ? moment(rowData.nextBilling)
+                          .add(1, 'month')
+                          .format('MMMM')
+                      : moment().format('MMMM')
+                  }
+                  disabled={state?.billingCycle === 'yearly'}
                 >
-                  <option value=''></option>
                   <option value='January'>January</option>
                   <option value='February'>February</option>
                   <option value='March'>March</option>
@@ -219,10 +240,9 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                 className='form-control'
                 onChange={handleOnChange}
                 name='nextBilling'
-                value={
-                  state?.nextBilling ||
-                  moment(state?.nextBilling).format('DD-MM-YYYY')
-                }
+                value={moment(state?.nextBilling)
+                  .add(state?.nextBilling ? 2 : 1, 'month')
+                  .format('YYYY-MM-DD')}
               />
             </div>
           </div>
