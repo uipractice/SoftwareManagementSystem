@@ -1,13 +1,11 @@
 import React, { Component } from "react";
-import Modal from "./modal/Modal";
-import "./modal/Container.css";
+import "./Container.css";
+import Form from "./Form";
 
-export class ShareModalContainer extends Component {
+export class DashboardHeader extends Component {
   state = { isShown: false };
   showModal = () => {
-    this.setState({ isShown: true }, () => {
-      this.closeButton.focus();
-    });
+    this.setState({ isShown: true });
     this.toggleScrollLock();
   };
   closeModal = () => {
@@ -31,7 +29,6 @@ export class ShareModalContainer extends Component {
   render() {
     return (
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3">
-
         <h5 className="project-head">LICENSING DETAILS</h5>
 
         <div className="btn-toolbar mb-2 mb-md-0">
@@ -44,19 +41,13 @@ export class ShareModalContainer extends Component {
             + ADD SOFTWARE TOOL
           </button>
 
-          {this.state.isShown ? (
-            <Modal
-              modalRef={(n) => (this.modal = n)}
-              buttonRef={(n) => (this.closeButton = n)}
-              closeModal={this.closeModal}
-              onKeyDown={this.onKeyDown}
-              onClickOutside={this.onClickOutside}
-            />
-          ) : null}
+          {this.state.isShown && (
+            <Form isOpen={this.state.isShown} closeModal={this.closeModal} />
+          )}
         </div>
       </div>
     );
   }
 }
 
-export default ShareModalContainer;
+export default DashboardHeader;
