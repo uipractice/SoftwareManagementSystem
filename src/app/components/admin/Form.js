@@ -4,6 +4,7 @@ import { ToggleButtonGroup, ToggleButton, Modal } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import moment from 'moment';
+import { getApiUrl } from '../utils/helper';
 
 toast.configure();
 
@@ -60,8 +61,8 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
       .post(
         `${
           isEdit
-            ? `http://localhost:5000/softwareInfo/update/${'610a85d0dd787c1dfcd0d6c5'}`
-            : `http://localhost:5000/softwareInfo/create`
+            ? getApiUrl(`softwareInfo/update/${rowData.id}`)
+            : getApiUrl(`softwareInfo/create`)
         }`,
         state
       )
@@ -106,6 +107,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                 className='form-control'
                 onChange={handleOnChange}
                 name='softwareType'
+                disabled={isEdit}
                 defaultValue={state?.softwareType}
               >
                 <option value='Software'>Software</option>
@@ -120,6 +122,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                 className='form-control'
                 onChange={handleOnChange}
                 name='softwareName'
+                disabled={isEdit}
                 defaultValue={state?.softwareName}
               />
             </div>
@@ -130,6 +133,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                 className='form-control'
                 onChange={handleOnChange}
                 name='team'
+                disabled={isEdit}
                 defaultValue={state?.team}
               />
             </div>
@@ -143,6 +147,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                 className='form-control'
                 onChange={handleOnChange}
                 name='owner'
+                disabled={isEdit}
                 value={state?.owner}
               />
             </div>
@@ -150,9 +155,10 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
               <label htmlFor='billingCycle'>Billing Cycle</label>
               <ToggleButtonGroup
                 type='radio'
-                name='options'
+                name='billingCycle'
                 value={state?.billingCycle}
                 className='mb-2'
+                disabled={isEdit}
                 onChange={(val) => setState({ ...state, billingCycle: val })}
               >
                 <ToggleButton value={'monthly'}> Monthly</ToggleButton>
@@ -206,16 +212,6 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                 value={billingDetails?.pricingInRupee}
               />
             </div>
-            {/* <div className='form-group col-md-3'>
-              <label htmlFor='totalAmount'>Total Amount</label>
-              <input
-                type='number'
-                className='form-control'
-                onChange={handleOnChange}
-                name='totalAmount'
-                value={state?.totalAmount}
-              />
-            </div> */}
             <div className='form-group col-md-3'>
               <label htmlFor='nextBilling'>Next Billing Date</label>
               <input
@@ -223,7 +219,10 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                 className='form-control'
                 onChange={handleOnChange}
                 name='nextBilling'
-                value={moment(state?.nextBilling).format('dd-mm-yyyy')}
+                value={
+                  state?.nextBilling ||
+                  moment(state?.nextBilling).format('DD-MM-YYYY')
+                }
               />
             </div>
           </div>
@@ -237,33 +236,18 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
               >
                 Reset
               </button>
-              {/* state.softwareName &&
-          state.teamName &&
-          state.selectType &&
-          state.owner &&
-          state.billingCycle &&
-          (state.billingCycle !== 'monthly' ||
-          (state.billingCycle === 'monthly' && month)) &&
-          state.pricingInDollar &&
-          state.pricingInRupee &&
-          state.totalAmount &&
-          state.nextBilling */}
-              {
-                <button
-                  className='form-control btn btn-primary share-btn'
-                  onClick={handleSubmit}
-                >
-                  Save
-                </button>
-                // ) : (
-                //   <button
-                //     className='form-control btn btn-primary share-btn'
-                //     onClick={handleSubmit}
-                //     disabled
-                //   >
-                //     Save
-                //   </button>
-              }
+              <button
+                className='form-control btn btn-primary share-btn'
+                onClick={handleSubmit}
+                disabled={
+                  Object.keys(state).some((key) => state[key] === '') ||
+                  Object.keys(billingDetails).some(
+                    (key) => billingDetails[key] === ''
+                  )
+                }
+              >
+                Save
+              </button>
             </div>
           </div>
         </form>

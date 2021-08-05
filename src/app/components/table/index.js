@@ -18,6 +18,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import moment from 'moment';
 import Form from '../admin/Form';
+import { getApiUrl } from '../utils/helper';
 
 toast.configure();
 
@@ -39,7 +40,7 @@ function CompleteTable({ data }) {
     rowData.status = 'deleted';
     const id = rowData._id;
     axios
-      .post(`http://localhost:5000/softwareInfo/update/${id}`, rowData)
+      .post(getApiUrl(`softwareInfo/update/${id}`), rowData)
       .then((res) => {
         toast.success('s', {
           autoClose: 2900,
@@ -270,21 +271,13 @@ function CompleteTable({ data }) {
                 </button>
               </div>
               <div className='col-md-6'>
-                {rowData.deleteReason ? (
-                  <button
-                    onClick={handleUpdateStatus}
-                    className='form-control btn btn-primary delete-btn'
-                  >
-                    Delete
-                  </button>
-                ) : (
-                  <button
-                    className='form-control btn btn-primary delete-btn'
-                    disabled
-                  >
-                    Delete
-                  </button>
-                )}
+                <button
+                  onClick={handleUpdateStatus}
+                  disabled={!!rowData?.deleteReason}
+                  className='form-control btn btn-primary delete-btn'
+                >
+                  Delete
+                </button>
               </div>
             </div>
           </form>
@@ -306,9 +299,9 @@ function CompleteTable({ data }) {
                     <span>
                       {column.isSorted ? (
                         column.isSortedDesc ? (
-                          <img src={UpDownImg} />
+                          <img src={UpDownImg} alt='up' />
                         ) : (
-                          <img src={UpDownImg} />
+                          <img src={UpDownImg} alt='down' />
                         )
                       ) : (
                         ''

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import Logo from '../../assets/images/eoke_logo.svg';
 import NotificationIcon from '../../assets/images/bell.svg';
 import ProfileIcon from '../../assets/images/user-icon.svg';
@@ -35,8 +35,6 @@ const Header = ({ validate }) => {
   }
   const [feedback, setFeedback] = useState(false);
 
-  const anchorRef = useRef(null);
-
   return (
     <div>
       <div className='navbar navbar-dark sticky-top  p-0 shadow header_nav'>
@@ -49,13 +47,13 @@ const Header = ({ validate }) => {
 
         <ul className='navbar-nav px-3'>
           <li className='notification-btn'>
-            <div clasName='nav-menu-icon'>
+            <div className='nav-menu-icon'>
               <img src={NotificationIcon} alt='NoticicationIcon' />
             </div>
           </li>
           <li className='vertical-line'></li>
 
-          <li className='nav-item text-nowrap' ref={anchorRef}>
+          <li className='nav-item text-nowrap'>
             <OverlayTrigger
               trigger='click'
               key={'bottom'}
@@ -81,7 +79,7 @@ const Header = ({ validate }) => {
                 </Popover>
               }
             >
-              <div clasName='nav-menu-icon'>
+              <div className='nav-menu-icon'>
                 <img src={ProfileIcon} alt='ProfileIcon' />
               </div>
             </OverlayTrigger>

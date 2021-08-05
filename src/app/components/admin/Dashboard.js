@@ -4,12 +4,13 @@ import Footer from '../NavBar/Footer';
 import CompleteTable from '../table';
 import axios from 'axios';
 import Header from '../NavBar/Header';
+import { getApiUrl } from '../utils/helper';
 
 export default function AdminDashboard() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    axios('http://localhost:5000/softwareInfo/')
+    axios(getApiUrl(`softwareInfo`))
       .then((res) => {
         setData(res.data);
         // console.log("respose data", res.data)
