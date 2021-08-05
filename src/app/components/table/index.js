@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import DeleteImg from '../../assets/images/delete-icon.svg';
 import EditImg from '../../assets/images/edit-icon.svg';
+import UpDownImg from '../../assets/images/up-down.png';
 import axios from 'axios';
 import Modal from 'react-modal';
 import {
@@ -303,11 +304,15 @@ function CompleteTable({ data }) {
                   >
                     {column.render('Header')}
                     <span>
-                      {column.isSorted
-                        ? column.isSortedDesc
-                          ? ' 🔽'
-                          : ' 🔼'
-                        : ''}
+                      {column.isSorted ? (
+                        column.isSortedDesc ? (
+                          <img src={UpDownImg} />
+                        ) : (
+                          <img src={UpDownImg} />
+                        )
+                      ) : (
+                        ''
+                      )}
                     </span>
                   </th>
                 ))}
