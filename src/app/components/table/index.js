@@ -73,12 +73,12 @@ function CompleteTable({ data }) {
       },
       {
         Header: 'TYPE',
-        accessor: 'selectType',
+        accessor: 'softwareType',
         sticky: 'left',
       },
       {
         Header: 'TEAM',
-        accessor: 'teamName',
+        accessor: 'team',
         sticky: 'left',
       },
       {
