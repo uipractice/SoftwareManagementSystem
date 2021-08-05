@@ -16,32 +16,31 @@ import leftIcon from '../../assets/images/left-icon.svg';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import moment from 'moment';
+import Form from '../admin/Form';
 
 toast.configure();
 
 function CompleteTable({ data }) {
-  const [rowOriginal, setRowOriginal] = useState({});
+  const [rowData, setRowData] = useState({});
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditFormOpen, toggleEditForm] = useState(false);
 
   function handleInputChange(evt) {
-    setRowOriginal({
-      ...rowOriginal,
+    setRowData({
+      ...rowData,
       deleteReason: evt.target.value,
     });
   }
 
   const handleUpdateStatus = (e) => {
     e.preventDefault();
-    rowOriginal.status = 'Deleted';
-    const id = rowOriginal._id;
+    rowData.status = 'deleted';
+    const id = rowData._id;
     axios
-      .post(
-        'http://localhost:5000/softwareInfo/deleteStatus/' + id,
-        rowOriginal
-      )
+      .post(`http://localhost:5000/softwareInfo/update/${id}`, rowData)
       .then((res) => {
-        toast.warn('Record has been marked DELETED !', {
+        toast.success('s', {
           autoClose: 2900,
         });
         setIsModalOpen(false);
@@ -71,9 +70,9 @@ function CompleteTable({ data }) {
         sticky: 'left',
       },
       {
-        Header: "TYPE",
-        accessor: "selectType",
-        sticky: "left",
+        Header: 'TYPE',
+        accessor: 'selectType',
+        sticky: 'left',
       },
       {
         Header: 'TEAM',
@@ -139,20 +138,24 @@ function CompleteTable({ data }) {
         Header: 'ACTION',
         Cell: ({ row }) => (
           <div>
-            <img src={EditImg} alt='Evoke Technologies' />
-            <a
-              {...(row.original.status === 'Deleted' ||
-              row.original.status === 'Pending'
-                ? { className: 'delete-icon disableDeleteBtn' }
-                : { className: 'delete-icon ' })}
+            <img
+              className='p-1'
+              src={EditImg}
+              alt='Evoke Technologies'
               onClick={() => {
-                setRowOriginal(row.original);
+                setRowData(row.original);
+                toggleEditForm(true);
+              }}
+            />
+            <img
+              className='p-1'
+              src={DeleteImg}
+              alt='Evoke Technologies'
+              onClick={() => {
+                setRowData(row.original);
                 setIsModalOpen(true);
               }}
-            >
-              {' '}
-              <img src={DeleteImg} alt='Evoke Technologies' />
-            </a>
+            />
           </div>
         ),
       },
@@ -266,7 +269,7 @@ function CompleteTable({ data }) {
                 </button>
               </div>
               <div className='col-md-6'>
-                {rowOriginal.deleteReason ? (
+                {rowData.deleteReason ? (
                   <button
                     onClick={handleUpdateStatus}
                     className='form-control btn btn-primary delete-btn'
@@ -370,6 +373,17 @@ function CompleteTable({ data }) {
           </button>{' '}
         </div>
       </div>
+      {isEditFormOpen && (
+        <Form
+          isOpen={isEditFormOpen}
+          closeModal={() => {
+            toggleEditForm(false);
+            setRowData(null);
+          }}
+          rowData={rowData}
+          isEdit={true}
+        />
+      )}
     </>
   );
 }
