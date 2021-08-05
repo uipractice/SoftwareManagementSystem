@@ -3,3 +3,4 @@ node_modules
 # Hidden files
 .vscode/
 .history/
+.env
