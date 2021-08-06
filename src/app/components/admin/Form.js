@@ -107,9 +107,9 @@ function Form({ closeModal }) {
             value={state.selectType}
           >
             <option value=''></option>
-            <option value='Software'>Software</option>
             <option value='Certificate'>Certificate</option>
             <option value='Domain'>Domain</option>
+            <option value='Software'>Software</option>
           </select>
         </div>
         <div className='form-group col-md-5'>

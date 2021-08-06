@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import DeleteImg from '../../assets/images/delete-icon.svg';
 import EditImg from '../../assets/images/edit-icon.svg';
+import ExpandImg from '../../assets/images/Rowexpand.svg';
 import axios from 'axios';
 import Modal from 'react-modal';
 import {
@@ -8,6 +9,7 @@ import {
   useSortBy,
   useGlobalFilter,
   usePagination,
+  useExpanded
 } from 'react-table';
 import './table.css';
 import GlobalFilter from './filter';
@@ -36,10 +38,7 @@ function CompleteTable({ data }) {
     rowOriginal.status = 'Deleted';
     const id = rowOriginal._id;
     axios
-      .post(
-        'http://localhost:5000/softwareInfo/deleteStatus/' + id,
-        rowOriginal
-      )
+      .post('http://localhost:5000/softwareInfo/updateStatus/' + id, rowOriginal)
       .then((res) => {
         toast.warn('Record has been marked DELETED !', {
           autoClose: 2900,
@@ -99,6 +98,17 @@ function CompleteTable({ data }) {
       {
         Header: 'AMOUNT IN ₹',
         accessor: 'totalAmount',
+        // id: "expander",
+        Cell: ({ row 
+        }) => (
+          <span {...row.getToggleRowExpandedProps({ title: undefined })}>
+            {row.isExpanded ?
+             <span>{row.original.totalAmount}
+             <span className="rowicon" > <img src={ExpandImg} alt='Expand Icon'  /> </span></span>
+             : <span>{row.original.totalAmount} 
+             <span className="rowicon"> <img src={ExpandImg} alt='Expand Icon' /> </span></span>}
+          </span>
+        )
       },
       {
         Header: 'NEXT BILLING',
@@ -139,10 +149,10 @@ function CompleteTable({ data }) {
         Header: 'ACTION',
         Cell: ({ row }) => (
           <div>
-            <img src={EditImg} alt='Evoke Technologies' />
+                <img src={EditImg} alt='Evoke Technologies' />
+            
             <a
-              {...(row.original.status === 'Deleted' ||
-              row.original.status === 'Pending'
+              {...(row.original.status === 'Deleted'
                 ? { className: 'delete-icon disableDeleteBtn' }
                 : { className: 'delete-icon ' })}
               onClick={() => {
@@ -157,6 +167,24 @@ function CompleteTable({ data }) {
         ),
       },
     ],
+    []
+  );
+  
+  const renderRowSubComponent = React.useCallback(
+    ({ row }) => (
+      <td colSpan = '12' className= "rowexpandable">
+        <div className="subscrit">
+            <h3 className="rowexpandfont">
+          Subscription for :
+          </h3>
+          <div className="label">
+            <label> March</label>
+            <div className="amount"> 70$</div>
+          </div>
+        </div>
+      
+      </td>
+    ),
     []
   );
 
@@ -178,6 +206,7 @@ function CompleteTable({ data }) {
     { columns, data, initialState: { pageSize: 8 } },
     useGlobalFilter,
     useSortBy,
+    useExpanded,
     usePagination
   );
 
@@ -315,6 +344,7 @@ function CompleteTable({ data }) {
             {page.map((row) => {
               prepareRow(row);
               return (
+                <React.Fragment>
                 <tr {...row.getRowProps()}>
                   {row.cells.map((cell) => {
                     let style = {};
@@ -337,6 +367,12 @@ function CompleteTable({ data }) {
                     );
                   })}
                 </tr>
+                {row.isExpanded ? (
+                  <tr>
+                    {/* <td colSpan={visibleColumns.length}></td> */}
+                    {renderRowSubComponent({ row })}</tr>
+                ) : null}
+                </React.Fragment>
               );
             })}
           </tbody>
