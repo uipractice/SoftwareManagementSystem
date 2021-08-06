@@ -248,7 +248,7 @@ tfoot td {
 }
 .timeline {
   padding: 0;
-  width: 75%;
+  width: 100%;
   margin: 8px 0;
   height: 24px;
   border-radius: 15px;
@@ -295,18 +295,21 @@ tfoot td {
 .label {
   line-height: 33px;
   margin-left: 30px;
-
 }
-.amount{
-  background: linear-gradient(180deg, rgba(32, 158, 197, 0.2) -36.58%, rgba(43, 205, 255, 0) 154.57%);
-border: 1px solid rgba(35, 158, 197, 0.4);
-box-sizing: border-box;
-filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.1));
-border-radius: 15px;
-width: 51px;
-height: 18px;
-line-height: 17px;
-margin-bottom: 11px;
+.amount {
+  background: linear-gradient(
+    180deg,
+    rgba(32, 158, 197, 0.2) -36.58%,
+    rgba(43, 205, 255, 0) 154.57%
+  );
+  border: 1px solid rgba(35, 158, 197, 0.4);
+  box-sizing: border-box;
+  filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.1));
+  border-radius: 15px;
+  width: 51px;
+  height: 18px;
+  line-height: 17px;
+  margin-bottom: 11px;
 }
 .rowicon {
   padding: 4px;
@@ -316,12 +319,21 @@ margin-bottom: 11px;
   width: 6px;
   margin-bottom: 4px;
 }
-.tableFixHead th span{
+.tableFixHead th span {
   position: relative;
   width: 12px;
 }
-.tableFixHead th span img{
- width: 12px;
- position: absolute;
- top: 2px;
+.tableFixHead th span img {
+  width: 12px;
+  position: absolute;
+  top: 2px;
+}
+.tableFixHead th:nth-child(7n),
+.tableFixHead th:nth-child(8n),
+.tableFixHead th:nth-child(9n),
+.tableFixHead td:nth-child(7n),
+.tableFixHead td:nth-child(8n),
+.tableFixHead td:nth-child(9n) {
+  text-align: right !important;
+  padding-right: 20px !important;
 }

@@ -106,7 +106,7 @@ input[type="date"]{
 }
 
 .modal-body {
-  padding-top: 0.25em !important;
+  padding-top: 20px !important;
   padding: 20px;
 }
 
@@ -139,7 +139,7 @@ input[type="date"]{
 .form-group .form-control {
   height: 44px;
   font-size: 14px;
-  padding-left: 5px;
+  /* padding-left: 5px; */
 }
 .form-group select {
   appearance: none;
@@ -156,9 +156,31 @@ input[type="date"]{
 }
 .btn-group-toggle .btn-primary:not(:disabled):not(.disabled).active,
 .btn-group-toggle .btn-primary:not(:disabled):not(.disabled):active,
-.btn-group-toggle .show > .btn-primary.dropdown-toggle {
-  background: #c4c4c4;
-  border: 1px solid #c4c4c4;
+.btn-group-toggle .show > .btn-primary.dropdown-toggle, .btn-primary.disabled.active {
+  background: rgba(32, 158, 197, 0.1) url('../../assets/images/check.svg') no-repeat 33px;
+  border: 1px solid #209EC5;
+  /* border-radius: 4px; */
+  color: #209EC5;
+}
+.btn-group-toggle .btn-primary.yearly:not(:disabled):not(.disabled).active,
+.btn-group-toggle .btn-primary.yearly:not(:disabled):not(.disabled):active,
+.btn-group-toggle .show > .btn-primary.yearly.dropdown-toggle, .yearly.disabled.active{
+  background: rgba(32, 158, 197, 0.1) url('../../assets/images/check.svg') no-repeat 40px;
+}
+.btn-group-toggle .btn-primary.software:not(:disabled):not(.disabled).active,
+.btn-group-toggle .btn-primary.software:not(:disabled):not(.disabled):active,
+.btn-group-toggle .show > .btn-primary.software.dropdown-toggle, .software.disabled.active{
+  background: rgba(32, 158, 197, 0.1) url('../../assets/images/check.svg') no-repeat 5px;
+}
+.btn-group-toggle .btn-primary.domian:not(:disabled):not(.disabled).active,
+.btn-group-toggle .btn-primary.domian:not(:disabled):not(.disabled):active,
+.btn-group-toggle .show > .btn-primary.domian.dropdown-toggle, .domian.disabled.active{
+  background: rgba(32, 158, 197, 0.1) url('../../assets/images/check.svg') no-repeat 8px;
+}
+.btn-group-toggle .btn-primary.certificate:not(:disabled):not(.disabled).active,
+.btn-group-toggle .btn-primary.certificate:not(:disabled):not(.disabled):active,
+.btn-group-toggle .show > .btn-primary.certificate.dropdown-toggle, .certificate.disabled.active{
+  background: rgba(32, 158, 197, 0.1) url('../../assets/images/check.svg') no-repeat 4px;
 }
 .btn-group-toggle .btn-primary {
   background: transparent;
@@ -187,4 +209,10 @@ select.form-control:-internal-autofill-selected {
 .share {
   margin-top: 15px !important;
   margin-bottom: 10px !important;
+}
+.software-modal .modal-dialog{
+  max-width: 750px;
+}
+.share .col-md-6{
+  padding-right: 0;
 }
