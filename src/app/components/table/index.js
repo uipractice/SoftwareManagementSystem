@@ -126,8 +126,8 @@ function CompleteTable({ data }) {
           },
         }) =>
           `${billingDetails.reduce(
-            (result, item) => (result += item.pricingInRupee),
-            [0]
+            (result, item) => (result += Number(item.pricingInRupee)),
+            0
           )}`,
       },
       {
@@ -170,7 +170,7 @@ function CompleteTable({ data }) {
         Cell: ({ row }) => (
           <div>
             <img
-              className='p-1'
+              className='p-2 pointer'
               src={EditImg}
               alt='Evoke Technologies'
               onClick={() => {
@@ -179,7 +179,7 @@ function CompleteTable({ data }) {
               }}
             />
             <img
-              className='p-1'
+              className='p-2 pointer'
               src={DeleteImg}
               alt='Evoke Technologies'
               onClick={() => {

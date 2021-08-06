@@ -192,6 +192,10 @@ a:focus {
   background: none;
 }
 
+.pointer {
+  cursor: pointer;
+}
+
 .dd .dropdown-toggle::after {
   border: 0;
   background: url('./app/assets/images/dropdown.svg') no-repeat;
