@@ -1,7 +1,6 @@
-import React, { Component } from 'react';
-import './Container.css';
-import { Modal } from 'react-bootstrap';
-import Form from './Form';
+import React, { Component } from "react";
+import "./Container.css";
+import Form from "./Form";
 
 export class DashboardHeader extends Component {
   state = { isShown: false };
@@ -24,18 +23,18 @@ export class DashboardHeader extends Component {
   };
 
   toggleScrollLock = () => {
-    document.querySelector('html').classList.toggle('scroll-lock');
+    document.querySelector("html").classList.toggle("scroll-lock");
   };
 
   render() {
     return (
-      <div className='d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3'>
-        <h5 className='project-head'>LICENSING DETAILS</h5>
+      <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3">
+        <h5 className="project-head">LICENSING DETAILS</h5>
 
-        <div className='btn-toolbar mb-2 mb-md-0'>
+        <div className="btn-toolbar mb-2 mb-md-0">
           <button
-            type='button'
-            className='btn work_btn work_btn_blue center modal-button'
+            type="button"
+            className="btn work_btn work_btn_blue center modal-button"
             ref={this.buttonRef}
             onClick={this.showModal}
           >
@@ -43,20 +42,7 @@ export class DashboardHeader extends Component {
           </button>
 
           {this.state.isShown && (
-            <Modal
-              centered
-              size='lg'
-              style={{ borderRadius: '0 !important' }}
-              show={this.state.isShown}
-              onHide={this.closeModal}
-            >
-              <Modal.Header closeButton className='modal-area'>
-                <h3>Add Tool/Software</h3>
-              </Modal.Header>
-              <Modal.Body>
-                <Form closeModal={this.closeModal} />
-              </Modal.Body>
-            </Modal>
+            <Form isOpen={this.state.isShown} closeModal={this.closeModal} />
           )}
         </div>
       </div>

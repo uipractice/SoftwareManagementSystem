@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import DeleteImg from '../../assets/images/delete-icon.svg';
 import EditImg from '../../assets/images/edit-icon.svg';
 import ExpandImg from '../../assets/images/Rowexpand.svg';
+import UpDownImg from '../../assets/images/up-down.png';
 import axios from 'axios';
 import Modal from 'react-modal';
 import {
@@ -9,7 +10,7 @@ import {
   useSortBy,
   useGlobalFilter,
   usePagination,
-  useExpanded
+  useExpanded,
 } from 'react-table';
 import './table.css';
 import GlobalFilter from './filter';
@@ -18,29 +19,32 @@ import leftIcon from '../../assets/images/left-icon.svg';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import moment from 'moment';
+import Form from '../admin/Form';
+import { getApiUrl } from '../utils/helper';
 
 toast.configure();
 
 function CompleteTable({ data }) {
-  const [rowOriginal, setRowOriginal] = useState({});
+  const [rowData, setRowData] = useState({});
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditFormOpen, toggleEditForm] = useState(false);
 
   function handleInputChange(evt) {
-    setRowOriginal({
-      ...rowOriginal,
+    setRowData({
+      ...rowData,
       deleteReason: evt.target.value,
     });
   }
 
   const handleUpdateStatus = (e) => {
     e.preventDefault();
-    rowOriginal.status = 'Deleted';
-    const id = rowOriginal._id;
+    rowData.status = 'deleted';
+    const id = rowData._id;
     axios
-      .post('http://localhost:5000/softwareInfo/updateStatus/' + id, rowOriginal)
+      .post(getApiUrl(`softwareInfo/update/${id}`), rowData)
       .then((res) => {
-        toast.warn('Record has been marked DELETED !', {
+        toast.success('s', {
           autoClose: 2900,
         });
         setIsModalOpen(false);
@@ -70,13 +74,13 @@ function CompleteTable({ data }) {
         sticky: 'left',
       },
       {
-        Header: "TYPE",
-        accessor: "selectType",
-        sticky: "left",
+        Header: 'TYPE',
+        accessor: 'softwareType',
+        sticky: 'left',
       },
       {
         Header: 'TEAM',
-        accessor: 'teamName',
+        accessor: 'team',
         sticky: 'left',
       },
       {
@@ -84,31 +88,68 @@ function CompleteTable({ data }) {
         accessor: 'owner',
       },
       {
-        Header: 'BILLIG CYCLE',
+        Header: 'BILLING CYCLE',
         accessor: 'billingCycle',
       },
       {
         Header: 'PRICING IN $',
         accessor: 'pricingInDollar',
+        Cell: ({
+          row: {
+            original: { billingDetails },
+          },
+        }) =>
+          `${
+            billingDetails?.length
+              ? billingDetails[billingDetails.length - 1]?.pricingInDollar
+              : ''
+          }`,
       },
       {
         Header: 'PRICING IN ₹',
         accessor: 'pricingInRupee',
+        Cell: ({
+          row: {
+            original: { billingDetails },
+          },
+        }) =>
+          `${
+            billingDetails?.length
+              ? billingDetails[billingDetails.length - 1]?.pricingInRupee
+              : ''
+          }`,
       },
       {
         Header: 'AMOUNT IN ₹',
         accessor: 'totalAmount',
         // id: "expander",
-        Cell: ({ row 
+        Cell: ({
+          row: {
+            original: { billingDetails, billingCycle },
+            getToggleRowExpandedProps,
+            isExpanded,
+          },
         }) => (
-          <span {...row.getToggleRowExpandedProps({ title: undefined })}>
-            {row.isExpanded ?
-             <span>{row.original.totalAmount}
-             <span className="rowicon" > <img src={ExpandImg} alt='Expand Icon'  /> </span></span>
-             : <span>{row.original.totalAmount} 
-             <span className="rowicon"> <img src={ExpandImg} alt='Expand Icon' /> </span></span>}
-          </span>
-        )
+          <div>
+            <span {...getToggleRowExpandedProps({ title: undefined })}>
+              {billingDetails?.reduce(
+                (result, item) => (result += Number(item.pricingInRupee)),
+                0
+              )}
+              {isExpanded ? (
+                <span className='rowicon'>
+                  {' '}
+                  <img src={ExpandImg} alt='Expand Icon' />{' '}
+                </span>
+              ) : (
+                <span className='rowicon'>
+                  {' '}
+                  <img src={ExpandImg} alt='Expand Icon' />
+                </span>
+              )}
+            </span>
+          </div>
+        ),
       },
       {
         Header: 'NEXT BILLING',
@@ -149,40 +190,41 @@ function CompleteTable({ data }) {
         Header: 'ACTION',
         Cell: ({ row }) => (
           <div>
-                <img src={EditImg} alt='Evoke Technologies' />
-            
-            <a
-              {...(row.original.status === 'Deleted'
-                ? { className: 'delete-icon disableDeleteBtn' }
-                : { className: 'delete-icon ' })}
+            <img
+              className='p-2 pointer'
+              src={EditImg}
+              alt='Evoke Technologies'
               onClick={() => {
-                setRowOriginal(row.original);
+                setRowData(row.original);
+                toggleEditForm(true);
+              }}
+            />
+            <img
+              className='p-2 pointer'
+              src={DeleteImg}
+              alt='Evoke Technologies'
+              onClick={() => {
+                setRowData(row.original);
                 setIsModalOpen(true);
               }}
-            >
-              {' '}
-              <img src={DeleteImg} alt='Evoke Technologies' />
-            </a>
+            />
           </div>
         ),
       },
     ],
     []
   );
-  
-  const renderRowSubComponent = React.useCallback(
+
+  const renderRowSubComponent = useCallback(
     ({ row }) => (
-      <td colSpan = '12' className= "rowexpandable">
-        <div className="subscrit">
-            <h3 className="rowexpandfont">
-          Subscription for :
-          </h3>
-          <div className="label">
+      <td colSpan='12' className='rowexpandable'>
+        <div className='subscrit'>
+          <h3 className='rowexpandfont'>Subscription for :</h3>
+          <div className='label'>
             <label> March</label>
-            <div className="amount"> 70$</div>
+            <div className='amount'> 70$</div>
           </div>
         </div>
-      
       </td>
     ),
     []
@@ -295,21 +337,13 @@ function CompleteTable({ data }) {
                 </button>
               </div>
               <div className='col-md-6'>
-                {rowOriginal.deleteReason ? (
-                  <button
-                    onClick={handleUpdateStatus}
-                    className='form-control btn btn-primary delete-btn'
-                  >
-                    Delete
-                  </button>
-                ) : (
-                  <button
-                    className='form-control btn btn-primary delete-btn'
-                    disabled
-                  >
-                    Delete
-                  </button>
-                )}
+                <button
+                  onClick={handleUpdateStatus}
+                  disabled={!!rowData?.deleteReason}
+                  className='form-control btn btn-primary delete-btn'
+                >
+                  Delete
+                </button>
               </div>
             </div>
           </form>
@@ -329,11 +363,15 @@ function CompleteTable({ data }) {
                   >
                     {column.render('Header')}
                     <span>
-                      {column.isSorted
-                        ? column.isSortedDesc
-                          ? ' 🔽'
-                          : ' 🔼'
-                        : ''}
+                      {column.isSorted ? (
+                        column.isSortedDesc ? (
+                          <img src={UpDownImg} alt='up' />
+                        ) : (
+                          <img src={UpDownImg} alt='down' />
+                        )
+                      ) : (
+                        ''
+                      )}
                     </span>
                   </th>
                 ))}
@@ -345,33 +383,34 @@ function CompleteTable({ data }) {
               prepareRow(row);
               return (
                 <React.Fragment>
-                <tr {...row.getRowProps()}>
-                  {row.cells.map((cell) => {
-                    let style = {};
-                    style = { textAlign: 'left' };
-                    if (cell.column.id === 'status') {
-                      if (cell.value === 'Pending') {
-                        style = { color: '#F16A21', textAlign: 'left' };
-                      } else if (cell.value === 'Submitted') {
-                        style = { color: '#0066FF', textAlign: 'left' };
-                      } else if (cell.value === 'Completed') {
-                        style = { color: '#13BC86', textAlign: 'left' };
-                      } else if (cell.value === 'Approved') {
-                        style = { color: 'green', textAlign: 'left' };
+                  <tr className='text-capital' {...row.getRowProps()}>
+                    {row.cells.map((cell) => {
+                      let style = {};
+                      style = { textAlign: 'left' };
+                      if (cell.column.id === 'status') {
+                        if (cell.value === 'Pending') {
+                          style = { color: '#F16A21', textAlign: 'left' };
+                        } else if (cell.value === 'Submitted') {
+                          style = { color: '#0066FF', textAlign: 'left' };
+                        } else if (cell.value === 'Completed') {
+                          style = { color: '#13BC86', textAlign: 'left' };
+                        } else if (cell.value === 'Approved') {
+                          style = { color: 'green', textAlign: 'left' };
+                        }
                       }
-                    }
-                    return (
-                      <td {...cell.getCellProps({ style })}>
-                        {cell.render('Cell')}
-                      </td>
-                    );
-                  })}
-                </tr>
-                {row.isExpanded ? (
-                  <tr>
-                    {/* <td colSpan={visibleColumns.length}></td> */}
-                    {renderRowSubComponent({ row })}</tr>
-                ) : null}
+                      return (
+                        <td {...cell.getCellProps({ style })}>
+                          {cell.render('Cell')}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                  {row.isExpanded ? (
+                    <tr>
+                      {/* <td colSpan={visibleColumns.length}></td> */}
+                      {renderRowSubComponent({ row })}
+                    </tr>
+                  ) : null}
                 </React.Fragment>
               );
             })}
@@ -406,6 +445,17 @@ function CompleteTable({ data }) {
           </button>{' '}
         </div>
       </div>
+      {isEditFormOpen && (
+        <Form
+          isOpen={isEditFormOpen}
+          closeModal={() => {
+            toggleEditForm(false);
+            setRowData(null);
+          }}
+          rowData={rowData}
+          isEdit={true}
+        />
+      )}
     </>
   );
 }

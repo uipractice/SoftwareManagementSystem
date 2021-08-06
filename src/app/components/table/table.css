@@ -316,3 +316,12 @@ margin-bottom: 11px;
   width: 6px;
   margin-bottom: 4px;
 }
+.tableFixHead th span{
+  position: relative;
+  width: 12px;
+}
+.tableFixHead th span img{
+ width: 12px;
+ position: absolute;
+ top: 2px;
+}
