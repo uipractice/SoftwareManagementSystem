@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import DeleteImg from '../../assets/images/delete-icon.svg';
 import EditImg from '../../assets/images/edit-icon.svg';
+import ExpandImg from '../../assets/images/Rowexpand.svg';
 import UpDownImg from '../../assets/images/up-down.png';
 import axios from 'axios';
 import Modal from 'react-modal';
@@ -9,6 +10,7 @@ import {
   useSortBy,
   useGlobalFilter,
   usePagination,
+  useExpanded,
 } from 'react-table';
 import './table.css';
 import GlobalFilter from './filter';
@@ -86,7 +88,7 @@ function CompleteTable({ data }) {
         accessor: 'owner',
       },
       {
-        Header: 'BILLIG CYCLE',
+        Header: 'BILLING CYCLE',
         accessor: 'billingCycle',
       },
       {
@@ -120,15 +122,34 @@ function CompleteTable({ data }) {
       {
         Header: 'AMOUNT IN ₹',
         accessor: 'totalAmount',
+        // id: "expander",
         Cell: ({
           row: {
-            original: { billingDetails },
+            original: { billingDetails, billingCycle },
+            getToggleRowExpandedProps,
+            isExpanded,
           },
-        }) =>
-          `${billingDetails.reduce(
-            (result, item) => (result += Number(item.pricingInRupee)),
-            0
-          )}`,
+        }) => (
+          <div>
+            <span {...getToggleRowExpandedProps({ title: undefined })}>
+              {billingDetails?.reduce(
+                (result, item) => (result += Number(item.pricingInRupee)),
+                0
+              )}
+              {isExpanded ? (
+                <span className='rowicon'>
+                  {' '}
+                  <img src={ExpandImg} alt='Expand Icon' />{' '}
+                </span>
+              ) : (
+                <span className='rowicon'>
+                  {' '}
+                  <img src={ExpandImg} alt='Expand Icon' />
+                </span>
+              )}
+            </span>
+          </div>
+        ),
       },
       {
         Header: 'NEXT BILLING',
@@ -194,6 +215,21 @@ function CompleteTable({ data }) {
     []
   );
 
+  const renderRowSubComponent = useCallback(
+    ({ row }) => (
+      <td colSpan='12' className='rowexpandable'>
+        <div className='subscrit'>
+          <h3 className='rowexpandfont'>Subscription for :</h3>
+          <div className='label'>
+            <label> March</label>
+            <div className='amount'> 70$</div>
+          </div>
+        </div>
+      </td>
+    ),
+    []
+  );
+
   const {
     getTableProps,
     getTableBodyProps,
@@ -212,6 +248,7 @@ function CompleteTable({ data }) {
     { columns, data, initialState: { pageSize: 8 } },
     useGlobalFilter,
     useSortBy,
+    useExpanded,
     usePagination
   );
 
@@ -345,28 +382,36 @@ function CompleteTable({ data }) {
             {page.map((row) => {
               prepareRow(row);
               return (
-                <tr className='text-capital' {...row.getRowProps()}>
-                  {row.cells.map((cell) => {
-                    let style = {};
-                    style = { textAlign: 'left' };
-                    if (cell.column.id === 'status') {
-                      if (cell.value === 'Pending') {
-                        style = { color: '#F16A21', textAlign: 'left' };
-                      } else if (cell.value === 'Submitted') {
-                        style = { color: '#0066FF', textAlign: 'left' };
-                      } else if (cell.value === 'Completed') {
-                        style = { color: '#13BC86', textAlign: 'left' };
-                      } else if (cell.value === 'Approved') {
-                        style = { color: 'green', textAlign: 'left' };
+                <React.Fragment>
+                  <tr className='text-capital' {...row.getRowProps()}>
+                    {row.cells.map((cell) => {
+                      let style = {};
+                      style = { textAlign: 'left' };
+                      if (cell.column.id === 'status') {
+                        if (cell.value === 'Pending') {
+                          style = { color: '#F16A21', textAlign: 'left' };
+                        } else if (cell.value === 'Submitted') {
+                          style = { color: '#0066FF', textAlign: 'left' };
+                        } else if (cell.value === 'Completed') {
+                          style = { color: '#13BC86', textAlign: 'left' };
+                        } else if (cell.value === 'Approved') {
+                          style = { color: 'green', textAlign: 'left' };
+                        }
                       }
-                    }
-                    return (
-                      <td {...cell.getCellProps({ style })}>
-                        {cell.render('Cell')}
-                      </td>
-                    );
-                  })}
-                </tr>
+                      return (
+                        <td {...cell.getCellProps({ style })}>
+                          {cell.render('Cell')}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                  {row.isExpanded ? (
+                    <tr>
+                      {/* <td colSpan={visibleColumns.length}></td> */}
+                      {renderRowSubComponent({ row })}
+                    </tr>
+                  ) : null}
+                </React.Fragment>
               );
             })}
           </tbody>
