@@ -10,14 +10,14 @@ toast.configure();
 
 const defaultFormData = {
   softwareName: '',
-  softwareType: '',
+  softwareType: 'software',
   team: '',
   owner: '',
   billingCycle: 'monthly',
   billingDetails: [], // pricingInDollar pricingInRupee billingMonth nextBilling
 };
 
-function Form({ isOpen, closeModal, rowData, isEdit = false }) {
+function Form({ isOpen, closeModal, rowData = {}, isEdit = false }) {
   const inputRef = useRef(null);
   const [state, setState] = useState(defaultFormData);
   const [billingDetails, setBillingDetails] = useState({
@@ -28,12 +28,21 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
 
   useEffect(() => {
     inputRef?.current?.focus();
+    let stateData = defaultFormData
     if (isEdit) {
-      setState(rowData);
+      stateData = {...rowData,  nextBilling: moment(rowData?.nextBilling)
+        .add(rowData?.nextBilling ? 2 : 1, 'month')
+        .format('YYYY-MM-DD')}
       setBillingDetails(
-        rowData?.billingDetails?.[rowData.billingDetails.length - 1]
+        {...rowData?.billingDetails?.[rowData.billingDetails.length - 1], billingMonth: moment(rowData.nextBilling)
+          .format('MMMM')}
       );
     }
+    else{
+      setBillingDetails({...billingDetails, billingMonth:moment().format('MMMM')})
+    }
+    setState(stateData);
+
   }, [isEdit, rowData]);
 
   function handleOnChange(e, key) {
@@ -88,7 +97,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
         }
       });
   }
-
+  console.log("softwareType", state.softwareType)
   return (
     <Modal
       centered
@@ -96,6 +105,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
       style={{ borderRadius: '0 !important' }}
       show={isOpen}
       onHide={closeModal}
+      className='software-modal'
     >
       <Modal.Header closeButton className='modal-area'>
         <h3>Add Tool/Software</h3>
@@ -103,9 +113,9 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
       <Modal.Body>
         <form>
           <div className='row'>
-            <div className='form-group col-md-3'>
+            <div className='form-group col-md-6'>
               <label htmlFor='softwareType'>Select Type</label>
-              <select
+              {/* <select
                 ref={inputRef}
                 className='form-control'
                 onChange={handleOnChange}
@@ -113,12 +123,45 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                 disabled={isEdit}
                 defaultValue={state?.softwareType}
               >
-                <option value='software'>Software</option>
-                <option value='sertificate'>Certificate</option>
-                <option value='domain'>Domain</option>
-              </select>
+                <option value='Software'>Software</option>
+                <option value='Certificate'>Certificate</option>
+                <option value='Domain'>Domain</option>
+              </select> */}
+              <ToggleButtonGroup
+                type='radio'
+                name='softwareType'
+                value={state?.softwareType}
+                disabled={isEdit}
+                className='mb-2'
+                onChange={(val) => setState({ ...state, softwareType: val })}
+              >
+                <ToggleButton
+                  disabled={isEdit}
+                  checked={state?.softwareType === 'certificate'}
+                  value={'certificate'}
+                  className='certificate'
+                >
+                  Certificate
+                </ToggleButton>
+                <ToggleButton
+                  disabled={isEdit}
+                  checked={state?.softwareType === 'domain'}
+                  value={'domain'}
+                  className='domian'
+                >
+                  Domain
+                </ToggleButton>
+                <ToggleButton
+                  disabled={isEdit}
+                  checked={state?.softwareType === 'software'}
+                  value={'software'}
+                  className='software'
+                >
+                  Software
+                </ToggleButton>
+              </ToggleButtonGroup>
             </div>
-            <div className='form-group col-md-5'>
+            <div className='form-group col-md-6'>
               <label htmlFor='softwareName'>Tool/Software</label>
               <input
                 type='text'
@@ -129,7 +172,11 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                 defaultValue={state?.softwareName}
               />
             </div>
-            <div className='form-group col-md-4'>
+            
+          </div>
+
+          <div className='row'>
+            <div className='form-group col-md-6'>
               <label htmlFor='team'>Team</label>
               <input
                 type='text'
@@ -140,10 +187,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                 defaultValue={state?.team}
               />
             </div>
-          </div>
-
-          <div className='row'>
-            <div className='form-group col-md-5'>
+            <div className='form-group col-md-6'>
               <label htmlFor='owner'>User/Owner</label>
               <input
                 type='text'
@@ -154,7 +198,10 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                 value={state?.owner}
               />
             </div>
-            <div className='form-group col-md-4'>
+            
+          </div>
+          <div className='row'>
+            <div className='form-group col-md-6'>
               <label htmlFor='billingCycle'>Billing Cycle</label>
               <ToggleButtonGroup
                 type='radio'
@@ -175,24 +222,22 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                   disabled={isEdit}
                   checked={state?.billingCycle === 'yearly'}
                   value={'yearly'}
+                  className='yearly'
                 >
                   Yearly
                 </ToggleButton>
               </ToggleButtonGroup>
             </div>
-            {state?.billingCycle === 'monthly' && (
+            
               <div className='form-group col-md-3'>
+              
                 <label htmlFor='billingMonth'>For the month of</label>
                 <select
                   className='form-control'
                   onChange={(e) => handleOnChange(e, 'billingDetails')}
                   name='billingMonth'
                   value={
-                    rowData?.nextBilling
-                      ? moment(rowData.nextBilling)
-                          .add(1, 'month')
-                          .format('MMMM')
-                      : moment().format('MMMM')
+                    billingDetails.billingMonth
                   }
                   disabled={state?.billingCycle === 'yearly'}
                 >
@@ -210,10 +255,20 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                   <option value='december'>December</option>
                 </select>
               </div>
-            )}
+            
+            <div className='form-group col-md-3'>
+              <label htmlFor='nextBilling'>Next Billing Date</label>
+              <input
+                type='date'
+                className='form-control'
+                onChange={handleOnChange}
+                name='nextBilling'
+                value={state.nextBilling}
+              />
+            </div>
           </div>
           <div className='row'>
-            <div className='form-group col-md-3'>
+            <div className='form-group col-md-6'>
               <label htmlFor='pricingInDollar'>Pricing in $</label>
               <input
                 type='number'
@@ -223,7 +278,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                 value={billingDetails?.pricingInDollar}
               />
             </div>
-            <div className='form-group col-md-3'>
+            <div className='form-group col-md-6'>
               <label htmlFor='pricingInRupee'>Pricing in ₹</label>
               <input
                 type='number'
@@ -233,18 +288,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                 value={billingDetails?.pricingInRupee}
               />
             </div>
-            <div className='form-group col-md-3'>
-              <label htmlFor='nextBilling'>Next Billing Date</label>
-              <input
-                type='date'
-                className='form-control'
-                onChange={handleOnChange}
-                name='nextBilling'
-                value={moment(state?.nextBilling)
-                  .add(state?.nextBilling ? 2 : 1, 'month')
-                  .format('YYYY-MM-DD')}
-              />
-            </div>
+            
           </div>
 
           <div className='form-group row share'>
