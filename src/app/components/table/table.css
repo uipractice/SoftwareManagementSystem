@@ -248,7 +248,7 @@ tfoot td {
 }
 .timeline {
   padding: 0;
-  width: 75%;
+  width: 100%;
   margin: 8px 0;
   height: 24px;
   border-radius: 15px;
@@ -279,4 +279,9 @@ tfoot td {
  width: 12px;
  position: absolute;
  top: 2px;
+}
+.tableFixHead th:nth-child(7n), .tableFixHead th:nth-child(8n), .tableFixHead th:nth-child(9n),
+.tableFixHead td:nth-child(7n), .tableFixHead td:nth-child(8n), .tableFixHead td:nth-child(9n){
+  text-align: right !important;
+  padding-right: 20px !important;
 }
