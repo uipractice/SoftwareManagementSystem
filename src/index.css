@@ -196,6 +196,10 @@ a:focus {
   cursor: pointer;
 }
 
+.text-capital {
+  text-transform: capitalize;
+}
+
 .dd .dropdown-toggle::after {
   border: 0;
   background: url('./app/assets/images/dropdown.svg') no-repeat;

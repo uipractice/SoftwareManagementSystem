@@ -113,9 +113,9 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                 disabled={isEdit}
                 defaultValue={state?.softwareType}
               >
-                <option value='Software'>Software</option>
-                <option value='Certificate'>Certificate</option>
-                <option value='Domain'>Domain</option>
+                <option value='software'>Software</option>
+                <option value='sertificate'>Certificate</option>
+                <option value='domain'>Domain</option>
               </select>
             </div>
             <div className='form-group col-md-5'>
@@ -196,18 +196,18 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                   }
                   disabled={state?.billingCycle === 'yearly'}
                 >
-                  <option value='January'>January</option>
-                  <option value='February'>February</option>
-                  <option value='March'>March</option>
-                  <option value='April'>April</option>
-                  <option value='May'>May</option>
-                  <option value='June'>June</option>
-                  <option value='July'>July</option>
-                  <option value='August'>August</option>
-                  <option value='September'>September</option>
-                  <option value='October'>October</option>
-                  <option value='November'>November</option>
-                  <option value='December'>December</option>
+                  <option value='january'>January</option>
+                  <option value='february'>February</option>
+                  <option value='march'>March</option>
+                  <option value='april'>April</option>
+                  <option value='may'>May</option>
+                  <option value='june'>June</option>
+                  <option value='july'>July</option>
+                  <option value='august'>August</option>
+                  <option value='aeptember'>September</option>
+                  <option value='actober'>October</option>
+                  <option value='aovember'>November</option>
+                  <option value='december'>December</option>
                 </select>
               </div>
             )}

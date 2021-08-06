@@ -345,7 +345,7 @@ function CompleteTable({ data }) {
             {page.map((row) => {
               prepareRow(row);
               return (
-                <tr {...row.getRowProps()}>
+                <tr className='text-capital' {...row.getRowProps()}>
                   {row.cells.map((cell) => {
                     let style = {};
                     style = { textAlign: 'left' };
