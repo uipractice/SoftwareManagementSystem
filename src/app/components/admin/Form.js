@@ -14,35 +14,37 @@ const defaultFormData = {
   team: '',
   owner: '',
   billingCycle: 'monthly',
+  nextBilling: moment().add(1, 'month').format('YYYY-MM-DD'),
   billingDetails: [], // pricingInDollar pricingInRupee billingMonth nextBilling
 };
 
-function Form({ isOpen, closeModal, rowData = {}, isEdit = false }) {
+function Form({ isOpen, closeModal, rowData, isEdit = false }) {
   const inputRef = useRef(null);
-  const [state, setState] = useState(defaultFormData);
+  const [state, setState] = useState({});
   const [billingDetails, setBillingDetails] = useState({
     pricingInDollar: '',
     pricingInRupee: '',
-    billingMonth: '',
+    billingMonth: moment().format('MMMM').toLowerCase(),
   });
 
   useEffect(() => {
     inputRef?.current?.focus();
-    let stateData = defaultFormData
+    let stateData = defaultFormData;
     if (isEdit) {
-      stateData = {...rowData,  nextBilling: moment(rowData?.nextBilling)
-        .add(rowData?.nextBilling ? 2 : 1, 'month')
-        .format('YYYY-MM-DD')}
-      setBillingDetails(
-        {...rowData?.billingDetails?.[rowData.billingDetails.length - 1], billingMonth: moment(rowData.nextBilling)
-          .format('MMMM')}
-      );
+      stateData = {
+        ...rowData,
+        nextBilling: moment(rowData?.nextBilling)
+          .add(1, 'month')
+          .format('YYYY-MM-DD'),
+      };
+      setBillingDetails({
+        ...rowData?.billingDetails?.[rowData.billingDetails.length - 1],
+        billingMonth: moment(rowData.nextBilling).format('MMMM').toLowerCase(),
+      });
     }
-    else{
-      setBillingDetails({...billingDetails, billingMonth:moment().format('MMMM')})
-    }
+    // else
+    //   setBillingDetails();
     setState(stateData);
-
   }, [isEdit, rowData]);
 
   function handleOnChange(e, key) {
@@ -73,7 +75,7 @@ function Form({ isOpen, closeModal, rowData = {}, isEdit = false }) {
       .post(
         `${
           isEdit
-            ? getApiUrl(`softwareInfo/update/${rowData.id}`)
+            ? getApiUrl(`softwareInfo/update/${rowData?._id}`)
             : getApiUrl(`softwareInfo/create`)
         }`,
         state
@@ -97,7 +99,7 @@ function Form({ isOpen, closeModal, rowData = {}, isEdit = false }) {
         }
       });
   }
-  console.log("softwareType", state.softwareType)
+  console.log('satate', state);
   return (
     <Modal
       centered
@@ -172,7 +174,6 @@ function Form({ isOpen, closeModal, rowData = {}, isEdit = false }) {
                 defaultValue={state?.softwareName}
               />
             </div>
-            
           </div>
 
           <div className='row'>
@@ -195,10 +196,9 @@ function Form({ isOpen, closeModal, rowData = {}, isEdit = false }) {
                 onChange={handleOnChange}
                 name='owner'
                 disabled={isEdit}
-                value={state?.owner}
+                defaultValue={state?.owner}
               />
             </div>
-            
           </div>
           <div className='row'>
             <div className='form-group col-md-6'>
@@ -228,34 +228,31 @@ function Form({ isOpen, closeModal, rowData = {}, isEdit = false }) {
                 </ToggleButton>
               </ToggleButtonGroup>
             </div>
-            
-              <div className='form-group col-md-3'>
-              
-                <label htmlFor='billingMonth'>For the month of</label>
-                <select
-                  className='form-control'
-                  onChange={(e) => handleOnChange(e, 'billingDetails')}
-                  name='billingMonth'
-                  value={
-                    billingDetails.billingMonth
-                  }
-                  disabled={state?.billingCycle === 'yearly'}
-                >
-                  <option value='january'>January</option>
-                  <option value='february'>February</option>
-                  <option value='march'>March</option>
-                  <option value='april'>April</option>
-                  <option value='may'>May</option>
-                  <option value='june'>June</option>
-                  <option value='july'>July</option>
-                  <option value='august'>August</option>
-                  <option value='aeptember'>September</option>
-                  <option value='actober'>October</option>
-                  <option value='aovember'>November</option>
-                  <option value='december'>December</option>
-                </select>
-              </div>
-            
+
+            <div className='form-group col-md-3'>
+              <label htmlFor='billingMonth'>For the month of</label>
+              <select
+                className='form-control'
+                onChange={(e) => handleOnChange(e, 'billingDetails')}
+                name='billingMonth'
+                value={billingDetails?.billingMonth}
+                disabled={state?.billingCycle === 'yearly'}
+              >
+                <option value='january'>January</option>
+                <option value='february'>February</option>
+                <option value='march'>March</option>
+                <option value='april'>April</option>
+                <option value='may'>May</option>
+                <option value='june'>June</option>
+                <option value='july'>July</option>
+                <option value='august'>August</option>
+                <option value='september'>September</option>
+                <option value='october'>October</option>
+                <option value='november'>November</option>
+                <option value='december'>December</option>
+              </select>
+            </div>
+
             <div className='form-group col-md-3'>
               <label htmlFor='nextBilling'>Next Billing Date</label>
               <input
@@ -263,7 +260,7 @@ function Form({ isOpen, closeModal, rowData = {}, isEdit = false }) {
                 className='form-control'
                 onChange={handleOnChange}
                 name='nextBilling'
-                value={state.nextBilling}
+                value={state?.nextBilling}
               />
             </div>
           </div>
@@ -288,7 +285,6 @@ function Form({ isOpen, closeModal, rowData = {}, isEdit = false }) {
                 value={billingDetails?.pricingInRupee}
               />
             </div>
-            
           </div>
 
           <div className='form-group row share'>

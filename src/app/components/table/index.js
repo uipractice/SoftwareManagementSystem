@@ -339,7 +339,7 @@ function CompleteTable({ data }) {
               <div className='col-md-6'>
                 <button
                   onClick={handleUpdateStatus}
-                  disabled={!!rowData?.deleteReason}
+                  disabled={!rowData?.deleteReason}
                   className='form-control btn btn-primary delete-btn'
                 >
                   Delete
@@ -353,10 +353,11 @@ function CompleteTable({ data }) {
       <div className='table-responsive grid tableFixHead'>
         <table {...getTableProps()} className='table table-striped '>
           <thead>
-            {headerGroups.map((headerGroup) => (
-              <tr {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map((column) => (
+            {headerGroups.map((headerGroup, i) => (
+              <tr key={i} {...headerGroup.getHeaderGroupProps()}>
+                {headerGroup.headers.map((column, index) => (
                   <th
+                    key={index}
                     {...column.getHeaderProps(
                       column.getSortByToggleProps({ title: undefined })
                     )}
@@ -379,12 +380,12 @@ function CompleteTable({ data }) {
             ))}
           </thead>
           <tbody {...getTableBodyProps()}>
-            {page.map((row) => {
+            {page.map((row, index) => {
               prepareRow(row);
               return (
-                <React.Fragment>
+                <React.Fragment key={index}>
                   <tr className='text-capital' {...row.getRowProps()}>
-                    {row.cells.map((cell) => {
+                    {row.cells.map((cell, index) => {
                       let style = {};
                       style = { textAlign: 'left' };
                       if (cell.column.id === 'status') {
@@ -399,7 +400,7 @@ function CompleteTable({ data }) {
                         }
                       }
                       return (
-                        <td {...cell.getCellProps({ style })}>
+                        <td key={index} {...cell.getCellProps({ style })}>
                           {cell.render('Cell')}
                         </td>
                       );
@@ -424,7 +425,7 @@ function CompleteTable({ data }) {
           onChange={(e) => setPageSize(Number(e.target.value))}
           className='pageNum'
         >
-          {[8, 10, 20, 50, 100].map((pageSize) => (
+          {[8, 10, 20, 50, 100].map((pageSize, i) => (
             <option key={pageSize} value={pageSize}>
               {pageSize}
             </option>
