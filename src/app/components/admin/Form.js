@@ -306,7 +306,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                   )
                 }
               >
-                Save
+                {isEdit ? 'Renew' : 'Save'}
               </button>
             </div>
           </div>

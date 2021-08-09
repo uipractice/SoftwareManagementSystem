@@ -65,8 +65,7 @@ function CompleteTable({ data }) {
       {
         Header: 'SL.NO',
         accessor: 'serial',
-        // filterable: false,
-        width:75,
+        width: 75,
       },
 
       {
@@ -138,28 +137,31 @@ function CompleteTable({ data }) {
             getToggleRowExpandedProps,
             isExpanded,
           },
-        }) => (
-          <div>
-            <span {...getToggleRowExpandedProps({ title: undefined })}>
-              {billingDetails?.reduce(
-                (result, item) => (result += Number(item.pricingInRupee)),
-                0
-              )}
-              
-              {billingCycle === 'monthly' &&
-                (isExpanded ? (
-                  <span className='rowicon'>
-                    <img src={ExpandImg} alt='Expand Icon' />{' '}
-                  </span>
-                ) : (
-                  <span className='rowicon'>
-                    <img src={ExpandImg} alt='Expand Icon' />
-                  </span>
-              ))}
+        }) => {
+          const isMonthly = billingCycle === 'monthly';
+          return (
+            <div>
+              <span
+                {...(isMonthly &&
+                  getToggleRowExpandedProps({ title: undefined }))}
+              >
+                {billingDetails?.reduce(
+                  (result, item) => (result += Number(item.pricingInRupee)),
+                  0
+                )}
 
-            </span>
-          </div>
-        ),
+                <span className='rowicon px-2 py-1'>
+                  {isMonthly &&
+                    (isExpanded ? (
+                      <img src={ExpandImg} alt='Expand Icon' /> //Down Arrow
+                    ) : (
+                      <img src={ExpandImg} alt='Expand Icon' />
+                    ))}
+                </span>
+              </span>
+            </div>
+          );
+        },
       },
       {
         Header: 'NEXT BILLING',
@@ -234,9 +236,9 @@ function CompleteTable({ data }) {
         <div className='subscrit'>
           <h3 className='rowexpandfont'>Subscription for :</h3>
           {row.original.billingDetails.map((item, i) => (
-            <div key={i} className='label'>
+            <div key={i} className='label text-capitalize'>
               <label>{item.billingMonth}</label>
-              <div className='amount'>{`${item.pricingInRupee}$`}</div>
+              <div className='amount'>{`₹${item.pricingInRupee}`}</div>
             </div>
           ))}
         </div>
@@ -374,7 +376,13 @@ function CompleteTable({ data }) {
                   <th
                     key={index}
                     {...column.getHeaderProps(
-                      column.getSortByToggleProps({ title: undefined, style: { minWidth: column.minWidth, width: column.width } })
+                      column.getSortByToggleProps({
+                        title: undefined,
+                        style: {
+                          minWidth: column.minWidth,
+                          width: column.width,
+                        },
+                      })
                     )}
                   >
                     {column.render('Header')}

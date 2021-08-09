@@ -60,7 +60,7 @@
   border: 1px solid #209ec5 !important;
   color: #fff !important;
 }
-.form-group{
+.form-group {
   padding-left: 10px;
   padding-right: 10px;
 }
@@ -69,7 +69,7 @@
   color: #209ec5;
   border: 1px solid #209ec5;
 }
-input[type="date"]{
+input[type='date'] {
   text-transform: uppercase;
 }
 @media screen and (min-width: 500px) {
@@ -133,7 +133,7 @@ input[type="date"]{
   font-size: 14px;
   line-height: 20px;
   letter-spacing: 0.01em;
-  color: #626364;
+  color: #929292;
 }
 .form-group select,
 .form-group .form-control {
@@ -144,6 +144,7 @@ input[type="date"]{
 .form-group select {
   appearance: none;
   position: relative;
+  color: #626364 !important;
   background: url('../../assets/images/down-arrow.svg') no-repeat 90%;
 }
 .btn-group-toggle label {
@@ -156,12 +157,13 @@ input[type="date"]{
 }
 .btn-group-toggle .btn-primary:not(:disabled):not(.disabled).active,
 .btn-group-toggle .btn-primary:not(:disabled):not(.disabled):active,
-.btn-group-toggle .show > .btn-primary.dropdown-toggle, .btn-primary.disabled.active {
+.btn-group-toggle .show > .btn-primary.dropdown-toggle,
+.btn-primary.disabled.active {
   /* background: rgba(32, 158, 197, 0.1) url('../../assets/images/check.svg') no-repeat 33px; */
   background-color: rgba(32, 158, 197, 0.1);
-  border: 1px solid #209EC5;
+  border: 1px solid #209ec5;
   /* border-radius: 4px; */
-  color: #209EC5;
+  color: #209ec5;
 }
 /* .btn-group-toggle .btn-primary.yearly:not(:disabled):not(.disabled).active,
 .btn-group-toggle .btn-primary.yearly:not(:disabled):not(.disabled):active,
@@ -211,19 +213,19 @@ select.form-control:-internal-autofill-selected {
   margin-top: 15px !important;
   margin-bottom: 10px !important;
 }
-.software-modal .modal-dialog{
+.software-modal .modal-dialog {
   max-width: 750px;
 }
-.software-modal .modal-content{
+.software-modal .modal-content {
   border-radius: 4px;
 }
-.share .col-md-6{
+.share .col-md-6 {
   padding-right: 0;
 }
-input[type="date"]::-webkit-calendar-picker-indicator{
+input[type='date']::-webkit-calendar-picker-indicator {
   background-image: url('../../assets/images/calendar.svg');
   background-position: center;
   background-size: 20px 20px;
   background-repeat: no-repeat;
- color: rgba(204,204,204,0);
+  color: rgba(204, 204, 204, 0);
 }

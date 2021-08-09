@@ -314,12 +314,12 @@ tfoot td {
   text-align: center;
 }
 .rowicon {
+  cursor: pointer;
   padding: 4px;
 }
 .rowicon img {
   /* vertical-align: initial; */
   width: 6px;
-  margin-bottom: 4px;
 }
 .tableFixHead th span {
   position: relative;
@@ -340,9 +340,9 @@ tfoot td {
   text-align: right !important;
   padding-right: 20px !important;
 }
-.subscrit .label{
+.subscrit .label {
   text-align: left;
 }
-.subscrit label{
+.subscrit label {
   margin-bottom: 0;
 }
