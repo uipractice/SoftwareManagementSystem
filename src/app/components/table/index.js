@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import DeleteImg from '../../assets/images/delete-icon.svg';
 import EditImg from '../../assets/images/edit-icon.svg';
 import ExpandImg from '../../assets/images/Rowexpand.svg';
-import UpDownImg from '../../assets/images/up-down.png';
+import UpDownImg from '../../assets/images/sort.svg';
 import axios from 'axios';
 import Modal from 'react-modal';
 import {
@@ -66,34 +66,41 @@ function CompleteTable({ data }) {
         Header: 'SL.NO',
         accessor: 'serial',
         // filterable: false,
+        width:75,
       },
 
       {
         Header: 'SOFTWARE',
         accessor: 'softwareName',
         sticky: 'left',
+        width: 136,
       },
       {
         Header: 'TYPE',
         accessor: 'softwareType',
         sticky: 'left',
+        width: 120,
       },
       {
         Header: 'TEAM',
         accessor: 'team',
         sticky: 'left',
+        width: 120,
       },
       {
         Header: 'USER/OWNER',
         accessor: 'owner',
+        width: 130,
       },
       {
         Header: 'BILLING CYCLE',
         accessor: 'billingCycle',
+        width: 130,
       },
       {
         Header: 'PRICING IN $',
         accessor: 'pricingInDollar',
+        width: 125,
         Cell: ({
           row: {
             original: { billingDetails },
@@ -108,6 +115,7 @@ function CompleteTable({ data }) {
       {
         Header: 'PRICING IN ₹',
         accessor: 'pricingInRupee',
+        width: 125,
         Cell: ({
           row: {
             original: { billingDetails },
@@ -122,6 +130,7 @@ function CompleteTable({ data }) {
       {
         Header: 'AMOUNT IN ₹',
         accessor: 'totalAmount',
+        width: 130,
         // id: "expander",
         Cell: ({
           row: {
@@ -136,17 +145,18 @@ function CompleteTable({ data }) {
                 (result, item) => (result += Number(item.pricingInRupee)),
                 0
               )}
-              {isExpanded ? (
-                <span className='rowicon'>
-                  {' '}
-                  <img src={ExpandImg} alt='Expand Icon' />{' '}
-                </span>
-              ) : (
-                <span className='rowicon'>
-                  {' '}
-                  <img src={ExpandImg} alt='Expand Icon' />
-                </span>
-              )}
+              
+              {billingCycle === 'monthly' &&
+                (isExpanded ? (
+                  <span className='rowicon'>
+                    <img src={ExpandImg} alt='Expand Icon' />{' '}
+                  </span>
+                ) : (
+                  <span className='rowicon'>
+                    <img src={ExpandImg} alt='Expand Icon' />
+                  </span>
+              ))}
+
             </span>
           </div>
         ),
@@ -154,6 +164,7 @@ function CompleteTable({ data }) {
       {
         Header: 'NEXT BILLING',
         accessor: 'nextBilling',
+        width: 120,
         Cell: ({
           row: {
             original: { nextBilling },
@@ -163,6 +174,7 @@ function CompleteTable({ data }) {
       {
         Header: 'TIMELINE',
         accessor: 'timeline',
+        width: 100,
         Cell: ({
           row: {
             original: { nextBilling },
@@ -188,6 +200,7 @@ function CompleteTable({ data }) {
       },
       {
         Header: 'ACTION',
+        width: 100,
         Cell: ({ row }) => (
           <div>
             <img
@@ -220,10 +233,12 @@ function CompleteTable({ data }) {
       <td colSpan='12' className='rowexpandable'>
         <div className='subscrit'>
           <h3 className='rowexpandfont'>Subscription for :</h3>
-          <div className='label'>
-            <label> March</label>
-            <div className='amount'> 70$</div>
-          </div>
+          {row.original.billingDetails.map((item, i) => (
+            <div key={i} className='label'>
+              <label>{item.billingMonth}</label>
+              <div className='amount'>{`${item.pricingInRupee}$`}</div>
+            </div>
+          ))}
         </div>
       </td>
     ),
@@ -257,14 +272,14 @@ function CompleteTable({ data }) {
   return (
     <>
       <div className='filter-row'>
-        <div>
+        <p>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eros leo
           suscipit ipsum id ut. <br />
           Et consectetur convallis etiam auctor ut orci. Sed id ac quis
           tristique vehicula.
           <br />
           Leo magna posuere pellentesque malesuada.
-        </div>
+        </p>
         <div>
           {/* <FormControl className={classes.formControl}>
             <Select
@@ -359,7 +374,7 @@ function CompleteTable({ data }) {
                   <th
                     key={index}
                     {...column.getHeaderProps(
-                      column.getSortByToggleProps({ title: undefined })
+                      column.getSortByToggleProps({ title: undefined, style: { minWidth: column.minWidth, width: column.width } })
                     )}
                   >
                     {column.render('Header')}

@@ -557,7 +557,7 @@ a:focus {
 .btn-primary:not(:disabled):not(.disabled).active,
 .btn-primary:not(:disabled):not(.disabled):active,
 .show > .btn-primary.dropdown-toggle {
-  background-color: #239ec5;
+  background-color: #cbf0fc;
   border-color: #239ec5;
 }
 .btn-primary.disabled,
@@ -566,6 +566,9 @@ a:focus {
 }
 .modal-cover .form-control {
   height: 44px;
+}
+.form-group .share-btn:active, .form-group .share-btn:focus{
+  background-color: #209ec5 !important;
 }
 .ReactModal__Overlay {
   background: rgba(83, 83, 83, 0.3) !important;

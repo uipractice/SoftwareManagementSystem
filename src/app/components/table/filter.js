@@ -21,7 +21,7 @@ function GlobalFilter({ filter, setFilter }) {
           onChange(e.target.value);
         }}
         // TODO: Uncomment and hide the search icon on keypress.
-        // type="search"
+        type="search"
         placeholder='Search'
       />
     </span>
