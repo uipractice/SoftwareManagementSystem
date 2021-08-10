@@ -313,14 +313,7 @@ tfoot td {
   min-width: 61px;
   text-align: center;
 }
-.rowicon {
-  cursor: pointer;
-  padding: 4px;
-}
-.rowicon img {
-  /* vertical-align: initial; */
-  width: 6px;
-}
+
 .tableFixHead th span {
   position: relative;
   width: 12px;

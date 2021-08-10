@@ -39,11 +39,13 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
       };
       setBillingDetails({
         ...rowData?.billingDetails?.[rowData.billingDetails.length - 1],
-        billingMonth: moment(rowData.nextBilling).format('MMMM').toLowerCase(),
+        ...(rowData?.billingCycle === 'monthly' && {
+          billingMonth: moment(rowData.nextBilling)
+            .format('MMMM')
+            .toLowerCase(),
+        }),
       });
     }
-    // else
-    //   setBillingDetails();
     setState(stateData);
   }, [isEdit, rowData]);
 
@@ -57,12 +59,18 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
       setState({
         ...state,
         [e.target.name]: e.target.value,
+        ...(e.target.name === 'billingCycle' && {
+          nextBilling: moment()
+            .add(1, `${e.target.value === 'monthly' ? 'month' : 'year'}`)
+            .format('YYYY-MM-DD'),
+        }),
       });
   }
 
   const handleReset = (e) => {
     e.preventDefault();
-    setState(defaultFormData);
+    setState({});
+    setBillingDetails({});
   };
 
   function handleSubmit(e) {
@@ -70,6 +78,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
     state.billingDetails.push({
       ...billingDetails,
       nextBilling: state.nextBilling,
+      createdAt: moment().format('YYYY-MM-DD'),
     });
     axios
       .post(
@@ -86,8 +95,6 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
           toast.success('Data Saved Successfully !', {
             autoClose: 2000,
           });
-          console.log(state);
-
           setTimeout(() => {
             window.location.reload();
           }, 2000);
@@ -95,11 +102,9 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
           toast.error('Data Saved FAILED !', {
             autoClose: 2000,
           });
-          console.log(state);
         }
       });
   }
-  console.log('satate', state);
   return (
     <Modal
       centered
@@ -209,7 +214,11 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                 value={state?.billingCycle}
                 disabled={isEdit}
                 className='mb-2'
-                onChange={(val) => setState({ ...state, billingCycle: val })}
+                onChange={(val) =>
+                  handleOnChange({
+                    target: { name: 'billingCycle', value: val },
+                  })
+                }
               >
                 <ToggleButton
                   disabled={isEdit}

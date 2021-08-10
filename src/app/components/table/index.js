@@ -1,7 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import DeleteImg from '../../assets/images/delete-icon.svg';
 import EditImg from '../../assets/images/edit-icon.svg';
-import ExpandImg from '../../assets/images/Rowexpand.svg';
 import UpDownImg from '../../assets/images/sort.svg';
 import axios from 'axios';
 import Modal from 'react-modal';
@@ -44,7 +43,7 @@ function CompleteTable({ data }) {
     axios
       .post(getApiUrl(`softwareInfo/update/${id}`), rowData)
       .then((res) => {
-        toast.success('s', {
+        toast.success('Data deleted successfully!', {
           autoClose: 2900,
         });
         setIsModalOpen(false);
@@ -140,25 +139,25 @@ function CompleteTable({ data }) {
         }) => {
           const isMonthly = billingCycle === 'monthly';
           return (
-            <div>
-              <span
-                {...(isMonthly &&
-                  getToggleRowExpandedProps({ title: undefined }))}
-              >
+            <div
+              className='d-flex justify-content-end align-items-center'
+              {...(isMonthly &&
+                getToggleRowExpandedProps({ title: undefined }))}
+            >
+              <div>
                 {billingDetails?.reduce(
                   (result, item) => (result += Number(item.pricingInRupee)),
                   0
                 )}
-
-                <span className='rowicon px-2 py-1'>
-                  {isMonthly &&
-                    (isExpanded ? (
-                      <img src={ExpandImg} alt='Expand Icon' /> //Down Arrow
-                    ) : (
-                      <img src={ExpandImg} alt='Expand Icon' />
-                    ))}
-                </span>
-              </span>
+                &nbsp;&nbsp;
+              </div>
+              {isMonthly && (
+                <div
+                  className={`arrow ${
+                    isExpanded ? 'arrow-bottom' : 'arrow-right'
+                  }`}
+                />
+              )}
             </div>
           );
         },
@@ -387,15 +386,12 @@ function CompleteTable({ data }) {
                   >
                     {column.render('Header')}
                     <span>
-                      {column.isSorted ? (
-                        column.isSortedDesc ? (
+                      {column.isSorted &&
+                        (column.isSortedDesc ? (
                           <img src={UpDownImg} alt='up' />
                         ) : (
                           <img src={UpDownImg} alt='down' />
-                        )
-                      ) : (
-                        ''
-                      )}
+                        ))}
                     </span>
                   </th>
                 ))}
