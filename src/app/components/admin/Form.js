@@ -18,7 +18,7 @@ const defaultFormData = {
   billingDetails: [], // pricingInDollar pricingInRupee billingMonth nextBilling
 };
 
-function Form({ isOpen, closeModal, rowData, isEdit = false }) {
+function Form({ isOpen, closeModal, rowData = {}, isEdit = false }) {
   const inputRef = useRef(null);
   const [state, setState] = useState({});
   const [billingDetails, setBillingDetails] = useState({
