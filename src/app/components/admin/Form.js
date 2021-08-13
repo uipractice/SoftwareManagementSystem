@@ -1,13 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
 import { ToggleButtonGroup, ToggleButton, Modal } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import NumberFormat from 'react-number-format';
+import axios from 'axios';
 import moment from 'moment';
+// Helpers
 import { getApiUrl } from '../utils/helper';
 
 toast.configure();
 
+// default fotm data
 const defaultFormData = {
   softwareName: '',
   softwareType: 'software',
@@ -18,7 +21,8 @@ const defaultFormData = {
   billingDetails: [], // pricingInDollar pricingInRupee billingMonth nextBilling
 };
 
-function Form({ isOpen, closeModal, rowData, isEdit = false }) {
+// component to render the form
+const Form = ({ isOpen, closeModal, rowData, isEdit = false }) => {
   const inputRef = useRef(null);
   const [state, setState] = useState({});
   const [billingDetails, setBillingDetails] = useState({
@@ -49,11 +53,20 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
     setState(stateData);
   }, [isEdit, rowData]);
 
-  function handleOnChange(e, key) {
+  /**
+   * Setting billing details.
+   *
+   * @param {object} e contains event object.
+   * @param {string} key contains string to check billing details.
+   * @param {bool} priceSection contains boolean value.
+   * @return null.
+ */
+  const handleOnChange = (e, key, priceSection) => {
     if (key === 'billingDetails') {
+      const value = priceSection ? e.target.value.replace(/[^0-9]/g, "") : e.target.value;
       setBillingDetails({
         ...billingDetails,
-        [e.target.name]: e.target.value,
+        [e.target.name]: value
       });
     } else
       setState({
@@ -67,13 +80,25 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
       });
   }
 
+  /**
+   * Resetting the billing details.
+   *
+   * @param {object} e contains event object.
+   * @return null.
+ */
   const handleReset = (e) => {
     e.preventDefault();
     setState({});
     setBillingDetails({});
   };
 
-  function handleSubmit(e) {
+  /**
+   * Displays the modal.
+   *
+   * @param {object} e contains event object.
+   * @return null.
+ */
+  const handleSubmit = (e) => {
     e.preventDefault();
     state.billingDetails.push({
       ...billingDetails,
@@ -276,22 +301,34 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
           <div className='row'>
             <div className='form-group col-md-6'>
               <label htmlFor='pricingInDollar'>Pricing in $</label>
-              <input
-                type='number'
+              <NumberFormat
+                thousandsGroupStyle="thousand"
+                prefix="$ "
+                decimalSeparator="."
+                displayType="input"
+                type="text"
                 className='form-control'
-                onChange={(e) => handleOnChange(e, 'billingDetails')}
+                onChange={(e) => handleOnChange(e, 'billingDetails', true)}
                 name='pricingInDollar'
                 value={billingDetails?.pricingInDollar}
+                thousandSeparator={true}
+                allowNegative={true} 
               />
             </div>
             <div className='form-group col-md-6'>
               <label htmlFor='pricingInRupee'>Pricing in ₹</label>
-              <input
-                type='number'
-                className='form-control'
-                onChange={(e) => handleOnChange(e, 'billingDetails')}
-                name='pricingInRupee'
+              <NumberFormat
+                thousandsGroupStyle="thousand"
                 value={billingDetails?.pricingInRupee}
+                prefix="₹ "
+                decimalSeparator="."
+                displayType="input"
+                type="text"
+                name='pricingInRupee'
+                className='form-control'
+                onChange={(e) => handleOnChange(e, 'billingDetails', true)}
+                thousandSeparator={true}
+                allowNegative={true} 
               />
             </div>
           </div>
