@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import DeleteImg from '../../assets/images/delete-icon.svg';
 import EditImg from '../../assets/images/edit-icon.svg';
-import UpDownImg from '../../assets/images/sort.svg';
+import UpDownImg from '../../assets/images/sorting.svg';
 import axios from 'axios';
 import Modal from 'react-modal';
 import {
