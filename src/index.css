@@ -192,6 +192,32 @@ a:focus {
   background: none;
 }
 
+.pointer {
+  cursor: pointer;
+}
+
+.text-capital {
+  text-transform: capitalize;
+}
+
+.arrow {
+  border: solid black;
+  border-width: 2px 2px 0 0;
+  padding: 2px;
+}
+.arrow-right {
+  transform: rotate(45deg);
+}
+.arrow-bottom {
+  transform: rotate(135deg);
+}
+.arrow-left {
+  transform: rotate(135deg);
+}
+.arrow-top {
+  transform: rotate(180deg);
+}
+
 .dd .dropdown-toggle::after {
   border: 0;
   background: url('./app/assets/images/dropdown.svg') no-repeat;
@@ -549,7 +575,7 @@ a:focus {
 .btn-primary:not(:disabled):not(.disabled).active,
 .btn-primary:not(:disabled):not(.disabled):active,
 .show > .btn-primary.dropdown-toggle {
-  background-color: #239ec5;
+  background-color: #cbf0fc;
   border-color: #239ec5;
 }
 .btn-primary.disabled,
@@ -558,6 +584,10 @@ a:focus {
 }
 .modal-cover .form-control {
   height: 44px;
+}
+.form-group .share-btn:active,
+.form-group .share-btn:focus {
+  background-color: #209ec5 !important;
 }
 .ReactModal__Overlay {
   background: rgba(83, 83, 83, 0.3) !important;

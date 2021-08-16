@@ -1,6 +1,6 @@
-import React, { Component } from "react";
-import "./Container.css";
-import Form from "./Form";
+import React, { Component } from 'react';
+import './Container.css';
+import Form from './Form';
 
 export class DashboardHeader extends Component {
   state = { isShown: false };
@@ -23,22 +23,22 @@ export class DashboardHeader extends Component {
   };
 
   toggleScrollLock = () => {
-    document.querySelector("html").classList.toggle("scroll-lock");
+    document.querySelector('html').classList.toggle('scroll-lock');
   };
 
   render() {
     return (
-      <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3">
-        <h5 className="project-head">LICENSING DETAILS</h5>
+      <div className='d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3'>
+        <h5 className='project-head'>LICENSING DETAILS</h5>
 
-        <div className="btn-toolbar mb-2 mb-md-0">
+        <div className='btn-toolbar mb-2 mb-md-0'>
           <button
-            type="button"
-            className="btn work_btn work_btn_blue center modal-button"
+            type='button'
+            className='btn work_btn work_btn_blue center modal-button'
             ref={this.buttonRef}
             onClick={this.showModal}
           >
-            + ADD SOFTWARE TOOL
+            + ADD SOFTWARE/TOOL
           </button>
 
           {this.state.isShown && (

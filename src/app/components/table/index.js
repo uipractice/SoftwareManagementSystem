@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import DeleteImg from '../../assets/images/delete-icon.svg';
 import EditImg from '../../assets/images/edit-icon.svg';
-import UpDownImg from '../../assets/images/up-down.png';
+import UpDownImg from '../../assets/images/sort.svg';
 import axios from 'axios';
 import Modal from 'react-modal';
 import {
@@ -9,6 +9,7 @@ import {
   useSortBy,
   useGlobalFilter,
   usePagination,
+  useExpanded,
 } from 'react-table';
 import './table.css';
 import GlobalFilter from './filter';
@@ -42,7 +43,7 @@ function CompleteTable({ data }) {
     axios
       .post(getApiUrl(`softwareInfo/update/${id}`), rowData)
       .then((res) => {
-        toast.success('s', {
+        toast.success('Data deleted successfully!', {
           autoClose: 2900,
         });
         setIsModalOpen(false);
@@ -63,47 +64,108 @@ function CompleteTable({ data }) {
       {
         Header: 'SL.NO',
         accessor: 'serial',
-        // filterable: false,
+        width: 75,
       },
 
       {
         Header: 'SOFTWARE',
         accessor: 'softwareName',
         sticky: 'left',
+        width: 136,
       },
       {
         Header: 'TYPE',
-        accessor: 'selectType',
+        accessor: 'softwareType',
         sticky: 'left',
+        width: 120,
       },
       {
         Header: 'TEAM',
-        accessor: 'teamName',
+        accessor: 'team',
         sticky: 'left',
+        width: 120,
       },
       {
         Header: 'USER/OWNER',
         accessor: 'owner',
+        width: 130,
       },
       {
-        Header: 'BILLIG CYCLE',
+        Header: 'BILLING CYCLE',
         accessor: 'billingCycle',
+        width: 130,
       },
       {
         Header: 'PRICING IN $',
         accessor: 'pricingInDollar',
+        width: 125,
+        Cell: ({
+          row: {
+            original: { billingDetails },
+          },
+        }) =>
+          `${
+            billingDetails?.length
+              ? billingDetails[billingDetails.length - 1]?.pricingInDollar
+              : ''
+          }`,
       },
       {
         Header: 'PRICING IN ₹',
         accessor: 'pricingInRupee',
+        width: 125,
+        Cell: ({
+          row: {
+            original: { billingDetails },
+          },
+        }) =>
+          `${
+            billingDetails?.length
+              ? billingDetails[billingDetails.length - 1]?.pricingInRupee
+              : ''
+          }`,
       },
       {
         Header: 'AMOUNT IN ₹',
         accessor: 'totalAmount',
+        width: 130,
+        // id: "expander",
+        Cell: ({
+          row: {
+            original: { billingDetails, billingCycle },
+            getToggleRowExpandedProps,
+            isExpanded,
+          },
+        }) => {
+          const isMonthly = billingCycle === 'monthly';
+          return (
+            <div
+              className='d-flex justify-content-end align-items-center'
+              {...(isMonthly &&
+                getToggleRowExpandedProps({ title: undefined }))}
+            >
+              <div>
+                {billingDetails?.reduce(
+                  (result, item) => (result += Number(item.pricingInRupee)),
+                  0
+                )}
+                &nbsp;&nbsp;
+              </div>
+              {isMonthly && (
+                <div
+                  className={`arrow ${
+                    isExpanded ? 'arrow-bottom' : 'arrow-right'
+                  }`}
+                />
+              )}
+            </div>
+          );
+        },
       },
       {
         Header: 'NEXT BILLING',
         accessor: 'nextBilling',
+        width: 120,
         Cell: ({
           row: {
             original: { nextBilling },
@@ -113,6 +175,7 @@ function CompleteTable({ data }) {
       {
         Header: 'TIMELINE',
         accessor: 'timeline',
+        width: 100,
         Cell: ({
           row: {
             original: { nextBilling },
@@ -138,10 +201,11 @@ function CompleteTable({ data }) {
       },
       {
         Header: 'ACTION',
+        width: 100,
         Cell: ({ row }) => (
           <div>
             <img
-              className='p-1'
+              className='p-2 pointer'
               src={EditImg}
               alt='Evoke Technologies'
               onClick={() => {
@@ -150,7 +214,7 @@ function CompleteTable({ data }) {
               }}
             />
             <img
-              className='p-1'
+              className='p-2 pointer'
               src={DeleteImg}
               alt='Evoke Technologies'
               onClick={() => {
@@ -162,6 +226,23 @@ function CompleteTable({ data }) {
         ),
       },
     ],
+    []
+  );
+
+  const renderRowSubComponent = useCallback(
+    ({ row }) => (
+      <td colSpan='12' className='rowexpandable'>
+        <div className='subscrit'>
+          <h3 className='rowexpandfont'>Subscription for :</h3>
+          {row.original.billingDetails.map((item, i) => (
+            <div key={i} className='label text-capitalize'>
+              <label>{item.billingMonth}</label>
+              <div className='amount'>{`₹${item.pricingInRupee}`}</div>
+            </div>
+          ))}
+        </div>
+      </td>
+    ),
     []
   );
 
@@ -183,6 +264,7 @@ function CompleteTable({ data }) {
     { columns, data, initialState: { pageSize: 8 } },
     useGlobalFilter,
     useSortBy,
+    useExpanded,
     usePagination
   );
 
@@ -191,14 +273,14 @@ function CompleteTable({ data }) {
   return (
     <>
       <div className='filter-row'>
-        <div>
+        <p>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eros leo
           suscipit ipsum id ut. <br />
           Et consectetur convallis etiam auctor ut orci. Sed id ac quis
           tristique vehicula.
           <br />
           Leo magna posuere pellentesque malesuada.
-        </div>
+        </p>
         <div>
           {/* <FormControl className={classes.formControl}>
             <Select
@@ -273,7 +355,7 @@ function CompleteTable({ data }) {
               <div className='col-md-6'>
                 <button
                   onClick={handleUpdateStatus}
-                  disabled={!!rowData?.deleteReason}
+                  disabled={!rowData?.deleteReason}
                   className='form-control btn btn-primary delete-btn'
                 >
                   Delete
@@ -287,25 +369,29 @@ function CompleteTable({ data }) {
       <div className='table-responsive grid tableFixHead'>
         <table {...getTableProps()} className='table table-striped '>
           <thead>
-            {headerGroups.map((headerGroup) => (
-              <tr {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map((column) => (
+            {headerGroups.map((headerGroup, i) => (
+              <tr key={i} {...headerGroup.getHeaderGroupProps()}>
+                {headerGroup.headers.map((column, index) => (
                   <th
+                    key={index}
                     {...column.getHeaderProps(
-                      column.getSortByToggleProps({ title: undefined })
+                      column.getSortByToggleProps({
+                        title: undefined,
+                        style: {
+                          minWidth: column.minWidth,
+                          width: column.width,
+                        },
+                      })
                     )}
                   >
                     {column.render('Header')}
                     <span>
-                      {column.isSorted ? (
-                        column.isSortedDesc ? (
+                      {column.isSorted &&
+                        (column.isSortedDesc ? (
                           <img src={UpDownImg} alt='up' />
                         ) : (
                           <img src={UpDownImg} alt='down' />
-                        )
-                      ) : (
-                        ''
-                      )}
+                        ))}
                     </span>
                   </th>
                 ))}
@@ -313,31 +399,39 @@ function CompleteTable({ data }) {
             ))}
           </thead>
           <tbody {...getTableBodyProps()}>
-            {page.map((row) => {
+            {page.map((row, index) => {
               prepareRow(row);
               return (
-                <tr {...row.getRowProps()}>
-                  {row.cells.map((cell) => {
-                    let style = {};
-                    style = { textAlign: 'left' };
-                    if (cell.column.id === 'status') {
-                      if (cell.value === 'Pending') {
-                        style = { color: '#F16A21', textAlign: 'left' };
-                      } else if (cell.value === 'Submitted') {
-                        style = { color: '#0066FF', textAlign: 'left' };
-                      } else if (cell.value === 'Completed') {
-                        style = { color: '#13BC86', textAlign: 'left' };
-                      } else if (cell.value === 'Approved') {
-                        style = { color: 'green', textAlign: 'left' };
+                <React.Fragment key={index}>
+                  <tr className='text-capital' {...row.getRowProps()}>
+                    {row.cells.map((cell, index) => {
+                      let style = {};
+                      style = { textAlign: 'left' };
+                      if (cell.column.id === 'status') {
+                        if (cell.value === 'Pending') {
+                          style = { color: '#F16A21', textAlign: 'left' };
+                        } else if (cell.value === 'Submitted') {
+                          style = { color: '#0066FF', textAlign: 'left' };
+                        } else if (cell.value === 'Completed') {
+                          style = { color: '#13BC86', textAlign: 'left' };
+                        } else if (cell.value === 'Approved') {
+                          style = { color: 'green', textAlign: 'left' };
+                        }
                       }
-                    }
-                    return (
-                      <td {...cell.getCellProps({ style })}>
-                        {cell.render('Cell')}
-                      </td>
-                    );
-                  })}
-                </tr>
+                      return (
+                        <td key={index} {...cell.getCellProps({ style })}>
+                          {cell.render('Cell')}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                  {row.isExpanded ? (
+                    <tr>
+                      {/* <td colSpan={visibleColumns.length}></td> */}
+                      {renderRowSubComponent({ row })}
+                    </tr>
+                  ) : null}
+                </React.Fragment>
               );
             })}
           </tbody>
@@ -350,7 +444,7 @@ function CompleteTable({ data }) {
           onChange={(e) => setPageSize(Number(e.target.value))}
           className='pageNum'
         >
-          {[8, 10, 20, 50, 100].map((pageSize) => (
+          {[8, 10, 20, 50, 100].map((pageSize, i) => (
             <option key={pageSize} value={pageSize}>
               {pageSize}
             </option>
