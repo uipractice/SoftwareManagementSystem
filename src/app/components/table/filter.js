@@ -6,13 +6,15 @@ function GlobalFilter({ filter, setFilter }) {
   useEffect(() => {
     inputRef.current.focus();
   }, []);
-
   const [value, setValue] = useState(filter);
+  const handleSubmit = () => {
+    setValue('');
+  };
   const onChange = useAsyncDebounce((value) => {
     setFilter(value || undefined);
   }, 1000);
   return (
-    <span>
+    <form>
       <input
         ref={inputRef}
         value={value || ''}
@@ -23,8 +25,15 @@ function GlobalFilter({ filter, setFilter }) {
         // TODO: Uncomment and hide the search icon on keypress.
         type="search"
         placeholder='Search'
+        id='search'
+        className={value ? 'searchClose' : ''}
       />
-    </span>
+      <button
+        type='reset'
+        className='close-icon'
+        onClick={handleSubmit}
+      ></button>
+    </form>
   );
 }
 

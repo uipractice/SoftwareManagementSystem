@@ -201,8 +201,8 @@ a:focus {
 }
 
 .arrow {
-  border: solid black;
-  border-width: 2px 2px 0 0;
+  border: solid #57565C;
+  border-width: 1px 1px 0 0;
   padding: 2px;
 }
 .arrow-right {
