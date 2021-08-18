@@ -7,7 +7,7 @@ function Feedback({ isOpen, closeModal }) {
       centered
       style={{ borderRadius: '0 !important' }}
       show={isOpen}
-      onHide={() => closeModal(false)}
+      onHide={(e) => closeModal(e, true)}
       className='feedback-modal'
     >
       <Modal.Header closeButton className='modal-area'>
@@ -25,7 +25,7 @@ function Feedback({ isOpen, closeModal }) {
             name='deleteReason'
           />
           <Button
-            onClick={() => closeModal(false)}
+            onClick={(e) => closeModal(e, false)}
             autoFocus
             className='feedback-submit'
           >
