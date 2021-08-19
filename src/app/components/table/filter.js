@@ -1,37 +1,27 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { useAsyncDebounce } from 'react-table';
 
-function GlobalFilter({ filter, setFilter }) {
-  const inputRef = useRef(null);
-  useEffect(() => {
-    inputRef.current.focus();
-  }, []);
-  const [value, setValue] = useState(filter);
-  const handleSubmit = () => {
-    setValue('');
-  };
+function GlobalFilter({ setFilter }) {
+  const [searchText, setSearchText] = useState();
   const onChange = useAsyncDebounce((value) => {
-    setFilter(value || undefined);
+    setFilter(value);
   }, 1000);
   return (
     <form>
       <input
-        ref={inputRef}
-        value={value || ''}
         onChange={(e) => {
-          setValue(e.target.value);
+          setSearchText(e.target.value);
           onChange(e.target.value);
         }}
-        // TODO: Uncomment and hide the search icon on keypress.
-        type="search"
+        type='search'
         placeholder='Search'
         id='search'
-        className={value ? 'searchClose' : ''}
+        className={searchText ? 'searchClose' : ''}
       />
       <button
         type='reset'
         className='close-icon'
-        onClick={handleSubmit}
+        onClick={() => onChange('')}
       ></button>
     </form>
   );
