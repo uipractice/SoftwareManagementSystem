@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import DeleteImg from '../../assets/images/delete-icon.svg';
 import EditImg from '../../assets/images/edit-icon.svg';
 import UpDownImg from '../../assets/images/sorting.svg';
@@ -24,10 +24,29 @@ import { getApiUrl } from '../utils/helper';
 toast.configure();
 
 function CompleteTable({ data }) {
+  const [filteredData, setFilteredData] = useState([]);
+  const [searchValue, setSearchValue] = useState();
   const [rowData, setRowData] = useState({});
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditFormOpen, toggleEditForm] = useState(false);
+
+  useEffect(() => {
+    setDefaultFilterData(data);
+  }, [data]);
+
+  const setDefaultFilterData = (data) => {
+    if (data?.length) {
+      let filterResult = data.filter((row) => row.status !== 'Deleted');
+      setFilteredData(addSerialNo(filterResult));
+    }
+  };
+
+  const addSerialNo = (dataArr = [], tableFilter = false) => {
+    return dataArr?.map((value, index) => ({
+      ...(tableFilter ? value.original : value),
+      serial: index + 1,
+    }));
+  };
 
   function handleInputChange(evt) {
     setRowData({
@@ -54,10 +73,6 @@ function CompleteTable({ data }) {
       })
       .catch((err) => console.log(err.response));
   };
-
-  data.forEach((value, index) => {
-    value.serial = index + 1;
-  });
 
   const columns = React.useMemo(
     () => [
@@ -185,15 +200,19 @@ function CompleteTable({ data }) {
           return (
             <div
               className={`timeline ${
-                days >= 20
+                days >= 10
                   ? `timelineGreen`
-                  : days >= 5
+                  : days > 7
                   ? `timelineYellow`
                   : `timelineRed`
               }`}
             >
               <p>
-                {days === 0 ? `Today` : days < 0 ? `Expired` : `${days} days`}
+                {days === 0
+                  ? `Today`
+                  : days < 0
+                  ? `Expired`
+                  : `${days} day${days === 1 ? '' : 's'}`}
               </p>
             </div>
           );
@@ -260,8 +279,9 @@ function CompleteTable({ data }) {
     prepareRow,
     state,
     setGlobalFilter,
+    rows: filteredTableData,
   } = useTable(
-    { columns, data, initialState: { pageSize: 8 } },
+    { columns, data: filteredData, initialState: { pageSize: 8 } },
     useGlobalFilter,
     useSortBy,
     useExpanded,
@@ -269,6 +289,12 @@ function CompleteTable({ data }) {
   );
 
   const { globalFilter, pageIndex, pageSize } = state;
+
+  useEffect(() => {
+    if (filteredTableData?.length && globalFilter && searchValue)
+      setFilteredData(addSerialNo(filteredTableData, true));
+    else if (searchValue === '') setFilteredData(addSerialNo(data));
+  }, [searchValue]);
 
   return (
     <>
@@ -282,26 +308,12 @@ function CompleteTable({ data }) {
           Leo magna posuere pellentesque malesuada.
         </p>
         <div>
-          {/* <FormControl className={classes.formControl}>
-            <Select
-              value={age}
-              onChange={handleChange}
-              displayEmpty
-              className={classes.selectEmpty}
-              inputProps={{ 'aria-label': 'Without label' }}
-            >
-              <MenuItem value='' disabled>
-                All Records
-              </MenuItem>
-              <MenuItem value={10}>Pending</MenuItem>
-              <MenuItem value={20}>Completed</MenuItem>
-              <MenuItem value={30}>Submitted</MenuItem>
-              <MenuItem value={40}>Active</MenuItem>
-              <MenuItem value={50}>Deleted</MenuItem>
-            </Select>
-          </FormControl> */}
-
-          <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
+          <GlobalFilter
+            setFilter={(value) => {
+              setGlobalFilter(value);
+              setSearchValue(value);
+            }}
+          />
         </div>
       </div>
 
