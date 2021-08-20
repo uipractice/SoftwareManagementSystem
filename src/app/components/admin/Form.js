@@ -90,6 +90,40 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
       });
   };
 
+  function handleEmailChange(e, email) {
+    if (e.key === '@' && !state.autoFill && email) {
+      setState({
+        ...state,
+        [e.target.name]: e.target.value + '@evoketechnologies.com',
+        autoFill: true,
+      });
+    } else if (!state.autoFill) {
+      setState({
+        ...state,
+        [e.target.name]: e.target.value,
+        autoFill: false,
+      });
+    } else {
+      setState({
+        ...state,
+        autoFill: false,
+      });
+    }
+  }
+
+  function ValidateEmail(inputText) {
+    const mailformat =
+      /^([a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@evoketechnologies.com(\s*,\s*|\s*$))*$/;
+    if (inputText.match(mailformat)) {
+      return true;
+    } else {
+      toast.error('Invalid email ID !', {
+        autoClose: 1800,
+      });
+      return false;
+    }
+  }
+
   /**
    * Resetting the billing details.
    *
@@ -140,31 +174,33 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
     };
     state.billingDetails.push(newBillingRecord);
     console.log('state', state);
-    axios
-      .post(
-        `${
-          isEdit
-            ? getApiUrl(`softwareInfo/update/${rowData?._id}`)
-            : getApiUrl(`softwareInfo/create`)
-        }`,
-        isEdit ? newBillingRecord : state
-      )
-      .then((res) => {
-        if (res.data && Object.keys(res.data)?.length) {
-          uploadInvoiceFiles(res.data);
-          // closeModal();
-          // toast.success('Data Saved Successfully !', {
-          //   autoClose: 1000,
-          // });
-          // setTimeout(() => {
-          //   window.location.reload();
-          // }, 1000);
-        } else {
-          toast.error('Data Saved FAILED !', {
-            autoClose: 1000,
-          });
-        }
-      });
+    if (ValidateEmail(state.email)) {
+      axios
+        .post(
+          `${
+            isEdit
+              ? getApiUrl(`softwareInfo/update/${rowData?._id}`)
+              : getApiUrl(`softwareInfo/create`)
+          }`,
+          isEdit ? newBillingRecord : state
+        )
+        .then((res) => {
+          if (res.data && Object.keys(res.data)?.length) {
+            uploadInvoiceFiles(res.data);
+            // closeModal();
+            // toast.success('Data Saved Successfully !', {
+            //   autoClose: 1000,
+            // });
+            // setTimeout(() => {
+            //   window.location.reload();
+            // }, 1000);
+          } else {
+            toast.error('Data Saved FAILED !', {
+              autoClose: 1000,
+            });
+          }
+        });
+    }
   };
 
   return (
@@ -265,13 +301,15 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
             </div>
             <div className='form-group col-md-4'>
               <label htmlFor='email'>Email Id * </label>
-              <input
-                type='text'
+              <textarea
+                type='textarea'
                 className='form-control'
-                onChange={handleOnChange}
+                onChange={(e) => handleEmailChange(e, true)}
+                onKeyDown={(e) => handleEmailChange(e, true)}
                 name='email'
-                disabled={isEdit}
-                value={state?.email}
+                value={state.email}
+                rows='3'
+                cols='50'
               />
             </div>
           </div>
