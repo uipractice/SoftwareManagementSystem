@@ -187,13 +187,13 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
         .then((res) => {
           if (res.data && Object.keys(res.data)?.length) {
             uploadInvoiceFiles(res.data);
-            // closeModal();
-            // toast.success('Data Saved Successfully !', {
-            //   autoClose: 1000,
-            // });
-            // setTimeout(() => {
-            //   window.location.reload();
-            // }, 1000);
+            closeModal();
+            toast.success('Data Saved Successfully !', {
+              autoClose: 1000,
+            });
+            setTimeout(() => {
+              window.location.reload();
+            }, 1000);
           } else {
             toast.error('Data Saved FAILED !', {
               autoClose: 1000,
