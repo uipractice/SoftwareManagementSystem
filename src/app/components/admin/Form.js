@@ -88,6 +88,40 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
       });
   };
 
+  function handleEmailChange(e, email) {
+    if (e.key === '@' && !state.autoFill && email) {
+      setState({
+        ...state,
+        [e.target.name]: e.target.value + '@evoketechnologies.com',
+        autoFill: true,
+      });
+    } else if (!state.autoFill) {
+      setState({
+        ...state,
+        [e.target.name]: e.target.value,
+        autoFill: false,
+      });
+    } else {
+      setState({
+        ...state,
+        autoFill: false,
+      });
+    }
+  }
+
+  function ValidateEmail(inputText) {
+    const mailformat =
+      /^([a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@evoketechnologies.com(\s*,\s*|\s*$))*$/;
+    if (inputText.match(mailformat)) {
+      return true;
+    } else {
+      toast.error('Invalid email ID !', {
+        autoClose: 1800,
+      });
+      return false;
+    }
+  }
+
   /**
    * Resetting the billing details.
    *
@@ -118,7 +152,9 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
       nextBilling: state.nextBilling,
       createdAt: moment().format('YYYY-MM-DD'),
     });
-    console.log('state', state);
+    // console.log('state', state);
+    if (ValidateEmail(state.email)) {
+      console.log('state', state);
     // axios
     //   .post(
     //     `${
@@ -143,6 +179,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
     //       });
     //     }
     //   });
+    }
   };
   return (
     <Modal
@@ -242,13 +279,15 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
             </div>
             <div className='form-group col-md-4'>
               <label htmlFor='email'>Email Id * </label>
-              <input
-                type='text'
+              <textarea
+                type='textarea'
                 className='form-control'
-                onChange={handleOnChange}
+                onChange={(e) => handleEmailChange(e, true)}
+                onKeyDown={(e) => handleEmailChange(e, true)}
                 name='email'
-                disabled={isEdit}
-                defaultValue={state?.email}
+                value={state.email}
+                rows='3'
+                cols='50'
               />
             </div>
           </div>
