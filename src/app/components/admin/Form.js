@@ -5,7 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import NumberFormat from 'react-number-format';
 import axios from 'axios';
 import moment from 'moment';
-import Upload from '../../assets/images/upload.svg';
+import Upload from '../../assets/images/download.svg';
 // Helpers
 import { getApiUrl } from '../utils/helper';
 
@@ -18,18 +18,18 @@ const defaultFormData = {
   team: '',
   owner: '',
   email: '',
-  file: null,
   websiteUrl: '',
   billingCycle: 'monthly',
   nextBilling: moment().add(1, 'month').format('YYYY-MM-DD'),
-  billingDetails: [], // pricingInDollar pricingInRupee billingMonth nextBilling, desc
+  billingDetails: [], // pricingInDollar pricingInRupee billingMonth nextBilling, desc, invoiceFiles
 };
 
-const nonMandatoryFields = ['description', 'websiteUrl', 'email'];
+const nonMandatoryFields = ['websiteUrl', 'description', 'invoiceFiles'];
 
 function Form({ isOpen, closeModal, rowData, isEdit = false }) {
   const inputRef = useRef(null);
   const [state, setState] = useState({});
+  const [invoiceFiles, setInvoiceFiles] = useState(null);
   const [billingDetails, setBillingDetails] = useState({
     pricingInDollar: '',
     pricingInRupee: '',
@@ -47,14 +47,16 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
           .add(1, 'month')
           .format('YYYY-MM-DD'),
       };
-      setBillingDetails({
+      const prevBillingDetails = {
         ...rowData?.billingDetails?.[rowData.billingDetails.length - 1],
         ...(rowData?.billingCycle === 'monthly' && {
           billingMonth: moment(rowData.nextBilling)
             .format('MMMM')
             .toLowerCase(),
         }),
-      });
+      };
+      delete prevBillingDetails._id;
+      setBillingDetails(prevBillingDetails);
     }
     setState(stateData);
   }, [isEdit, rowData]);
@@ -88,6 +90,40 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
       });
   };
 
+  function handleEmailChange(e, email) {
+    if (e.key === '@' && !state.autoFill && email) {
+      setState({
+        ...state,
+        [e.target.name]: e.target.value + '@evoketechnologies.com',
+        autoFill: true,
+      });
+    } else if (!state.autoFill) {
+      setState({
+        ...state,
+        [e.target.name]: e.target.value,
+        autoFill: false,
+      });
+    } else {
+      setState({
+        ...state,
+        autoFill: false,
+      });
+    }
+  }
+
+  function ValidateEmail(inputText) {
+    const mailformat =
+      /^([a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@evoketechnologies.com(\s*,\s*|\s*$))*$/;
+    if (inputText.match(mailformat)) {
+      return true;
+    } else {
+      toast.error('Invalid email ID !', {
+        autoClose: 1800,
+      });
+      return false;
+    }
+  }
+
   /**
    * Resetting the billing details.
    *
@@ -97,12 +133,30 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
   const handleReset = (e) => {
     e.preventDefault();
     setState(defaultFormData);
+    setInvoiceFiles(null);
     setBillingDetails({
       pricingInDollar: '',
       pricingInRupee: '',
       billingMonth: moment().format('MMMM').toLowerCase(),
       description: '',
     });
+  };
+
+  const uploadInvoiceFiles = ({ _id: id, ...rest }, billing) => {
+    if (invoiceFiles && Object.keys(invoiceFiles).length) {
+      const formData = new FormData();
+      for (let file in invoiceFiles) {
+        formData.append('fileName', invoiceFiles[file]);
+      }
+      axios
+        .post(getApiUrl(`softwareInfo/multiple/${id}`), formData)
+        .then((res) => {
+          console.log('Files Uploaded : ', res.data.status);
+        })
+        .catch((err) => {
+          console.log('Error in Upload : ', err);
+        });
+    }
   };
 
   /**
@@ -113,37 +167,42 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
    */
   const handleSubmit = (e) => {
     e.preventDefault();
-    state.billingDetails.push({
+    const newBillingRecord = {
       ...billingDetails,
       nextBilling: state.nextBilling,
       createdAt: moment().format('YYYY-MM-DD'),
-    });
+    };
+    state.billingDetails.push(newBillingRecord);
     console.log('state', state);
-    // axios
-    //   .post(
-    //     `${
-    //       isEdit
-    //         ? getApiUrl(`softwareInfo/update/${rowData?._id}`)
-    //         : getApiUrl(`softwareInfo/create`)
-    //     }`,
-    //     state
-    //   )
-    //   .then((res) => {
-    //     if (res.data === 'success') {
-    //       closeModal();
-    //       toast.success('Data Saved Successfully !', {
-    //         autoClose: 2000,
-    //       });
-    //       setTimeout(() => {
-    //         window.location.reload();
-    //       }, 2000);
-    //     } else {
-    //       toast.error('Data Saved FAILED !', {
-    //         autoClose: 2000,
-    //       });
-    //     }
-    //   });
+    if (ValidateEmail(state.email)) {
+      axios
+        .post(
+          `${
+            isEdit
+              ? getApiUrl(`softwareInfo/update/${rowData?._id}`)
+              : getApiUrl(`softwareInfo/create`)
+          }`,
+          isEdit ? newBillingRecord : state
+        )
+        .then((res) => {
+          if (res.data && Object.keys(res.data)?.length) {
+            uploadInvoiceFiles(res.data);
+            // closeModal();
+            // toast.success('Data Saved Successfully !', {
+            //   autoClose: 1000,
+            // });
+            // setTimeout(() => {
+            //   window.location.reload();
+            // }, 1000);
+          } else {
+            toast.error('Data Saved FAILED !', {
+              autoClose: 1000,
+            });
+          }
+        });
+    }
   };
+
   return (
     <Modal
       centered
@@ -202,18 +261,18 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                 onChange={handleOnChange}
                 name='softwareName'
                 disabled={isEdit}
-                defaultValue={state?.softwareName}
+                value={state?.softwareName}
               />
             </div>
             <div className='form-group col-md-4'>
-              <label htmlFor='url'>URL</label>
+              <label htmlFor='websiteUrl'>URL</label>
               <input
                 type='text'
                 className='form-control'
                 onChange={handleOnChange}
                 name='websiteUrl'
                 disabled={isEdit}
-                defaultValue={state?.websiteUrl}
+                value={state?.websiteUrl}
               />
             </div>
           </div>
@@ -226,7 +285,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                 onChange={handleOnChange}
                 name='team'
                 disabled={isEdit}
-                defaultValue={state?.team}
+                value={state?.team}
               />
             </div>
             <div className='form-group col-md-4'>
@@ -237,18 +296,20 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                 onChange={handleOnChange}
                 name='owner'
                 disabled={isEdit}
-                defaultValue={state?.owner}
+                value={state?.owner}
               />
             </div>
             <div className='form-group col-md-4'>
               <label htmlFor='email'>Email Id * </label>
-              <input
-                type='text'
+              <textarea
+                type='textarea'
                 className='form-control'
-                onChange={handleOnChange}
+                onChange={(e) => handleEmailChange(e, true)}
+                onKeyDown={(e) => handleEmailChange(e, true)}
                 name='email'
-                disabled={isEdit}
-                defaultValue={state?.email}
+                value={state.email}
+                rows='3'
+                cols='50'
               />
             </div>
           </div>
@@ -357,7 +418,6 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
             <div className='form-group col-md-6'>
               <label htmlFor='description'>Pricing Description</label>
               <textarea
-                onChange={(v) => console.log(v.target.value)}
                 type='text'
                 className='form-control long'
                 onChange={(e) => handleOnChange(e, 'billingDetails')}
@@ -367,25 +427,36 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
               />
             </div>
             <div className='form-group col-md-6'>
-              <label htmlFor='invoice'>Upload Invoice</label>
+              <label htmlFor='invoiceFiles'>Upload Invoice</label>
               <div
                 className={`form-control long dashed-box ${
-                  !state.file && 'pointer'
+                  !invoiceFiles && 'pointer'
                 }`}
-                {...(!state.file && {
+                {...(!invoiceFiles && {
                   onClick: (e) => document.getElementById('file')?.click(),
                 })}
               >
                 <div className='d-flex justify-content-center align-items-center h-100'>
-                  {state.file ? (
-                    <span>
-                      {state.file.name}
-                      &nbsp;&nbsp;
-                      <button
-                        className='close-icon'
-                        onClick={() => setState({ ...state, file: null })}
-                      ></button>
-                    </span>
+                  {invoiceFiles && Object.keys(invoiceFiles).length ? (
+                    <div>
+                      {invoiceFiles &&
+                        Object.keys(invoiceFiles)?.map((key) => (
+                          <div>
+                            <span
+                              key={invoiceFiles[key].name}
+                              className='file-close-icon'
+                              onClick={() => {
+                                const fileState = { ...invoiceFiles };
+                                delete fileState[key];
+                                setInvoiceFiles(fileState);
+                              }}
+                            >
+                              {invoiceFiles[key].name}
+                              &nbsp;&nbsp;
+                            </span>
+                          </div>
+                        ))}
+                    </div>
                   ) : (
                     <span>
                       Click here to upload&nbsp;&nbsp;
@@ -397,12 +468,10 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
               <input
                 id='file'
                 type='file'
-                name='invoice'
+                name='invoiceFiles'
+                multiple={true} // single file upload
                 className='form-control '
-                // value={billingDetails?.invoice}
-                onChange={(e) =>
-                  setState({ ...state, file: e.target.files[0] })
-                }
+                onChange={(e) => setInvoiceFiles(e.target.files)}
                 style={{ display: 'none' }}
               />
             </div>
@@ -420,15 +489,13 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                 className='form-control btn btn-primary share-btn'
                 onClick={handleSubmit}
                 disabled={
-                  Object.keys(state).some(
-                    (key) =>
-                      !nonMandatoryFields.includes[state[key]] &&
-                      state[key] === ''
-                  ) &&
-                  Object.keys(billingDetails).some(
-                    (key) =>
-                      !nonMandatoryFields.includes[billingDetails[key]] &&
-                      billingDetails[key] === ''
+                  Object.keys(state).some((key) =>
+                    nonMandatoryFields.includes(key) ? false : state[key] === ''
+                  ) ||
+                  Object.keys(billingDetails).some((key) =>
+                    nonMandatoryFields.includes(key)
+                      ? false
+                      : billingDetails[key] === ''
                   )
                 }
               >
