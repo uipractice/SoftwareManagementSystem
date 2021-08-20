@@ -670,6 +670,10 @@ a:focus {
 .feedback-modal .MuiDialogActions-root {
   justify-content: center;
 }
+.feedback-modal button.feedback-submit:disabled {
+  pointer-events: none;
+  opacity: 30%;
+}
 .feedback-modal textarea {
   border: 1px solid #bdbdbd;
   box-sizing: border-box;

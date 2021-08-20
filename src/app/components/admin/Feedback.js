@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal, Button } from 'react-bootstrap';
 
-function Feedback({ isOpen, closeModal }) {
+function Feedback({ isOpen, closeModal, feedbackText, handleInputChange }) {
   return (
     <Modal
       centered
@@ -21,15 +21,16 @@ function Feedback({ isOpen, closeModal }) {
             type='text'
             autoFocus={true}
             style={{ color: 'black' }}
-            // onChange={handleInputChange}
+            onChange={(e) => handleInputChange(e)}
             name='deleteReason'
           />
           <Button
             onClick={(e) => closeModal(e, false)}
             autoFocus
             className='feedback-submit'
+            disabled={feedbackText === ''}
           >
-            Submit
+            Send
           </Button>
         </div>
       </Modal.Body>

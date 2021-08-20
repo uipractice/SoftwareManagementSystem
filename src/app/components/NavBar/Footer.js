@@ -34,7 +34,11 @@ export default function Footer() {
       }, 2000);
     }
   };
+  const [feedbackText, setFeedbackText] = React.useState('');
 
+  const handleInputChange = (e) => {
+    setFeedbackText(e.target.value);
+  }
   return (
     <div className='footer'>
       <ul>
@@ -49,6 +53,8 @@ export default function Footer() {
         <Feedback
           isOpen={open}
           closeModal={(e, closeClick) => handleClose(e, closeClick)}
+          handleInputChange={(e) => handleInputChange(e)}
+          feedbackText={feedbackText}
         />
       </ul>
     </div>

@@ -307,7 +307,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                 onChange={(e) => handleEmailChange(e, true)}
                 onKeyDown={(e) => handleEmailChange(e, true)}
                 name='email'
-                value={state.email}
+                value={state.email && state.email.toLowerCase()}
                 rows='3'
                 cols='50'
               />
