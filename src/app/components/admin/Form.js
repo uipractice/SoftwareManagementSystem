@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import NumberFormat from 'react-number-format';
 import axios from 'axios';
 import moment from 'moment';
+import Upload from '../../assets/images/upload.svg';
 // Helpers
 import { getApiUrl } from '../utils/helper';
 
@@ -16,19 +17,24 @@ const defaultFormData = {
   softwareType: 'software',
   team: '',
   owner: '',
+  email: '',
+  file: null,
+  websiteUrl: '',
   billingCycle: 'monthly',
   nextBilling: moment().add(1, 'month').format('YYYY-MM-DD'),
-  billingDetails: [], // pricingInDollar pricingInRupee billingMonth nextBilling
+  billingDetails: [], // pricingInDollar pricingInRupee billingMonth nextBilling, desc
 };
 
-// component to render the form
-const Form = ({ isOpen, closeModal, rowData, isEdit = false }) => {
+const nonMandatoryFields = ['description', 'websiteUrl', 'email'];
+
+function Form({ isOpen, closeModal, rowData, isEdit = false }) {
   const inputRef = useRef(null);
   const [state, setState] = useState({});
   const [billingDetails, setBillingDetails] = useState({
     pricingInDollar: '',
     pricingInRupee: '',
     billingMonth: moment().format('MMMM').toLowerCase(),
+    description: '',
   });
 
   useEffect(() => {
@@ -60,13 +66,15 @@ const Form = ({ isOpen, closeModal, rowData, isEdit = false }) => {
    * @param {string} key contains string to check billing details.
    * @param {bool} priceSection contains boolean value.
    * @return null.
- */
+   */
   const handleOnChange = (e, key, priceSection) => {
     if (key === 'billingDetails') {
-      const value = priceSection ? e.target.value.replace(/[^0-9]/g, "") : e.target.value;
+      const value = priceSection
+        ? e.target.value.replace(/[^0-9]/g, '')
+        : e.target.value;
       setBillingDetails({
         ...billingDetails,
-        [e.target.name]: value
+        [e.target.name]: value,
       });
     } else
       setState({
@@ -78,18 +86,23 @@ const Form = ({ isOpen, closeModal, rowData, isEdit = false }) => {
             .format('YYYY-MM-DD'),
         }),
       });
-  }
+  };
 
   /**
    * Resetting the billing details.
    *
    * @param {object} e contains event object.
    * @return null.
- */
+   */
   const handleReset = (e) => {
     e.preventDefault();
-    setState({});
-    setBillingDetails({});
+    setState(defaultFormData);
+    setBillingDetails({
+      pricingInDollar: '',
+      pricingInRupee: '',
+      billingMonth: moment().format('MMMM').toLowerCase(),
+      description: '',
+    });
   };
 
   /**
@@ -97,7 +110,7 @@ const Form = ({ isOpen, closeModal, rowData, isEdit = false }) => {
    *
    * @param {object} e contains event object.
    * @return null.
- */
+   */
   const handleSubmit = (e) => {
     e.preventDefault();
     state.billingDetails.push({
@@ -105,31 +118,32 @@ const Form = ({ isOpen, closeModal, rowData, isEdit = false }) => {
       nextBilling: state.nextBilling,
       createdAt: moment().format('YYYY-MM-DD'),
     });
-    axios
-      .post(
-        `${
-          isEdit
-            ? getApiUrl(`softwareInfo/update/${rowData?._id}`)
-            : getApiUrl(`softwareInfo/create`)
-        }`,
-        state
-      )
-      .then((res) => {
-        if (res.data === 'success') {
-          closeModal();
-          toast.success('Data Saved Successfully !', {
-            autoClose: 2000,
-          });
-          setTimeout(() => {
-            window.location.reload();
-          }, 2000);
-        } else {
-          toast.error('Data Saved FAILED !', {
-            autoClose: 2000,
-          });
-        }
-      });
-  }
+    console.log('state', state);
+    // axios
+    //   .post(
+    //     `${
+    //       isEdit
+    //         ? getApiUrl(`softwareInfo/update/${rowData?._id}`)
+    //         : getApiUrl(`softwareInfo/create`)
+    //     }`,
+    //     state
+    //   )
+    //   .then((res) => {
+    //     if (res.data === 'success') {
+    //       closeModal();
+    //       toast.success('Data Saved Successfully !', {
+    //         autoClose: 2000,
+    //       });
+    //       setTimeout(() => {
+    //         window.location.reload();
+    //       }, 2000);
+    //     } else {
+    //       toast.error('Data Saved FAILED !', {
+    //         autoClose: 2000,
+    //       });
+    //     }
+    //   });
+  };
   return (
     <Modal
       centered
@@ -145,26 +159,13 @@ const Form = ({ isOpen, closeModal, rowData, isEdit = false }) => {
       <Modal.Body>
         <form>
           <div className='row'>
-            <div className='form-group col-md-6'>
-              <label htmlFor='softwareType'>Select Type</label>
-              {/* <select
-                ref={inputRef}
-                className='form-control'
-                onChange={handleOnChange}
-                name='softwareType'
-                disabled={isEdit}
-                defaultValue={state?.softwareType}
-              >
-                <option value='Software'>Software</option>
-                <option value='Certificate'>Certificate</option>
-                <option value='Domain'>Domain</option>
-              </select> */}
+            <div className='form-group col-md-4'>
+              <label htmlFor='softwareType'>Select Type *</label>
               <ToggleButtonGroup
                 type='radio'
                 name='softwareType'
                 value={state?.softwareType}
                 disabled={isEdit}
-                className='mb-2'
                 onChange={(val) => setState({ ...state, softwareType: val })}
               >
                 <ToggleButton
@@ -193,8 +194,8 @@ const Form = ({ isOpen, closeModal, rowData, isEdit = false }) => {
                 </ToggleButton>
               </ToggleButtonGroup>
             </div>
-            <div className='form-group col-md-6'>
-              <label htmlFor='softwareName'>Tool/Software</label>
+            <div className='form-group col-md-4'>
+              <label htmlFor='softwareName'>Tool/Software *</label>
               <input
                 type='text'
                 className='form-control'
@@ -204,11 +205,21 @@ const Form = ({ isOpen, closeModal, rowData, isEdit = false }) => {
                 defaultValue={state?.softwareName}
               />
             </div>
+            <div className='form-group col-md-4'>
+              <label htmlFor='url'>URL</label>
+              <input
+                type='text'
+                className='form-control'
+                onChange={handleOnChange}
+                name='websiteUrl'
+                disabled={isEdit}
+                defaultValue={state?.websiteUrl}
+              />
+            </div>
           </div>
-
           <div className='row'>
-            <div className='form-group col-md-6'>
-              <label htmlFor='team'>Team</label>
+            <div className='form-group col-md-4'>
+              <label htmlFor='team'>Team *</label>
               <input
                 type='text'
                 className='form-control'
@@ -218,8 +229,8 @@ const Form = ({ isOpen, closeModal, rowData, isEdit = false }) => {
                 defaultValue={state?.team}
               />
             </div>
-            <div className='form-group col-md-6'>
-              <label htmlFor='owner'>User/Owner</label>
+            <div className='form-group col-md-4'>
+              <label htmlFor='owner'>User/Owner *</label>
               <input
                 type='text'
                 className='form-control'
@@ -229,16 +240,28 @@ const Form = ({ isOpen, closeModal, rowData, isEdit = false }) => {
                 defaultValue={state?.owner}
               />
             </div>
+            <div className='form-group col-md-4'>
+              <label htmlFor='email'>Email Id * </label>
+              <input
+                type='text'
+                className='form-control'
+                onChange={handleOnChange}
+                name='email'
+                disabled={isEdit}
+                defaultValue={state?.email}
+              />
+            </div>
           </div>
+
+          <div className='row'></div>
           <div className='row'>
-            <div className='form-group col-md-6'>
-              <label htmlFor='billingCycle'>Billing Cycle</label>
+            <div className='form-group col-md-4'>
+              <label htmlFor='billingCycle'>Billing Cycle *</label>
               <ToggleButtonGroup
                 type='radio'
                 name='billingCycle'
                 value={state?.billingCycle}
                 disabled={isEdit}
-                className='mb-2'
                 onChange={(val) =>
                   handleOnChange({
                     target: { name: 'billingCycle', value: val },
@@ -263,8 +286,8 @@ const Form = ({ isOpen, closeModal, rowData, isEdit = false }) => {
               </ToggleButtonGroup>
             </div>
 
-            <div className='form-group col-md-3'>
-              <label htmlFor='billingMonth'>For the month of</label>
+            <div className='form-group col-md-2'>
+              <label htmlFor='billingMonth'>For the month of *</label>
               <select
                 className='form-control'
                 onChange={(e) => handleOnChange(e, 'billingDetails')}
@@ -287,8 +310,8 @@ const Form = ({ isOpen, closeModal, rowData, isEdit = false }) => {
               </select>
             </div>
 
-            <div className='form-group col-md-3'>
-              <label htmlFor='nextBilling'>Next Billing Date</label>
+            <div className='form-group col-md-2'>
+              <label htmlFor='nextBilling'>Next Billing Date *</label>
               <input
                 type='date'
                 className='form-control'
@@ -297,45 +320,96 @@ const Form = ({ isOpen, closeModal, rowData, isEdit = false }) => {
                 value={state?.nextBilling}
               />
             </div>
-          </div>
-          <div className='row'>
-            <div className='form-group col-md-6'>
-              <label htmlFor='pricingInDollar'>Pricing in $</label>
+            <div className='form-group col-md-2'>
+              <label htmlFor='pricingInDollar'>Pricing in $ *</label>
               <NumberFormat
-                thousandsGroupStyle="thousand"
-                prefix="$ "
-                decimalSeparator="."
-                displayType="input"
-                type="text"
+                thousandsGroupStyle='thousand'
+                prefix='$ '
+                decimalSeparator='.'
+                displayType='input'
+                type='text'
                 className='form-control'
                 onChange={(e) => handleOnChange(e, 'billingDetails', true)}
                 name='pricingInDollar'
                 value={billingDetails?.pricingInDollar}
                 thousandSeparator={true}
-                allowNegative={true} 
+                allowNegative={true}
               />
             </div>
-            <div className='form-group col-md-6'>
-              <label htmlFor='pricingInRupee'>Pricing in ₹</label>
+            <div className='form-group col-md-2'>
+              <label htmlFor='pricingInRupee'>Pricing in ₹ *</label>
               <NumberFormat
-                thousandsGroupStyle="thousand"
+                thousandsGroupStyle='thousand'
                 value={billingDetails?.pricingInRupee}
-                prefix="₹ "
-                decimalSeparator="."
-                displayType="input"
-                type="text"
+                prefix='₹ '
+                decimalSeparator='.'
+                displayType='input'
+                type='text'
                 name='pricingInRupee'
                 className='form-control'
                 onChange={(e) => handleOnChange(e, 'billingDetails', true)}
                 thousandSeparator={true}
-                allowNegative={true} 
+                allowNegative={true}
+              />
+            </div>
+          </div>
+          <div className='row'>
+            <div className='form-group col-md-6'>
+              <label htmlFor='description'>Pricing Description</label>
+              <textarea
+                onChange={(v) => console.log(v.target.value)}
+                type='text'
+                className='form-control long'
+                onChange={(e) => handleOnChange(e, 'billingDetails')}
+                name='description'
+                value={billingDetails?.description}
+                style={{ resize: 'none' }}
+              />
+            </div>
+            <div className='form-group col-md-6'>
+              <label htmlFor='invoice'>Upload Invoice</label>
+              <div
+                className={`form-control long dashed-box ${
+                  !state.file && 'pointer'
+                }`}
+                {...(!state.file && {
+                  onClick: (e) => document.getElementById('file')?.click(),
+                })}
+              >
+                <div className='d-flex justify-content-center align-items-center h-100'>
+                  {state.file ? (
+                    <span>
+                      {state.file.name}
+                      &nbsp;&nbsp;
+                      <button
+                        className='close-icon'
+                        onClick={() => setState({ ...state, file: null })}
+                      ></button>
+                    </span>
+                  ) : (
+                    <span>
+                      Click here to upload&nbsp;&nbsp;
+                      <img src={Upload} alt='download' />
+                    </span>
+                  )}
+                </div>
+              </div>
+              <input
+                id='file'
+                type='file'
+                name='invoice'
+                className='form-control '
+                // value={billingDetails?.invoice}
+                onChange={(e) =>
+                  setState({ ...state, file: e.target.files[0] })
+                }
+                style={{ display: 'none' }}
               />
             </div>
           </div>
 
-          <div className='form-group row share'>
-            <div className='col-md-6'></div>
-            <div className='col-md-6 text-right'>
+          <div className='form-group row share '>
+            <div className='col-md-12 text-center'>
               <button
                 className='form-control btn btn-primary'
                 onClick={handleReset}
@@ -346,9 +420,15 @@ const Form = ({ isOpen, closeModal, rowData, isEdit = false }) => {
                 className='form-control btn btn-primary share-btn'
                 onClick={handleSubmit}
                 disabled={
-                  Object.keys(state).some((key) => state[key] === '') ||
+                  Object.keys(state).some(
+                    (key) =>
+                      !nonMandatoryFields.includes[state[key]] &&
+                      state[key] === ''
+                  ) &&
                   Object.keys(billingDetails).some(
-                    (key) => billingDetails[key] === ''
+                    (key) =>
+                      !nonMandatoryFields.includes[billingDetails[key]] &&
+                      billingDetails[key] === ''
                   )
                 }
               >

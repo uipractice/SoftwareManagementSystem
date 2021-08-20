@@ -84,7 +84,7 @@
 }
 .form_main .form_btn_group .btn_blue {
   min-height: 44px;
-  background: #239ec5;
+  background: #239ec5 !important;
   border-radius: 4px;
   color: #fff;
 }

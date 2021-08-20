@@ -25,6 +25,8 @@
     "start": "env-cmd -e local react-scripts start",
     "start:staging": "env-cmd -e staging react-scripts start",
     "start:prod": "env-cmd -e prod react-scripts start",
+    "build:staging": "env-cmd -e staging react-scripts build",
+    "build:prod": "env-cmd -e prod react-scripts build",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

@@ -1,13 +1,21 @@
+// common
 import React, { useState } from 'react';
+import { Redirect, useHistory } from 'react-router-dom';
+import { OverlayTrigger, Popover } from 'react-bootstrap';
+import { toast } from 'react-toastify';
+import axios from 'axios';
+// assets
 import Logo from '../../assets/images/eoke_logo.svg';
 import NotificationIcon from '../../assets/images/bell.svg';
 import ProfileIcon from '../../assets/images/user-icon.svg';
 import FeedbackIcon from '../../assets/images/feedback.svg';
 import LogoutIcon from '../../assets/images/Logout_icon.svg';
-import { Redirect, useHistory } from 'react-router-dom';
-import './NavBar.css';
+// components
 import Feedback from '../admin/Feedback';
-import { OverlayTrigger, Popover } from 'react-bootstrap';
+// css
+import './NavBar.css';
+// helpers
+import { getApiUrl } from '../utils/helper';
 
 const Header = ({ validate }) => {
   function handleLogout() {
@@ -35,6 +43,31 @@ const Header = ({ validate }) => {
   }
   const [feedback, setFeedback] = useState(false);
 
+  /**
+   * Setting modal close state and call api to send the mail.
+   *
+   * @param {Object} event current event object.
+   * @param {Boolean} closeClick contains boolean to defined the close click.
+   * @return {null}
+   */
+  const handleSubmit = (e, closeClick) => {
+    setFeedback(false);
+    if (!closeClick) {
+      axios
+        .post(getApiUrl(`softwareInfo/feedbackMail`))
+        .then((res) => {
+          console.log(res.data);
+          toast.success('A Reminder mail has been triggered !', {
+            autoClose: 1800,
+          });
+        })
+        .catch((err) => console.log(err.response));
+
+      setTimeout(() => {
+        history.push('/admin');
+      }, 2000);
+    }
+  };
   return (
     <div>
       <div className='navbar navbar-dark sticky-top  p-0 shadow header_nav'>
@@ -85,7 +118,10 @@ const Header = ({ validate }) => {
             </OverlayTrigger>
           </li>
         </ul>
-        <Feedback isOpen={feedback} closeModal={() => setFeedback(false)} />
+        <Feedback
+          isOpen={feedback}
+          closeModal={(e, closeClick) => handleSubmit(e, closeClick)}
+        />
       </div>
     </div>
   );
