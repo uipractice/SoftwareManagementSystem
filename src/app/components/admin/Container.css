@@ -122,6 +122,17 @@ input[type='date'] {
   width: 1px !important;
   white-space: nowrap !important;
 }
+.file-close-icon {
+  display: inline-flex;
+}
+.file-close-icon::after {
+  content: '';
+  display: block;
+  background: url('../../assets/images/clear.svg') no-repeat 100%;
+  width: 10px;
+  cursor: pointer;
+  padding: 10px;
+}
 
 .scroll-lock {
   overflow: hidden;

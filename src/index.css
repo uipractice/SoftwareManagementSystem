@@ -201,7 +201,7 @@ a:focus {
 }
 
 .arrow {
-  border: solid #57565C;
+  border: solid #57565c;
   border-width: 1px 1px 0 0;
   padding: 2px;
 }
@@ -277,9 +277,11 @@ a:focus {
 .grid tr td,
 .grid tr td a {
   font-size: 14px;
-  color: #929292;
   padding: 13px 0.5rem;
   box-shadow: none;
+}
+.grid tr td {
+  color: #929292;
 }
 .grid tr td a {
   padding: 0;
