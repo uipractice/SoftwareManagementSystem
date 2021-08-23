@@ -395,9 +395,6 @@ function CompleteTable({ data }) {
   };
   return (
     <>
-      <FilterDropdown
-        filterSelect={(selectedState) => onFilterSelect(selectedState)}
-      />
       <div className='filter-row'>
         <p>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eros leo
@@ -407,6 +404,9 @@ function CompleteTable({ data }) {
           <br />
           Leo magna posuere pellentesque malesuada.
         </p>
+        <FilterDropdown
+          filterSelect={(selectedState) => onFilterSelect(selectedState)}
+        />
         <div>
           <GlobalFilter
             setFilter={(value) => {

@@ -44,7 +44,7 @@ const FilterDropdown = (props) => {
           aria-expanded='false'
         >
           Filters
-          <i className='fas fa-caret-down'></i>
+          <i className='caret-down'></i>
         </button>
 
         <ul className='dropdown-menu' aria-labelledby='dropdownMenuButton1'>
