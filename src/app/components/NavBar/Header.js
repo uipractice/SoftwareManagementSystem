@@ -42,6 +42,7 @@ const Header = ({ validate }) => {
     checkAuth();
   }
   const [feedback, setFeedback] = useState(false);
+  const [feedbackText, setFeedbackText] = React.useState('');
 
   /**
    * Setting modal close state and call api to send the mail.
@@ -68,6 +69,9 @@ const Header = ({ validate }) => {
       }, 2000);
     }
   };
+  const handleInputChange = (e) => {
+    setFeedbackText(e.target.value);
+  }
   return (
     <div>
       <div className='navbar navbar-dark sticky-top  p-0 shadow header_nav'>
@@ -121,6 +125,8 @@ const Header = ({ validate }) => {
         <Feedback
           isOpen={feedback}
           closeModal={(e, closeClick) => handleSubmit(e, closeClick)}
+          handleInputChange={(e) => handleInputChange(e)}
+          feedbackText={feedbackText}
         />
       </div>
     </div>

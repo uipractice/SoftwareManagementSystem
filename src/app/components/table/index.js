@@ -21,6 +21,9 @@ import moment from 'moment';
 import Form from '../admin/Form';
 import { getApiUrl } from '../utils/helper';
 import FilterDropdown from '../filterdropdown/filterdropdown';
+import Download from '../../assets/images/download.svg';
+import Note from '../../assets/images/note.svg';
+
 toast.configure();
 const sample = [];
 function CompleteTable({ data }) {
@@ -29,21 +32,25 @@ function CompleteTable({ data }) {
   const [rowData, setRowData] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditFormOpen, toggleEditForm] = useState(false);
-  useEffect(() => {
-    setDefaultFilterData(data);
-  }, [data]);
-  const setDefaultFilterData = (data) => {
+
+  const setDefaultFilterData = useCallback((data) => {
     if (data?.length) {
       let filterResult = data.filter((row) => row.status !== 'deleted');
       setFilteredData(addSerialNo(filterResult));
     }
-  };
+  }, []);
+
   const addSerialNo = (dataArr = [], tableFilter = false) => {
     return dataArr?.map((value, index) => ({
       ...(tableFilter ? value.original : value),
       serial: index + 1,
     }));
   };
+
+  useEffect(() => {
+    setDefaultFilterData(data);
+  }, [setDefaultFilterData, data]);
+
   function handleInputChange(evt) {
     setRowData({
       ...rowData,
@@ -80,6 +87,21 @@ function CompleteTable({ data }) {
         accessor: 'softwareName',
         sticky: 'left',
         width: 136,
+        Cell: ({
+          row: {
+            original: { websiteUrl, softwareName },
+          },
+        }) => (
+          <div>
+            {websiteUrl ? (
+              <a href={websiteUrl} target='_blank' rel='noreferrer'>
+                {softwareName}
+              </a>
+            ) : (
+              softwareName
+            )}
+          </div>
+        ),
       },
       {
         Header: 'TYPE',
@@ -240,6 +262,40 @@ function CompleteTable({ data }) {
     ],
     []
   );
+
+  // Download the signed urls fetched from S3.
+  const downloadFiles = (filesUrls, fileNames) => {
+    let index = 0;
+    for (let file of filesUrls) {
+      const link = document.createElement('a');
+      link.href = file;
+      link.target = '_blank';
+      link.setAttribute('id', 'downloadFile');
+      link.setAttribute('download', fileNames[index]);
+      document.body.appendChild(link);
+      link.click();
+      index += 1;
+      document.getElementById('downloadFile')?.remove();
+    }
+  };
+
+  // Get S3 signed urls of the attachments for a Billing Month.
+  const downloadInvoice = useCallback(
+    ({ original: rowItemData }, billingItem) => {
+      axios
+        .get(
+          getApiUrl(
+            `softwareInfo/download/${rowItemData._id}/${billingItem._id}`
+          )
+        )
+        .then((res) => {
+          const files = res.data;
+          downloadFiles(files, billingItem.invoiceFiles);
+        });
+    },
+    []
+  );
+
   const renderRowSubComponent = useCallback(
     ({ row }) => (
       <td colSpan='12' className='rowexpandable'>
@@ -247,14 +303,34 @@ function CompleteTable({ data }) {
           <h3 className='rowexpandfont'>Subscription for :</h3>
           {row.original.billingDetails.map((item, i) => (
             <div key={i} className='label text-capitalize'>
-              <label>{item.billingMonth}</label>
-              <div className='amount'>{`₹${item.pricingInRupee}`}</div>
+              <label>
+                {item.billingMonth}{' '}
+                {item.description && (
+                  <img
+                    className='px-2 pointer'
+                    src={Note}
+                    title={item.description}
+                    alt='description'
+                  />
+                )}{' '}
+              </label>
+              <div className='amount'>
+                {`₹${item.pricingInRupee} `}
+                {item.invoiceFiles.length > 0 && (
+                  <img
+                    className='pl-3 pr-2 pointer'
+                    src={Download}
+                    onClick={() => downloadInvoice(row, item)}
+                    alt='download'
+                  />
+                )}
+              </div>
             </div>
           ))}
         </div>
       </td>
     ),
-    []
+    [downloadInvoice]
   );
   const {
     getTableProps,
@@ -283,6 +359,7 @@ function CompleteTable({ data }) {
     if (filteredTableData?.length && globalFilter && searchValue)
       setFilteredData(addSerialNo(filteredTableData, true));
     else if (searchValue === '') setFilteredData(addSerialNo(data));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchValue]);
 
   const onFilterSelect = (filterState) => {
