@@ -20,41 +20,36 @@ import 'react-toastify/dist/ReactToastify.css';
 import moment from 'moment';
 import Form from '../admin/Form';
 import { getApiUrl } from '../utils/helper';
-
+import FilterDropdown from '../filterdropdown/filterdropdown';
 toast.configure();
-
+const sample = [];
 function CompleteTable({ data }) {
   const [filteredData, setFilteredData] = useState([]);
   const [searchValue, setSearchValue] = useState();
   const [rowData, setRowData] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditFormOpen, toggleEditForm] = useState(false);
-
   useEffect(() => {
     setDefaultFilterData(data);
   }, [data]);
-
   const setDefaultFilterData = (data) => {
     if (data?.length) {
-      let filterResult = data.filter((row) => row.status !== 'Deleted');
+      let filterResult = data.filter((row) => row.status !== 'deleted');
       setFilteredData(addSerialNo(filterResult));
     }
   };
-
   const addSerialNo = (dataArr = [], tableFilter = false) => {
     return dataArr?.map((value, index) => ({
       ...(tableFilter ? value.original : value),
       serial: index + 1,
     }));
   };
-
   function handleInputChange(evt) {
     setRowData({
       ...rowData,
       deleteReason: evt.target.value,
     });
   }
-
   const handleUpdateStatus = (e) => {
     e.preventDefault();
     rowData.status = 'deleted';
@@ -73,7 +68,6 @@ function CompleteTable({ data }) {
       })
       .catch((err) => console.log(err.response));
   };
-
   const columns = React.useMemo(
     () => [
       {
@@ -81,7 +75,6 @@ function CompleteTable({ data }) {
         accessor: 'serial',
         width: 75,
       },
-
       {
         Header: 'SOFTWARE',
         accessor: 'softwareName',
@@ -247,7 +240,6 @@ function CompleteTable({ data }) {
     ],
     []
   );
-
   const renderRowSubComponent = useCallback(
     ({ row }) => (
       <td colSpan='12' className='rowexpandable'>
@@ -264,7 +256,6 @@ function CompleteTable({ data }) {
     ),
     []
   );
-
   const {
     getTableProps,
     getTableBodyProps,
@@ -287,17 +278,49 @@ function CompleteTable({ data }) {
     useExpanded,
     usePagination
   );
-
   const { globalFilter, pageIndex, pageSize } = state;
-
   useEffect(() => {
     if (filteredTableData?.length && globalFilter && searchValue)
       setFilteredData(addSerialNo(filteredTableData, true));
     else if (searchValue === '') setFilteredData(addSerialNo(data));
   }, [searchValue]);
 
+  const onFilterSelect = (filterState) => {
+    let filterResult = data;
+    // console.log('aaa', data, selectedState.softwareType);
+    const finalFilteredData = Object.keys(filterState).reduce((result, key) => {
+      const filteredData = result.filter(
+        (row) => row[key] === filterState[key]
+      );
+      result.push(filteredData);
+      return result;
+    }, data);
+    setFilteredData(addSerialNo(finalFilteredData));
+    // if (selectedState.group === 'all') filterResult = data;
+    // if (selectedState.group === 'status')
+    // if (selectedState && selectedState.softwareType)
+    // filterResult = data.filter(
+    //   (row) => row.softwareType.toLowerCase() === selectedState.softwareType
+    // );
+    // if (selectedState && selectedState.billingCycle)
+    //   filterResult = data.filter(
+    //     (row) => row.billingCycle.toLowerCase() === selectedState.billingCycle
+    //   );
+
+    console.log('filter', filterResult);
+    // else if (selectedState.group === 'all') filterResult = data;
+
+    // filterResult.forEach((value, index) => {
+    //   return sample.push(value);
+    // });
+
+    // setFilteredData(addSerialNo(filterResult));
+  };
   return (
     <>
+      <FilterDropdown
+        filterSelect={(selectedState) => onFilterSelect(selectedState)}
+      />
       <div className='filter-row'>
         <p>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eros leo
@@ -316,7 +339,6 @@ function CompleteTable({ data }) {
           />
         </div>
       </div>
-
       <div>
         <Modal
           isOpen={isModalOpen}
@@ -352,7 +374,6 @@ function CompleteTable({ data }) {
               undone.
             </p>
             <br></br>
-
             <div className='row'>
               <div className='col-md-6 text-right padding0'>
                 <button
@@ -377,7 +398,6 @@ function CompleteTable({ data }) {
           </form>
         </Modal>
       </div>
-
       <div className='table-responsive grid tableFixHead'>
         <table {...getTableProps()} className='table table-striped '>
           <thead>
@@ -491,5 +511,4 @@ function CompleteTable({ data }) {
     </>
   );
 }
-
 export default CompleteTable;
