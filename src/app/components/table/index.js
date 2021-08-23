@@ -156,7 +156,7 @@ function CompleteTable({ data }) {
           }`,
       },
       {
-        Header: 'AMOUNT IN ₹',
+        Header: 'TOTAL IN ₹',
         accessor: 'totalAmount',
         width: 130,
         // id: "expander",

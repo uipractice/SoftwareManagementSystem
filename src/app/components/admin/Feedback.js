@@ -8,6 +8,7 @@ function Feedback({ isOpen, closeModal, feedbackText, handleInputChange }) {
       style={{ borderRadius: '0 !important' }}
       show={isOpen}
       onHide={(e) => closeModal(e, true)}
+      backdrop='static'
       className='feedback-modal'
     >
       <Modal.Header closeButton className='modal-area'>

@@ -210,6 +210,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
       style={{ borderRadius: '0 !important' }}
       show={isOpen}
       onHide={closeModal}
+      backdrop='static'
       className='software-modal'
     >
       <Modal.Header closeButton className='modal-area'>
