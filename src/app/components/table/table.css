@@ -119,8 +119,8 @@ table th {
 .filter-row {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
-  margin-bottom: 15px;
+  align-items: center;
+  margin-bottom: 0;
 }
 .filter-row input {
   font-size: 14px;
@@ -135,7 +135,7 @@ table th {
   border-radius: 2px;
   border: 1px solid transparent;
 }
-.filter-row input.searchClose{
+.filter-row input.searchClose {
   background: #fff;
 }
 .filter-row select {
@@ -151,7 +151,8 @@ table th {
 .filter-row select:focus-visible {
   outline: 0 !important;
 }
-.filter-row input:focus, .filter-row input:active{
+.filter-row input:focus,
+.filter-row input:active {
   box-shadow: 0 0 0;
   border-color: #209ec5;
   background-color: rgba(32, 158, 197, 0.05) !important;
@@ -375,13 +376,13 @@ tfoot td {
   -moz-appearance: none;
   appearance: none;
 }
-.filter-row div form{
+.filter-row div form {
   position: relative;
   display: inline;
 }
 .filter-row input ~ .close-icon {
   display: none;
 }
-.filter-row input.searchClose ~ .close-icon{
+.filter-row input.searchClose ~ .close-icon {
   display: block;
 }

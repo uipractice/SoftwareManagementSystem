@@ -43,6 +43,7 @@ a:focus {
   border-radius: 2px;
   padding: 10px 0;
   text-transform: uppercase;
+  height: 44px;
 }
 
 .work_btn_light {

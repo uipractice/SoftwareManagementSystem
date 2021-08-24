@@ -1,8 +1,10 @@
 .dropdown input {
-  width: 13px;
-  height: 11px;
+  width: 14px;
+  height: 14px;
   box-shadow: 0 0 0;
-  margin-right: 3px;
+  margin-right: 8px;
+  cursor: pointer;
+  margin-top: 2px;
 }
 .dropdown-menu {
   min-width: 122px;
@@ -13,10 +15,15 @@
   letter-spacing: 0.1px;
   color: #757575;
   border: none;
-  background: transparent url('../../assets/images/filter.svg') no-repeat 0;
-  padding-left: 22px;
+  background: #fff url('../../assets/images/filter.svg') no-repeat 13px;
+  padding-left: 0;
   height: calc(1.5em + 0.75rem + 7px);
   margin-left: 19em;
+  position: relative;
+  width: 122px;
+  box-shadow: 0px 0px 2px rgb(0 0 0 / 35%) !important;
+  border-radius: 2px;
+  height: 44px;
 }
 .caret-down {
   border: solid #757575;
@@ -24,8 +31,8 @@
   padding: 3px;
   position: absolute;
   transform: rotate(135deg);
-  right: -15px;
-  top: 15px;
+  right: 16px;
+  top: 17px;
 }
 .dropdown-menu.show {
   box-shadow: 0px 0px 4px rgb(0 0 0 / 15%);
@@ -36,19 +43,46 @@
 .dropdown-menu li {
   font-family: Lato;
   font-weight: normal;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 14px;
   color: #7b7b7b;
-  padding: 0 10px 10px;
+  padding: 0 10px 13px;
   display: flex;
   align-items: center;
 }
 .dropdown-menu li:first-child,
 .dropdown-menu li:nth-child(3),
 .dropdown-menu li:nth-child(6) {
-  padding-top: 10px !important;
+  padding-top: 13px !important;
 }
 .dropdown-menu li:nth-child(2),
 .dropdown-menu li:nth-child(5) {
   border-bottom: 1px solid #d8d8d8;
+}
+input[type='radio']:after {
+  width: 15px;
+  height: 15px;
+  border-radius: 15px;
+  top: -2px;
+  left: -1px;
+  position: relative;
+  /* background-color: #d1d3d1; */
+  content: '';
+  display: inline-block;
+  visibility: visible;
+  /* border: 1px solid #7b7b7b; */
+}
+
+input[type='radio']:checked:after {
+  width: 14px;
+  height: 14px;
+  border-radius: 14px;
+  top: 0;
+  left: 0;
+  position: relative;
+  background: #03ae78 url('../../assets/images/input-check.svg') no-repeat 2px;
+  content: '';
+  display: inline-block;
+  visibility: visible;
+  border: 2px solid #03ae78;
 }
