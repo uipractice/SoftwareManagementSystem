@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import './filterdropdown.css';
+import './filter.css';
 import isEmpty from 'lodash';
 
 const options = [
@@ -21,7 +21,6 @@ const FilterDropdown = (props) => {
     if (checkInfo) {
       props.filterSelect(checkInfo);
     }
-    console.log('effect', checkInfo);
   }, [checkInfo]);
 
   function handleSelectedStatus(selectedState, e) {

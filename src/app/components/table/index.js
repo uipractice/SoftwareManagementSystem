@@ -20,7 +20,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import moment from 'moment';
 import Form from '../admin/Form';
 import { getApiUrl } from '../utils/helper';
-import FilterDropdown from '../filterdropdown/filterdropdown';
+import FilterDropdown from './filter';
 import Download from '../../assets/images/download.svg';
 import Note from '../../assets/images/note.svg';
 
@@ -363,35 +363,23 @@ function CompleteTable({ data }) {
   }, [searchValue]);
 
   const onFilterSelect = (filterState) => {
-    let filterResult = data;
-    // console.log('aaa', data, selectedState.softwareType);
-    const finalFilteredData = Object.keys(filterState).reduce((result, key) => {
-      const filteredData = result.filter(
-        (row) => row[key] === filterState[key]
-      );
-      result.push(filteredData);
-      return result;
-    }, data);
-    setFilteredData(addSerialNo(finalFilteredData));
+    console.log('aaa', data.length, filterState);
+    const filterKeys = Object.keys(filterState);
+    if (filterKeys?.length) {
+      const finalFilteredData = filterKeys.reduce((result, key) => {
+        const filteredData = result.filter(
+          (row) => row[key] === filterState[key]
+        );
+        result.push(filteredData);
+        return result;
+      }, data);
+      setFilteredData(addSerialNo(finalFilteredData));
+
+      console.log('filter', finalFilteredData);
+    }
     // if (selectedState.group === 'all') filterResult = data;
     // if (selectedState.group === 'status')
     // if (selectedState && selectedState.softwareType)
-    // filterResult = data.filter(
-    //   (row) => row.softwareType.toLowerCase() === selectedState.softwareType
-    // );
-    // if (selectedState && selectedState.billingCycle)
-    //   filterResult = data.filter(
-    //     (row) => row.billingCycle.toLowerCase() === selectedState.billingCycle
-    //   );
-
-    console.log('filter', filterResult);
-    // else if (selectedState.group === 'all') filterResult = data;
-
-    // filterResult.forEach((value, index) => {
-    //   return sample.push(value);
-    // });
-
-    // setFilteredData(addSerialNo(filterResult));
   };
   return (
     <>
