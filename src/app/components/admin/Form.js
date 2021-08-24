@@ -5,7 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import NumberFormat from 'react-number-format';
 import axios from 'axios';
 import moment from 'moment';
-import Upload from '../../assets/images/download.svg';
+import Upload from '../../assets/images/upload.svg';
 // Helpers
 import { getApiUrl } from '../utils/helper';
 
@@ -460,8 +460,8 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                     </div>
                   ) : (
                     <span>
-                      Click here to upload&nbsp;&nbsp;
-                      <img src={Upload} alt='download' />
+                      Click here to upload
+                      <img className='px-2' src={Upload} alt='download' />
                     </span>
                   )}
                 </div>
