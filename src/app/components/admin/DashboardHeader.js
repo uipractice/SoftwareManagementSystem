@@ -38,7 +38,7 @@ export class DashboardHeader extends Component {
             ref={this.buttonRef}
             onClick={this.showModal}
           >
-            + ADD SOFTWARE/TOOL
+            ADD SOFTWARE/TOOL
           </button>
 
           {this.state.isShown && (

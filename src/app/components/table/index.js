@@ -156,7 +156,7 @@ function CompleteTable({ data }) {
           }`,
       },
       {
-        Header: 'AMOUNT IN ₹',
+        Header: 'TOTAL IN ₹',
         accessor: 'totalAmount',
         width: 130,
         // id: "expander",
@@ -407,6 +407,7 @@ function CompleteTable({ data }) {
       <div>
         <Modal
           isOpen={isModalOpen}
+          shouldCloseOnOverlayClick={false}
           onRequestClose={() => {
             setIsModalOpen(false);
           }}
