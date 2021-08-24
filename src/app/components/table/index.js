@@ -65,13 +65,13 @@ function CompleteTable({ data }) {
       .post(getApiUrl(`softwareInfo/update/${id}`), rowData)
       .then((res) => {
         toast.success('Data deleted successfully!', {
-          autoClose: 2900,
+          autoClose: 1000,
         });
         setIsModalOpen(false);
         console.log(res.data);
         setTimeout(() => {
           window.location.reload();
-        }, 3000);
+        }, 1000);
       })
       .catch((err) => console.log(err.response));
   };

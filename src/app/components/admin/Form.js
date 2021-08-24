@@ -179,7 +179,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
         .post(
           `${
             isEdit
-              ? getApiUrl(`softwareInfo/update/${rowData?._id}`)
+              ? getApiUrl(`softwareInfo/renew/${rowData?._id}`)
               : getApiUrl(`softwareInfo/create`)
           }`,
           isEdit ? newBillingRecord : state
