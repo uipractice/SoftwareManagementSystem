@@ -248,7 +248,9 @@ function CompleteTable({ data }) {
               }}
             />
             <img
-              className='p-2 pointer'
+              className={`p-2 pointer ${
+                row.original.status === 'deleted' && 'disableDeleteBtn'
+              }`}
               src={DeleteImg}
               alt='Evoke Technologies'
               onClick={() => {
@@ -363,23 +365,21 @@ function CompleteTable({ data }) {
   }, [searchValue]);
 
   const onFilterSelect = (filterState) => {
-    console.log('aaa', data.length, filterState);
     const filterKeys = Object.keys(filterState);
     if (filterKeys?.length) {
       const finalFilteredData = filterKeys.reduce((result, key) => {
-        const filteredData = result.filter(
-          (row) => row[key] === filterState[key]
+        const filteredData = result.filter((row) =>
+          key === 'all'
+            ? row.status !== 'deleted'
+            : filterKeys.includes('status')
+            ? row[key] === filterState[key]
+            : row[key] === filterState[key] && row.status !== 'deleted'
         );
-        result.push(filteredData);
+        result = [...filteredData];
         return result;
       }, data);
       setFilteredData(addSerialNo(finalFilteredData));
-
-      console.log('filter', finalFilteredData);
     }
-    // if (selectedState.group === 'all') filterResult = data;
-    // if (selectedState.group === 'status')
-    // if (selectedState && selectedState.softwareType)
   };
   return (
     <>

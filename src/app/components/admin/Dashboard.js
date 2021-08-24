@@ -28,7 +28,7 @@ export default function AdminDashboard() {
       <Header />
       <div className='container-fluid' style={{ height: 'calc(100vh - 65px)' }}>
         {loading ? (
-          <div class='d-flex justify-content-center align-items-center h-100'>
+          <div className='d-flex justify-content-center align-items-center h-100'>
             <span className='loader' />
           </div>
         ) : (

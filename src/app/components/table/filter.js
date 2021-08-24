@@ -23,14 +23,14 @@ const FilterDropdown = (props) => {
     }
   }, [checkInfo]);
 
-  function handleSelectedStatus(selectedState, e) {
-    // if (e.target.checked) {
-    setCheckInfo({
-      ...checkInfo,
-      [e.target.name]: e.target.value,
-    });
+  function handleSelectedStatus({ target: { name, value } }) {
+    let state = { [name]: value };
+    if (!['all'].includes(value)) {
+      state = { ...checkInfo, ...state };
+      delete state.all;
+    }
+    setCheckInfo(state);
   }
-  // console.log(checkInfo, props.filterSelect(checkInfo));
 
   return (
     <>
@@ -47,19 +47,14 @@ const FilterDropdown = (props) => {
         </button>
 
         <ul className='dropdown-menu' aria-labelledby='dropdownMenuButton1'>
-          {options.map((option) => (
-            <li>
+          {options.map((option, i) => (
+            <li key={i}>
               <input
                 name={option.group}
                 value={option.value}
                 checked={checkInfo[option.group] === option.value}
                 type='radio'
-                onChange={(e) => {
-                  // handleSelectedStatus(option, e);
-
-                  handleSelectedStatus(option, e);
-                  // props.filterSelect(checkInfo);
-                }}
+                onChange={handleSelectedStatus}
               />
               {option.label}
             </li>
