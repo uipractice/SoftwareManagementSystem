@@ -12,7 +12,7 @@ import {
   useExpanded,
 } from 'react-table';
 import './table.css';
-import GlobalFilter from './filter';
+import GlobalFilter from './search';
 import rightIcon from '../../assets/images/right-icon.svg';
 import leftIcon from '../../assets/images/left-icon.svg';
 import { toast } from 'react-toastify';
