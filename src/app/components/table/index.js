@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import DeleteImg from '../../assets/images/delete-icon.svg';
 import EditImg from '../../assets/images/edit-icon.svg';
 import UpDownImg from '../../assets/images/sorting.svg';
+import AttachIcon from '../../assets/images/amount-attachment.png';
 import axios from 'axios';
 import Modal from 'react-modal';
 import {
@@ -32,6 +33,10 @@ function CompleteTable({ data }) {
   const [rowData, setRowData] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditFormOpen, toggleEditForm] = useState(false);
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
   const setDefaultFilterData = useCallback((data) => {
     if (data?.length) {
@@ -86,7 +91,7 @@ function CompleteTable({ data }) {
         Header: 'SOFTWARE',
         accessor: 'softwareName',
         sticky: 'left',
-        width: 136,
+        width: 160,
         Cell: ({
           row: {
             original: { websiteUrl, softwareName },
@@ -118,7 +123,7 @@ function CompleteTable({ data }) {
       {
         Header: 'USER/OWNER',
         accessor: 'owner',
-        width: 130,
+        width: 150,
       },
       {
         Header: 'BILLING CYCLE',
@@ -326,9 +331,11 @@ function CompleteTable({ data }) {
                     alt='download'
                   />
                 )}
+                <img src={AttachIcon} alt='Attachment Icon' />
               </div>
             </div>
           ))}
+          <button onClick={handleShow}>Show All</button>
         </div>
       </td>
     ),
@@ -350,7 +357,7 @@ function CompleteTable({ data }) {
     setGlobalFilter,
     rows: filteredTableData,
   } = useTable(
-    { columns, data: filteredData, initialState: { pageSize: 8 } },
+    { columns, data: filteredData, initialState: { pageSize: 7 } },
     useGlobalFilter,
     useSortBy,
     useExpanded,
@@ -392,10 +399,11 @@ function CompleteTable({ data }) {
           <br />
           Leo magna posuere pellentesque malesuada.
         </p>
-        <FilterDropdown
-          filterSelect={(selectedState) => onFilterSelect(selectedState)}
-        />
-        <div>
+
+        <div className='row'>
+          <FilterDropdown
+            filterSelect={(selectedState) => onFilterSelect(selectedState)}
+          />
           <GlobalFilter
             setFilter={(value) => {
               setGlobalFilter(value);
@@ -462,6 +470,40 @@ function CompleteTable({ data }) {
               </div>
             </div>
           </form>
+        </Modal>
+      </div>
+      <div>
+        <Modal isOpen={show} onHide={handleClose} className='carendar-modal'>
+          <h2>Subscription Detail</h2>
+          <button className='_modal-close' onClick={handleClose}>
+            <svg className='_modal-close-icon' viewBox='0 0 40 40'>
+              <path d='M 10,10 L 30,30 M 30,10 L 10,30' />
+            </svg>
+          </button>
+          <div className='modalBody'>
+            <h3>Browser Stack</h3>
+            <div className='calenderGrid'>
+              <div>Jan</div>
+              <div>
+                Feb
+                <div className='amount'>
+                  70$
+                  <img src={AttachIcon} alt='Attachment Icon' />
+                </div>
+              </div>
+              <div>Mar</div>
+              <div>Apr</div>
+              <div>May</div>
+              <div>June</div>
+              <div>July</div>
+              <div>Aug</div>
+              <div>Sept</div>
+              <div>Oct</div>
+              <div>Nov</div>
+              <div>Dec</div>
+            </div>
+            <p>Totla Amount: 60000</p>
+          </div>
         </Modal>
       </div>
       <div className='table-responsive grid tableFixHead'>
@@ -542,7 +584,7 @@ function CompleteTable({ data }) {
           onChange={(e) => setPageSize(Number(e.target.value))}
           className='pageNum'
         >
-          {[8, 10, 20, 50, 100].map((pageSize, i) => (
+          {[7, 10, 20, 50, 100].map((pageSize, i) => (
             <option key={pageSize} value={pageSize}>
               {pageSize}
             </option>
