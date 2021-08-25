@@ -19,8 +19,11 @@ export default function Footer() {
   const handleClose = (event, closeClick) => {
     setOpen(false);
     if (!closeClick) {
+      const feedback = {
+        feedbackText
+      }
       axios
-        .post(getApiUrl(`softwareInfo/feedbackMail`))
+        .post(getApiUrl(`softwareInfo/feedbackMail`), feedback)
         .then((res) => {
           console.log(res.data);
           toast.success('A Reminder mail has been triggered !', {

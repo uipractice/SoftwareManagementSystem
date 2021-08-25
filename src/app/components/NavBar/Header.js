@@ -54,8 +54,11 @@ const Header = ({ validate }) => {
   const handleSubmit = (e, closeClick) => {
     setFeedback(false);
     if (!closeClick) {
+      const feedback = {
+        feedbackText
+      }
       axios
-        .post(getApiUrl(`softwareInfo/feedbackMail`))
+        .post(getApiUrl(`softwareInfo/feedbackMail`), feedback)
         .then((res) => {
           console.log(res.data);
           toast.success('A Reminder mail has been triggered !', {
