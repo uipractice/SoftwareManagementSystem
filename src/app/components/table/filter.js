@@ -1,30 +1,68 @@
-import React, { useState } from 'react';
-import { useAsyncDebounce } from 'react-table';
+import React, { useEffect, useState } from 'react';
+import './filter.css';
+import isEmpty from 'lodash';
 
-function GlobalFilter({ setFilter }) {
-  const [searchText, setSearchText] = useState();
-  const onChange = useAsyncDebounce((value) => {
-    setFilter(value);
-  }, 1000);
+const options = [
+  { label: 'All', value: 'all', group: 'all' },
+  { label: 'Deleted', value: 'deleted', group: 'status' },
+  { label: 'Certificate', value: 'certificate', group: 'softwareType' },
+  { label: 'Domain', value: 'domain', group: 'softwareType' },
+  { label: 'Software', value: 'software', group: 'softwareType' },
+  { label: 'Monthly', value: 'monthly', group: 'billingCycle' },
+  { label: 'Yearly', value: 'yearly', group: 'billingCycle' },
+  // { label: 'Licenced', value: 'licenced', group: 'time' },
+  // { label: 'Pending', value: 'pending', group: 'time' },
+];
+
+const FilterDropdown = (props) => {
+  const [checkInfo, setCheckInfo] = useState({});
+
+  useEffect(() => {
+    if (checkInfo) {
+      props.filterSelect(checkInfo);
+    }
+  }, [checkInfo]);
+
+  function handleSelectedStatus({ target: { name, value } }) {
+    let state = { [name]: value };
+    if (!['all'].includes(value)) {
+      state = { ...checkInfo, ...state };
+      delete state.all;
+    }
+    setCheckInfo(state);
+  }
+
   return (
-    <form>
-      <input
-        onChange={(e) => {
-          setSearchText(e.target.value);
-          onChange(e.target.value);
-        }}
-        type='search'
-        placeholder='Search'
-        id='search'
-        className={searchText ? 'searchClose' : ''}
-      />
-      <button
-        type='reset'
-        className='close-icon'
-        onClick={() => onChange('')}
-      ></button>
-    </form>
-  );
-}
+    <>
+      <div className='dropdown'>
+        <button
+          className='button'
+          type='button'
+          id='dropdownMenuButton1'
+          data-bs-toggle='dropdown'
+          aria-expanded='false'
+        >
+          Filters
+          <i className='caret-down'></i>
+        </button>
 
-export default GlobalFilter;
+        <ul className='dropdown-menu' aria-labelledby='dropdownMenuButton1'>
+          {options.map((option, i) => (
+            <li key={i}>
+              <input
+                name={option.group}
+                value={option.value}
+                checked={checkInfo[option.group] === option.value}
+                type='radio'
+                onChange={handleSelectedStatus}
+              />
+              {option.label}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </>
+  );
+};
+
+export default FilterDropdown;

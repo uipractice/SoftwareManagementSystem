@@ -7,6 +7,7 @@ function Feedback({ isOpen, closeModal, feedbackText, handleInputChange }) {
       centered
       style={{ borderRadius: '0 !important' }}
       show={isOpen}
+      backdrop='static'
       onHide={(e) => closeModal(e, true)}
       className='feedback-modal'
     >

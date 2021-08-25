@@ -5,7 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import NumberFormat from 'react-number-format';
 import axios from 'axios';
 import moment from 'moment';
-import Upload from '../../assets/images/download.svg';
+import Upload from '../../assets/images/upload.svg';
 // Helpers
 import { getApiUrl } from '../utils/helper';
 
@@ -179,7 +179,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
         .post(
           `${
             isEdit
-              ? getApiUrl(`softwareInfo/update/${rowData?._id}`)
+              ? getApiUrl(`softwareInfo/renew/${rowData?._id}`)
               : getApiUrl(`softwareInfo/create`)
           }`,
           isEdit ? newBillingRecord : state
@@ -209,6 +209,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
       size='lg'
       style={{ borderRadius: '0 !important' }}
       show={isOpen}
+      backdrop='static'
       onHide={closeModal}
       className='software-modal'
     >
@@ -278,7 +279,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
           </div>
           <div className='row'>
             <div className='form-group col-md-4'>
-              <label htmlFor='team'>Team *</label>
+              <label htmlFor='team'>Team/Project/Business Unit *</label>
               <input
                 type='text'
                 className='form-control'
@@ -459,8 +460,8 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                     </div>
                   ) : (
                     <span>
-                      Click here to upload&nbsp;&nbsp;
-                      <img src={Upload} alt='download' />
+                      Click here to upload
+                      <img className='px-2' src={Upload} alt='download' />
                     </span>
                   )}
                 </div>
