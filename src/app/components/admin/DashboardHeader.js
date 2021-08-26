@@ -1,53 +1,33 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import './Container.css';
 import Form from './Form';
 
-export class DashboardHeader extends Component {
-  state = { isShown: false };
-  showModal = () => {
-    this.setState({ isShown: true });
-    this.toggleScrollLock();
+export function DashboardHeader() {
+  const [isShown, setIsShown] = useState(false);
+  const showModal = () => {
+    setIsShown(true);
   };
-  closeModal = () => {
-    this.setState({ isShown: false });
-    this.toggleScrollLock();
-  };
-  onKeyDown = (event) => {
-    if (event.keyCode === 27) {
-      this.closeModal();
-    }
-  };
-  onClickOutside = (event) => {
-    if (this.modal && this.modal.contains(event.target)) return;
-    this.closeModal();
+  const closeModal = () => {
+    setIsShown(false);
   };
 
-  toggleScrollLock = () => {
-    document.querySelector('html').classList.toggle('scroll-lock');
-  };
+  return (
+    <div className='d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3'>
+      <h5 className='project-head'>LICENSING DETAILS</h5>
 
-  render() {
-    return (
-      <div className='d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3'>
-        <h5 className='project-head'>LICENSING DETAILS</h5>
+      <div className='btn-toolbar mb-2 mb-md-0'>
+        <button
+          type='button'
+          className='btn work_btn work_btn_blue center modal-button'
+          onClick={showModal}
+        >
+          ADD SOFTWARE/TOOL
+        </button>
 
-        <div className='btn-toolbar mb-2 mb-md-0'>
-          <button
-            type='button'
-            className='btn work_btn work_btn_blue center modal-button'
-            ref={this.buttonRef}
-            onClick={this.showModal}
-          >
-            ADD SOFTWARE/TOOL
-          </button>
-
-          {this.state.isShown && (
-            <Form isOpen={this.state.isShown} closeModal={this.closeModal} />
-          )}
-        </div>
+        {isShown && <Form isOpen={isShown} closeModal={closeModal} />}
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 export default DashboardHeader;

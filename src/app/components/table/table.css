@@ -136,7 +136,7 @@ table th {
   border: 1px solid transparent;
 }
 .filter-row input.searchClose {
-  background: #fff;
+  background: #fff !important;
 }
 .filter-row select {
   font-size: 14px;
@@ -220,7 +220,7 @@ tfoot td {
 }
 .tableFixHead {
   overflow: auto;
-  height: calc(100vh - 310px);
+  height: calc(100vh - 306px);
   scrollbar-width: thin;
   scrollbar-color: #afaeae #e3e1e1;
 }
@@ -377,7 +377,7 @@ tfoot td {
   cursor: pointer;
   position: absolute;
   right: 10px;
-  top: 3px;
+  top: 14px;
 }
 .close-icon:after {
   content: '';
@@ -454,11 +454,12 @@ tfoot td {
 .calenderGrid {
   display: flex;
   flex-wrap: wrap;
+  margin: 10px 0;
 }
-.calenderGrid div {
+.calenderGrid .calenderGridItem {
   width: 25%;
   border: 1px solid #d8d8d8;
-  height: 80px;
+  height: 100px;
   padding: 10px;
   font-family: Lato;
   font-weight: normal;
@@ -467,8 +468,10 @@ tfoot td {
   color: #929292;
 }
 .calenderGrid .amount {
+  display: flex;
   height: auto;
-  margin: auto;
+  width: 30%;
+  margin: 12px auto;
   padding: 5px 10px;
 }
 .modalBody p {

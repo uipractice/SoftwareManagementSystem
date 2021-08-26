@@ -2,9 +2,9 @@ import React, { useEffect, useState, useCallback } from 'react';
 import DeleteImg from '../../assets/images/delete-icon.svg';
 import EditImg from '../../assets/images/edit-icon.svg';
 import UpDownImg from '../../assets/images/sorting.svg';
-import AttachIcon from '../../assets/images/amount-attachment.png';
+// import AttachIcon from '../../assets/images/amount-attachment.png';
 import axios from 'axios';
-import Modal from 'react-modal';
+import { Modal } from 'react-bootstrap';
 import {
   useTable,
   useSortBy,
@@ -33,9 +33,6 @@ function CompleteTable({ data }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditFormOpen, toggleEditForm] = useState(false);
   const [show, setShow] = useState(false);
-
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
 
   const setDefaultFilterData = useCallback((data) => {
     if (data?.length) {
@@ -286,55 +283,63 @@ function CompleteTable({ data }) {
   };
 
   // Get S3 signed urls of the attachments for a Billing Month.
-  const downloadInvoice = useCallback(
-    ({ original: rowItemData }, billingItem) => {
-      axios
-        .get(
-          getApiUrl(
-            `softwareInfo/download/${rowItemData._id}/${billingItem._id}`
-          )
-        )
-        .then((res) => {
-          const files = res.data;
-          downloadFiles(files, billingItem.invoiceFiles);
-        });
-    },
-    []
-  );
+  const downloadInvoice = useCallback((rowItemData, billingItem) => {
+    axios
+      .get(
+        getApiUrl(`softwareInfo/download/${rowItemData._id}/${billingItem._id}`)
+      )
+      .then((res) => {
+        const files = res.data;
+        downloadFiles(files, billingItem.invoiceFiles);
+      });
+  }, []);
 
   const renderRowSubComponent = useCallback(
     ({ row }) => (
       <td colSpan='12' className='rowexpandable'>
         <div className='subscrit'>
           <h3 className='rowexpandfont'>Subscription for :</h3>
-          {row.original.billingDetails.map((item, i) => (
-            <div key={i} className='label text-capitalize'>
-              <label>
-                {item.billingMonth}{' '}
-                {item.description && (
-                  <img
-                    className='px-2 pointer'
-                    src={Note}
-                    title={item.description}
-                    alt='description'
-                  />
-                )}{' '}
-              </label>
-              <div className='amount'>
-                {`₹${item.pricingInRupee} `}
-                {item.invoiceFiles.length > 0 && (
-                  <img
-                    className='pl-3 pr-2 pointer'
-                    src={Download}
-                    onClick={() => downloadInvoice(row, item)}
-                    alt='download'
-                  />
-                )}
-                <img src={AttachIcon} alt='Attachment Icon' />
+          {row.original.billingDetails
+            .slice(-6)
+            .reverse()
+            .map((item, i) => (
+              <div key={i} className='label text-capitalize'>
+                <label>
+                  {item.billingMonth}{' '}
+                  {item.description && (
+                    <img
+                      className='px-2 pointer'
+                      src={Note}
+                      title={item.description}
+                      alt='description'
+                    />
+                  )}{' '}
+                </label>
+                <div className='amount'>
+                  {`₹${item.pricingInRupee} `}
+                  {item.invoiceFiles.length > 0 && (
+                    <img
+                      className='pl-3 pr-2 pointer'
+                      src={Download}
+                      onClick={() => downloadInvoice(row.original, item)}
+                      alt='download'
+                    />
+                  )}
+                </div>
               </div>
+            ))}
+          {row.original.billingDetails?.length > 6 && (
+            <div style={{ alignSelf: 'flex-end', margin: '18px 0' }}>
+              <button
+                onClick={() => {
+                  setShow(true);
+                  setRowData(row.original);
+                }}
+              >
+                Show All
+              </button>
             </div>
-          ))}
-          <button onClick={handleShow}>Show All</button>
+          )}
         </div>
       </td>
     ),
@@ -356,7 +361,7 @@ function CompleteTable({ data }) {
     setGlobalFilter,
     rows: filteredTableData,
   } = useTable(
-    { columns, data: filteredData, initialState: { pageSize: 7 } },
+    { columns, data: filteredData, initialState: { pageSize: 10 } },
     useGlobalFilter,
     useSortBy,
     useExpanded,
@@ -387,6 +392,20 @@ function CompleteTable({ data }) {
       setFilteredData(addSerialNo(finalFilteredData));
     }
   };
+  const months = [
+    'january',
+    'february',
+    'march',
+    'april',
+    'may',
+    'june',
+    'july',
+    'august',
+    'september',
+    'october',
+    'november',
+    'december',
+  ];
   return (
     <>
       <div className='filter-row'>
@@ -472,37 +491,60 @@ function CompleteTable({ data }) {
         </Modal>
       </div>
       <div>
-        <Modal isOpen={show} onHide={handleClose} className='carendar-modal'>
-          <h2>Subscription Detail</h2>
-          <button className='_modal-close' onClick={handleClose}>
-            <svg className='_modal-close-icon' viewBox='0 0 40 40'>
-              <path d='M 10,10 L 30,30 M 30,10 L 10,30' />
-            </svg>
-          </button>
-          <div className='modalBody'>
-            <h3>Browser Stack</h3>
-            <div className='calenderGrid'>
-              <div>Jan</div>
-              <div>
-                Feb
-                <div className='amount'>
-                  70$
-                  <img src={AttachIcon} alt='Attachment Icon' />
-                </div>
-              </div>
-              <div>Mar</div>
-              <div>Apr</div>
-              <div>May</div>
-              <div>June</div>
-              <div>July</div>
-              <div>Aug</div>
-              <div>Sept</div>
-              <div>Oct</div>
-              <div>Nov</div>
-              <div>Dec</div>
+        <Modal
+          centered
+          size='lg'
+          show={show}
+          backdrop='static'
+          onHide={() => setShow(false)}
+        >
+          <Modal.Header closeButton className='modal-area'>
+            <h3>Subscription Detail</h3>
+          </Modal.Header>
+          <Modal.Body className='rowexpandfont'>
+            <div className='d-flex justify-content-between px-1'>
+              <div>Browser Stack</div>
+              <div>2021</div>
             </div>
-            <p>Totla Amount: 60000</p>
-          </div>
+            <div className='calenderGrid'>
+              {months.map((month) => {
+                const billingItem =
+                  rowData.billingDetails?.filter(
+                    (item) => item.billingMonth === month
+                  ) || [];
+                return (
+                  <div className='calenderGridItem text-capitalize'>
+                    {month}
+                    {billingItem?.length !== 0 && (
+                      <div className='amount'>
+                        {`₹${billingItem[0]?.pricingInRupee}`}
+                        {billingItem[0].invoiceFiles.length > 0 && (
+                          <img
+                            src={Download}
+                            // src={AttachIcon}
+                            onClick={() =>
+                              downloadInvoice(rowData, billingItem[0])
+                            }
+                            alt='download'
+                            className='pointer px-1'
+                          />
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+            <div>
+              <span>
+                {'Total Amount:  ₹'}
+                {rowData.billingDetails?.reduce(
+                  (result, item) => (result += Number(item.pricingInRupee)),
+                  0
+                )}
+              </span>
+            </div>
+          </Modal.Body>
         </Modal>
       </div>
       <div className='table-responsive grid tableFixHead'>
@@ -583,7 +625,7 @@ function CompleteTable({ data }) {
           onChange={(e) => setPageSize(Number(e.target.value))}
           className='pageNum'
         >
-          {[7, 10, 20, 50, 100].map((pageSize, i) => (
+          {[10, 20, 50, 100].map((pageSize, i) => (
             <option key={pageSize} value={pageSize}>
               {pageSize}
             </option>

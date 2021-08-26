@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ToggleButtonGroup, ToggleButton, Modal } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -27,7 +27,6 @@ const defaultFormData = {
 const nonMandatoryFields = ['websiteUrl', 'description', 'invoiceFiles'];
 
 function Form({ isOpen, closeModal, rowData, isEdit = false }) {
-  const inputRef = useRef(null);
   const [state, setState] = useState({});
   const [invoiceFiles, setInvoiceFiles] = useState({});
   const [billingDetails, setBillingDetails] = useState({
@@ -38,7 +37,6 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
   });
 
   useEffect(() => {
-    inputRef?.current?.focus();
     let stateData = defaultFormData;
     if (isEdit) {
       stateData = {

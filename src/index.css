@@ -225,8 +225,8 @@ a:focus {
   border-top: 4px solid #209ec5;
   width: 40px;
   height: 40px;
-  -webkit-animation: spin 2s linear infinite; /* Safari */
-  animation: spin 2s linear infinite;
+  -webkit-animation: spin 1s linear infinite; /* Safari */
+  animation: spin 1s linear infinite;
 }
 
 /* Safari */
@@ -276,10 +276,6 @@ a:focus {
   font-size: 14px;
   font-weight: normal;
   color: #7b7b7b;
-}
-
-.grid {
-  margin-top: 5px;
 }
 
 .grid th {

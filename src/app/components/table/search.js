@@ -23,7 +23,7 @@ function GlobalFilter({ setFilter }) {
         className='close-icon'
         onClick={() => {
           setSearchText('');
-          onChange();
+          onChange('');
         }}
       ></button>
     </form>
