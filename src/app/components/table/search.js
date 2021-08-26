@@ -21,7 +21,10 @@ function GlobalFilter({ setFilter }) {
       <button
         type='reset'
         className='close-icon'
-        onClick={() => onChange('')}
+        onClick={() => {
+          setSearchText('');
+          onChange();
+        }}
       ></button>
     </form>
   );
