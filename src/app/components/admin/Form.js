@@ -212,6 +212,21 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
     }
   };
 
+  const months = [
+    'january',
+    'february',
+    'march',
+    'april',
+    'may',
+    'june',
+    'july',
+    'august',
+    'september',
+    'october',
+    'november',
+    'december',
+  ];
+
   return (
     <Modal
       centered
@@ -360,24 +375,22 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
             <div className='form-group col-md-2'>
               <label htmlFor='billingMonth'>For the month of *</label>
               <select
-                className='form-control'
+                className='form-control text-capitalize'
                 onChange={(e) => handleOnChange(e, 'billingDetails')}
                 name='billingMonth'
                 value={billingDetails?.billingMonth}
                 disabled={state?.billingCycle === 'yearly'}
               >
-                <option value='january'>January</option>
-                <option value='february'>February</option>
-                <option value='march'>March</option>
-                <option value='april'>April</option>
-                <option value='may'>May</option>
-                <option value='june'>June</option>
-                <option value='july'>July</option>
-                <option value='august'>August</option>
-                <option value='september'>September</option>
-                <option value='october'>October</option>
-                <option value='november'>November</option>
-                <option value='december'>December</option>
+                {months
+                  .slice(
+                    moment().month(moment().format('MMMM')).format('M') - 2,
+                    months.length
+                  ) // Getting the list of upcoming months only
+                  .map((month) => (
+                    <option className='option' key={month} value={month}>
+                      {month}
+                    </option>
+                  ))}
               </select>
             </div>
 
@@ -389,6 +402,8 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                 onChange={handleOnChange}
                 name='nextBilling'
                 value={state?.nextBilling}
+                min={moment().subtract(1, 'month').format('YYYY-MM-DD')}
+                max={moment().add(1, 'month').format('YYYY-MM-DD')}
               />
             </div>
             <div className='form-group col-md-2'>
