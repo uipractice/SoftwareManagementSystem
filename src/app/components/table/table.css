@@ -119,8 +119,8 @@ table th {
 .filter-row {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
-  margin-bottom: 15px;
+  align-items: center;
+  margin-bottom: 0;
 }
 .filter-row input {
   font-size: 14px;

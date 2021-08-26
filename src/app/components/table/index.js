@@ -12,7 +12,7 @@ import {
   useExpanded,
 } from 'react-table';
 import './table.css';
-import GlobalFilter from './filter';
+import GlobalFilter from './search';
 import rightIcon from '../../assets/images/right-icon.svg';
 import leftIcon from '../../assets/images/left-icon.svg';
 import { toast } from 'react-toastify';
@@ -20,11 +20,11 @@ import 'react-toastify/dist/ReactToastify.css';
 import moment from 'moment';
 import Form from '../admin/Form';
 import { getApiUrl } from '../utils/helper';
+import FilterDropdown from './filter';
 import Download from '../../assets/images/download.svg';
 import Note from '../../assets/images/note.svg';
 
 toast.configure();
-
 function CompleteTable({ data }) {
   const [filteredData, setFilteredData] = useState([]);
   const [searchValue, setSearchValue] = useState();
@@ -34,7 +34,7 @@ function CompleteTable({ data }) {
 
   const setDefaultFilterData = useCallback((data) => {
     if (data?.length) {
-      let filterResult = data.filter((row) => row.status !== 'Deleted');
+      let filterResult = data.filter((row) => row.status !== 'deleted');
       setFilteredData(addSerialNo(filterResult));
     }
   }, []);
@@ -56,7 +56,6 @@ function CompleteTable({ data }) {
       deleteReason: evt.target.value,
     });
   }
-
   const handleUpdateStatus = (e) => {
     e.preventDefault();
     rowData.status = 'deleted';
@@ -65,17 +64,16 @@ function CompleteTable({ data }) {
       .post(getApiUrl(`softwareInfo/update/${id}`), rowData)
       .then((res) => {
         toast.success('Data deleted successfully!', {
-          autoClose: 2900,
+          autoClose: 1000,
         });
         setIsModalOpen(false);
         console.log(res.data);
         setTimeout(() => {
           window.location.reload();
-        }, 3000);
+        }, 1000);
       })
       .catch((err) => console.log(err.response));
   };
-
   const columns = React.useMemo(
     () => [
       {
@@ -249,7 +247,9 @@ function CompleteTable({ data }) {
               }}
             />
             <img
-              className='p-2 pointer'
+              className={`p-2 pointer ${
+                row.original.status === 'deleted' && 'disableDeleteBtn'
+              }`}
               src={DeleteImg}
               alt='Evoke Technologies'
               onClick={() => {
@@ -333,7 +333,6 @@ function CompleteTable({ data }) {
     ),
     [downloadInvoice]
   );
-
   const {
     getTableProps,
     getTableBodyProps,
@@ -356,7 +355,6 @@ function CompleteTable({ data }) {
     useExpanded,
     usePagination
   );
-
   const { globalFilter, pageIndex, pageSize } = state;
 
   console.log('check state', state);
@@ -381,6 +379,23 @@ function CompleteTable({ data }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchValue]);
 
+  const onFilterSelect = (filterState) => {
+    const filterKeys = Object.keys(filterState);
+    if (filterKeys?.length) {
+      const finalFilteredData = filterKeys.reduce((result, key) => {
+        const filteredData = result.filter((row) =>
+          key === 'all'
+            ? row.status !== 'deleted'
+            : filterKeys.includes('status')
+            ? row[key] === filterState[key]
+            : row[key] === filterState[key] && row.status !== 'deleted'
+        );
+        result = [...filteredData];
+        return result;
+      }, data);
+      setFilteredData(addSerialNo(finalFilteredData));
+    }
+  };
   return (
     <>
       <div className='filter-row'>
@@ -392,6 +407,9 @@ function CompleteTable({ data }) {
           <br />
           Leo magna posuere pellentesque malesuada.
         </p>
+        <FilterDropdown
+          filterSelect={(selectedState) => onFilterSelect(selectedState)}
+        />
         <div>
           <GlobalFilter
             setFilter={(value) => {
@@ -401,7 +419,6 @@ function CompleteTable({ data }) {
           />
         </div>
       </div>
-
       <div>
         <Modal
           isOpen={isModalOpen}
@@ -438,7 +455,6 @@ function CompleteTable({ data }) {
               undone.
             </p>
             <br></br>
-
             <div className='row'>
               <div className='col-md-6 text-right padding0'>
                 <button
@@ -463,7 +479,6 @@ function CompleteTable({ data }) {
           </form>
         </Modal>
       </div>
-
       <div className='table-responsive grid tableFixHead'>
         <table {...getTableProps()} className='table table-striped '>
           <thead>
@@ -580,5 +595,4 @@ function CompleteTable({ data }) {
     </>
   );
 }
-
 export default CompleteTable;
