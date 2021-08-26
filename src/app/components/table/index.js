@@ -368,6 +368,22 @@ function CompleteTable({ data }) {
     usePagination
   );
   const { globalFilter, pageIndex, pageSize } = state;
+
+  console.log('check state', state);
+
+  var start, end;
+  if (pageIndex === 0) {
+    start = 1;
+    end = data.length > pageSize ? pageSize : data.length;
+  } else {
+    start = pageIndex * pageSize + 1;
+    // end = (pageIndex + 1) * pageSize;
+    end =
+      data.length >= (pageIndex + 1) * pageSize
+        ? (pageIndex + 1) * pageSize
+        : data.length;
+  }
+
   useEffect(() => {
     if (filteredTableData?.length && globalFilter && searchValue)
       setFilteredData(addSerialNo(filteredTableData, true));
@@ -619,7 +635,10 @@ function CompleteTable({ data }) {
         </table>
       </div>
       <div className='table-pagination'>
-        <label>Rows per page:</label>
+        <span className='paginate'>
+          <b>{start}</b> to <b>{end}</b> of <b>{data.length}</b>
+        </span>
+        {/* <label>Rows per page:</label>
         <select
           value={pageSize}
           onChange={(e) => setPageSize(Number(e.target.value))}
@@ -630,7 +649,7 @@ function CompleteTable({ data }) {
               {pageSize}
             </option>
           ))}
-        </select>
+        </select> */}
         <span>
           Page{' '}
           <strong>

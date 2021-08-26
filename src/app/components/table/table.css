@@ -203,6 +203,10 @@ tfoot td {
   font-size: 14px;
   line-height: 16px;
   color: #757575;
+  padding-left: 15px;
+}
+.paginate {
+  color: #757575;
 }
 .prev-next {
   display: inline;
