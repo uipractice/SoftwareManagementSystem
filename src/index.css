@@ -225,8 +225,8 @@ a:focus {
   border-top: 4px solid #209ec5;
   width: 40px;
   height: 40px;
-  -webkit-animation: spin 2s linear infinite; /* Safari */
-  animation: spin 2s linear infinite;
+  -webkit-animation: spin 1s linear infinite; /* Safari */
+  animation: spin 1s linear infinite;
 }
 
 /* Safari */
@@ -276,10 +276,6 @@ a:focus {
   font-size: 14px;
   font-weight: normal;
   color: #7b7b7b;
-}
-
-.grid {
-  margin-top: 5px;
 }
 
 .grid th {
@@ -382,12 +378,16 @@ a:focus {
   margin: 9rem auto;
   max-width: 815px;
 }
-
+.modal.modal-static .modal-dialog {
+  transform: none !important;
+}
 #shareform .modal-dialog .modal-content {
   box-shadow: 0px 0px 4px rgb(0 0 0 / 25%);
   border: 0;
 }
-
+.feedback-modal .modal-content {
+  border-radius: 4px !important;
+}
 #shareform .modal-header {
   max-height: 53px;
   color: #209ec5;
