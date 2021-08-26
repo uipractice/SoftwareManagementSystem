@@ -25,7 +25,6 @@ import Download from '../../assets/images/download.svg';
 import Note from '../../assets/images/note.svg';
 
 toast.configure();
-const sample = [];
 function CompleteTable({ data }) {
   const [filteredData, setFilteredData] = useState([]);
   const [searchValue, setSearchValue] = useState();
