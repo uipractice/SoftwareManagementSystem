@@ -355,7 +355,7 @@ function CompleteTable({ data }) {
     canNextPage,
     canPreviousPage,
     pageOptions,
-    setPageSize,
+    // setPageSize,
     prepareRow,
     state,
     setGlobalFilter,
@@ -527,7 +527,7 @@ function CompleteTable({ data }) {
                     (item) => item.billingMonth === month
                   ) || [];
                 return (
-                  <div className='calenderGridItem text-capitalize'>
+                  <div key={month} className='calenderGridItem text-capitalize'>
                     {month}
                     {billingItem?.length !== 0 && (
                       <div className='amount'>
