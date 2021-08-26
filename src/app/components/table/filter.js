@@ -20,7 +20,8 @@ const FilterDropdown = ({ filterSelect }) => {
     if (checkInfo) {
       filterSelect(checkInfo);
     }
-  }, [filterSelect, checkInfo]);
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [checkInfo]);
 
   function handleSelectedStatus({ target: { name, value } }) {
     let state = { [name]: value };

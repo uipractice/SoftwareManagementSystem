@@ -2,8 +2,9 @@ import React, { useEffect, useState, useCallback } from 'react';
 import DeleteImg from '../../assets/images/delete-icon.svg';
 import EditImg from '../../assets/images/edit-icon.svg';
 import UpDownImg from '../../assets/images/sorting.svg';
+// import AttachIcon from '../../assets/images/amount-attachment.png';
 import axios from 'axios';
-import Modal from 'react-modal';
+import { Modal } from 'react-bootstrap';
 import {
   useTable,
   useSortBy,
@@ -31,6 +32,7 @@ function CompleteTable({ data }) {
   const [rowData, setRowData] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditFormOpen, toggleEditForm] = useState(false);
+  const [show, setShow] = useState(false);
 
   const setDefaultFilterData = useCallback((data) => {
     if (data?.length) {
@@ -85,7 +87,7 @@ function CompleteTable({ data }) {
         Header: 'SOFTWARE',
         accessor: 'softwareName',
         sticky: 'left',
-        width: 136,
+        width: 160,
         Cell: ({
           row: {
             original: { websiteUrl, softwareName },
@@ -117,7 +119,7 @@ function CompleteTable({ data }) {
       {
         Header: 'USER/OWNER',
         accessor: 'owner',
-        width: 130,
+        width: 150,
       },
       {
         Header: 'BILLING CYCLE',
@@ -281,53 +283,63 @@ function CompleteTable({ data }) {
   };
 
   // Get S3 signed urls of the attachments for a Billing Month.
-  const downloadInvoice = useCallback(
-    ({ original: rowItemData }, billingItem) => {
-      axios
-        .get(
-          getApiUrl(
-            `softwareInfo/download/${rowItemData._id}/${billingItem._id}`
-          )
-        )
-        .then((res) => {
-          const files = res.data;
-          downloadFiles(files, billingItem.invoiceFiles);
-        });
-    },
-    []
-  );
+  const downloadInvoice = useCallback((rowItemData, billingItem) => {
+    axios
+      .get(
+        getApiUrl(`softwareInfo/download/${rowItemData._id}/${billingItem._id}`)
+      )
+      .then((res) => {
+        const files = res.data;
+        downloadFiles(files, billingItem.invoiceFiles);
+      });
+  }, []);
 
   const renderRowSubComponent = useCallback(
     ({ row }) => (
       <td colSpan='12' className='rowexpandable'>
         <div className='subscrit'>
           <h3 className='rowexpandfont'>Subscription for :</h3>
-          {row.original.billingDetails.map((item, i) => (
-            <div key={i} className='label text-capitalize'>
-              <label>
-                {item.billingMonth}{' '}
-                {item.description && (
-                  <img
-                    className='px-2 pointer'
-                    src={Note}
-                    title={item.description}
-                    alt='description'
-                  />
-                )}{' '}
-              </label>
-              <div className='amount'>
-                {`₹${item.pricingInRupee} `}
-                {item.invoiceFiles.length > 0 && (
-                  <img
-                    className='pl-3 pr-2 pointer'
-                    src={Download}
-                    onClick={() => downloadInvoice(row, item)}
-                    alt='download'
-                  />
-                )}
+          {row.original.billingDetails
+            .slice(-6)
+            .reverse()
+            .map((item, i) => (
+              <div key={i} className='label text-capitalize'>
+                <label>
+                  {item.billingMonth}{' '}
+                  {item.description && (
+                    <img
+                      className='px-2 pointer'
+                      src={Note}
+                      title={item.description}
+                      alt='description'
+                    />
+                  )}{' '}
+                </label>
+                <div className='amount'>
+                  {`₹${item.pricingInRupee} `}
+                  {item.invoiceFiles.length > 0 && (
+                    <img
+                      className='pl-3 pr-2 pointer'
+                      src={Download}
+                      onClick={() => downloadInvoice(row.original, item)}
+                      alt='download'
+                    />
+                  )}
+                </div>
               </div>
+            ))}
+          {row.original.billingDetails?.length > 6 && (
+            <div style={{ alignSelf: 'flex-end', margin: '18px 0' }}>
+              <button
+                onClick={() => {
+                  setShow(true);
+                  setRowData(row.original);
+                }}
+              >
+                Show All
+              </button>
             </div>
-          ))}
+          )}
         </div>
       </td>
     ),
@@ -349,7 +361,7 @@ function CompleteTable({ data }) {
     setGlobalFilter,
     rows: filteredTableData,
   } = useTable(
-    { columns, data: filteredData, initialState: { pageSize: 7 } },
+    { columns, data: filteredData, initialState: { pageSize: 10 } },
     useGlobalFilter,
     useSortBy,
     useExpanded,
@@ -357,19 +369,17 @@ function CompleteTable({ data }) {
   );
   const { globalFilter, pageIndex, pageSize } = state;
 
-  console.log('check state', state);
-
   var start, end;
   if (pageIndex === 0) {
     start = 1;
-    end = data.length > pageSize ? pageSize : data.length;
+    end = filteredData.length > pageSize ? pageSize : filteredData.length;
   } else {
     start = pageIndex * pageSize + 1;
     // end = (pageIndex + 1) * pageSize;
     end =
-      data.length >= (pageIndex + 1) * pageSize
+      filteredData.length >= (pageIndex + 1) * pageSize
         ? (pageIndex + 1) * pageSize
-        : data.length;
+        : filteredData.length;
   }
 
   useEffect(() => {
@@ -396,6 +406,20 @@ function CompleteTable({ data }) {
       setFilteredData(addSerialNo(finalFilteredData));
     }
   };
+  const months = [
+    'january',
+    'february',
+    'march',
+    'april',
+    'may',
+    'june',
+    'july',
+    'august',
+    'september',
+    'october',
+    'november',
+    'december',
+  ];
   return (
     <>
       <div className='filter-row'>
@@ -407,10 +431,11 @@ function CompleteTable({ data }) {
           <br />
           Leo magna posuere pellentesque malesuada.
         </p>
-        <FilterDropdown
-          filterSelect={(selectedState) => onFilterSelect(selectedState)}
-        />
-        <div>
+
+        <div className='row'>
+          <FilterDropdown
+            filterSelect={(selectedState) => onFilterSelect(selectedState)}
+          />
           <GlobalFilter
             setFilter={(value) => {
               setGlobalFilter(value);
@@ -477,6 +502,63 @@ function CompleteTable({ data }) {
               </div>
             </div>
           </form>
+        </Modal>
+      </div>
+      <div>
+        <Modal
+          centered
+          size='lg'
+          show={show}
+          backdrop='static'
+          onHide={() => setShow(false)}
+        >
+          <Modal.Header closeButton className='modal-area'>
+            <h3>Subscription Detail</h3>
+          </Modal.Header>
+          <Modal.Body className='rowexpandfont'>
+            <div className='d-flex justify-content-between px-1'>
+              <div>Browser Stack</div>
+              <div>2021</div>
+            </div>
+            <div className='calenderGrid'>
+              {months.map((month) => {
+                const billingItem =
+                  rowData.billingDetails?.filter(
+                    (item) => item.billingMonth === month
+                  ) || [];
+                return (
+                  <div className='calenderGridItem text-capitalize'>
+                    {month}
+                    {billingItem?.length !== 0 && (
+                      <div className='amount'>
+                        {`₹${billingItem[0]?.pricingInRupee}`}
+                        {billingItem[0].invoiceFiles.length > 0 && (
+                          <img
+                            src={Download}
+                            // src={AttachIcon}
+                            onClick={() =>
+                              downloadInvoice(rowData, billingItem[0])
+                            }
+                            alt='download'
+                            className='pointer px-1'
+                          />
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+            <div>
+              <span>
+                {'Total Amount:  ₹'}
+                {rowData.billingDetails?.reduce(
+                  (result, item) => (result += Number(item.pricingInRupee)),
+                  0
+                )}
+              </span>
+            </div>
+          </Modal.Body>
         </Modal>
       </div>
       <div className='table-responsive grid tableFixHead'>
@@ -552,7 +634,7 @@ function CompleteTable({ data }) {
       </div>
       <div className='table-pagination'>
         <span className='paginate'>
-          <b>{start}</b> to <b>{end}</b> of <b>{data.length}</b>
+          <b>{start}</b> to <b>{end}</b> of <b>{filteredData.length}</b>
         </span>
         {/* <label>Rows per page:</label>
         <select
@@ -560,7 +642,7 @@ function CompleteTable({ data }) {
           onChange={(e) => setPageSize(Number(e.target.value))}
           className='pageNum'
         >
-          {[8, 10, 20, 50, 100].map((pageSize, i) => (
+          {[10, 20, 50, 100].map((pageSize, i) => (
             <option key={pageSize} value={pageSize}>
               {pageSize}
             </option>
