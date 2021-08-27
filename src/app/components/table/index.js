@@ -55,7 +55,7 @@ function CompleteTable({ data }) {
   function handleInputChange(evt) {
     setRowData({
       ...rowData,
-      deleteReason: evt.target.value,
+      deleteReason: evt.target.value.trim(),
     });
   }
   const handleUpdateStatus = (e) => {
@@ -250,7 +250,7 @@ function CompleteTable({ data }) {
             />
             <img
               className={`p-2 pointer ${
-                row.original.status === 'deleted' && 'disableDeleteBtn'
+                row.original.status === 'deleted' ? 'disableDeleteBtn' : ''
               }`}
               src={DeleteImg}
               alt='Evoke Technologies'
@@ -424,12 +424,14 @@ function CompleteTable({ data }) {
     <>
       <div className='filter-row'>
         <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eros leo
-          suscipit ipsum id ut. <br />
-          Et consectetur convallis etiam auctor ut orci. Sed id ac quis
-          tristique vehicula.
+          {
+            'One tool for all licenses! Software License Management helps to maintain Certificates, Domains or Software with ease.'
+          }
           <br />
-          Leo magna posuere pellentesque malesuada.
+          {
+            'It helps reduce repetitive documentation efforts, optimize usage, & control the cost.'
+          }
+          <br />
         </p>
 
         <div className='row'>
@@ -444,46 +446,39 @@ function CompleteTable({ data }) {
           />
         </div>
       </div>
-      <div>
-        <Modal
-          isOpen={isModalOpen}
-          shouldCloseOnOverlayClick={false}
-          onRequestClose={() => {
-            setIsModalOpen(false);
-          }}
-          className='modalDesign deleteModal'
-        >
-          <h2>Are you sure?</h2>
-          <button
-            className='_modal-close'
-            onClick={() => {
-              setIsModalOpen(false);
-            }}
+      {isModalOpen && (
+        <div>
+          <Modal
+            centered
+            backdrop='static'
+            show={isModalOpen}
+            onHide={(e) => setIsModalOpen(false)}
+            className='deleteModal'
           >
-            <svg className='_modal-close-icon' viewBox='0 0 40 40'>
-              <path d='M 10,10 L 30,30 M 30,10 L 10,30' />
-            </svg>
-          </button>
-          <form>
-            <p>Please enter the reason to delete the record.</p>
-            <textarea
-              type='text'
-              autoFocus={true}
-              style={{ color: 'black' }}
-              onChange={handleInputChange}
-              name='deleteReason'
-            />
-            <br></br>
-            <p className='descr'>
-              {' '}
-              Do you really want to delete the records? This process cannot be
-              undone.
-            </p>
-            <br></br>
-            <div className='row'>
-              <div className='col-md-6 text-right padding0'>
+            <Modal.Header closeButton className='modal-area'>
+              Are you sure?
+            </Modal.Header>
+            <Modal.Body>
+              <form>
+                <p>Please enter the reason to delete the record.</p>
+                <textarea
+                  type='text'
+                  rows='3'
+                  autoFocus={true}
+                  style={{ color: 'black' }}
+                  onChange={handleInputChange}
+                  name='deleteReason'
+                />
+                <p className='descr'>
+                  Do you really want to delete the records? This process cannot
+                  be undone.
+                </p>
+              </form>
+            </Modal.Body>
+            <Modal.Footer>
+              <div>
                 <button
-                  className='form-control btn btn-primary'
+                  className='form-control btn cancel'
                   onClick={() => {
                     setIsModalOpen(false);
                   }}
@@ -491,7 +486,7 @@ function CompleteTable({ data }) {
                   Cancel
                 </button>
               </div>
-              <div className='col-md-6'>
+              <div>
                 <button
                   onClick={handleUpdateStatus}
                   disabled={!rowData?.deleteReason}
@@ -500,67 +495,80 @@ function CompleteTable({ data }) {
                   Delete
                 </button>
               </div>
-            </div>
-          </form>
-        </Modal>
-      </div>
-      <div>
-        <Modal
-          centered
-          size='lg'
-          show={show}
-          backdrop='static'
-          onHide={() => setShow(false)}
-        >
-          <Modal.Header closeButton className='modal-area'>
-            <h3>Subscription Detail</h3>
-          </Modal.Header>
-          <Modal.Body className='rowexpandfont'>
-            <div className='d-flex justify-content-between px-1'>
-              <div>Browser Stack</div>
-              <div>2021</div>
-            </div>
-            <div className='calenderGrid'>
-              {months.map((month) => {
-                const billingItem =
-                  rowData.billingDetails?.filter(
-                    (item) => item.billingMonth === month
-                  ) || [];
-                return (
-                  <div key={month} className='calenderGridItem text-capitalize'>
-                    {month}
-                    {billingItem?.length !== 0 && (
-                      <div className='amount'>
-                        {`₹${billingItem[0]?.pricingInRupee}`}
-                        {billingItem[0].invoiceFiles.length > 0 && (
-                          <img
-                            src={Download}
-                            // src={AttachIcon}
-                            onClick={() =>
-                              downloadInvoice(rowData, billingItem[0])
-                            }
-                            alt='download'
-                            className='pointer px-1'
-                          />
-                        )}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-            <div>
-              <span>
-                {'Total Amount:  ₹'}
-                {rowData.billingDetails?.reduce(
-                  (result, item) => (result += Number(item.pricingInRupee)),
-                  0
-                )}
-              </span>
-            </div>
-          </Modal.Body>
-        </Modal>
-      </div>
+            </Modal.Footer>
+          </Modal>
+        </div>
+      )}
+      {show && (
+        <div>
+          <Modal
+            centered
+            size='lg'
+            show={show}
+            backdrop='static'
+            onHide={() => setShow(false)}
+          >
+            <Modal.Header closeButton className='modal-area'>
+              <h3>Subscription Detail</h3>
+            </Modal.Header>
+            <Modal.Body className='rowexpandfont'>
+              <div className='d-flex justify-content-between px-1'>
+                <div>{rowData.softwareName}</div>
+                <div className='prev-next'>
+                  {/* <button onClick={() => {}} disabled={!canPreviousPage}>
+                  <img src={leftIcon} alt='prev' />
+                </button>{' '} */}
+                  {moment(rowData.createdAt).format('YYYY')}{' '}
+                  {/* <button onClick={() => {}} disabled={!canNextPage}>
+                  <img src={rightIcon} alt='next' />
+                </button>{' '} */}
+                </div>
+              </div>
+              <div className='calenderGrid'>
+                {months.map((month) => {
+                  const billingItem =
+                    rowData.billingDetails?.filter(
+                      (item) => item.billingMonth === month
+                    ) || [];
+                  return (
+                    <div
+                      key={month}
+                      className='calenderGridItem text-capitalize'
+                    >
+                      {month}
+                      {billingItem?.length !== 0 && (
+                        <div className='amount'>
+                          {`₹${billingItem[0]?.pricingInRupee}`}
+                          {billingItem[0].invoiceFiles.length > 0 && (
+                            <img
+                              src={Download}
+                              // src={AttachIcon}
+                              onClick={() =>
+                                downloadInvoice(rowData, billingItem[0])
+                              }
+                              alt='download'
+                              className='pointer px-1'
+                            />
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+              <div>
+                <span>
+                  {'Total Amount:  ₹'}
+                  {rowData.billingDetails?.reduce(
+                    (result, item) => (result += Number(item.pricingInRupee)),
+                    0
+                  )}
+                </span>
+              </div>
+            </Modal.Body>
+          </Modal>
+        </div>
+      )}
       <div className='table-responsive grid tableFixHead'>
         <table {...getTableProps()} className='table table-striped '>
           <thead>
