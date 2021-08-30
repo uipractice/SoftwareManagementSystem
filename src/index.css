@@ -424,6 +424,11 @@ a:focus {
   text-transform: uppercase;
 }
 
+.deleteModal .modal-footer {
+  justify-content: center !important;
+  border-top: 0px;
+}
+
 .btn_white {
   border: 1px solid #209ec5;
   color: #209ec5;

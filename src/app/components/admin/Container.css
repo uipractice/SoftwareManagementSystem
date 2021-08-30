@@ -31,7 +31,7 @@
 }
 .modal-content {
   border: none;
-  border-radius: 0;
+  border-radius: 4px;
 }
 .modal-backdrop {
   opacity: 0.3 !important;
