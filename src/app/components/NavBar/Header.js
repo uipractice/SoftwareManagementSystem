@@ -73,7 +73,7 @@ const Header = ({ validate }) => {
     }
   };
   const handleInputChange = (e) => {
-    setFeedbackText(e.target.value);
+    setFeedbackText(e.target.value.trim());
   };
   return (
     <div>

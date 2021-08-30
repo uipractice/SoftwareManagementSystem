@@ -140,7 +140,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
   const handleReset = (e) => {
     e.preventDefault();
     setState(defaultFormData);
-    setInvoiceFiles(null);
+    setInvoiceFiles({});
     setBillingDetails({
       pricingInDollar: '',
       pricingInRupee: '',
@@ -401,7 +401,11 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                 name='nextBilling'
                 value={state?.nextBilling}
                 min={moment().subtract(1, 'month').format('YYYY-MM-DD')}
-                max={moment().add(1, 'month').format('YYYY-MM-DD')}
+                max={
+                  state.billingCycle === 'yearly'
+                    ? ''
+                    : moment().add(1, 'month').format('YYYY-MM-DD')
+                }
               />
             </div>
             <div className='form-group col-md-2'>
@@ -462,8 +466,8 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                 <div className='d-flex justify-content-center align-items-center h-100'>
                   {Object.keys(invoiceFiles).length ? (
                     <div>
-                      {Object.keys(invoiceFiles)?.map((key) => (
-                        <div>
+                      {Object.keys(invoiceFiles)?.map((key, i) => (
+                        <div key={i}>
                           <span
                             key={invoiceFiles[key].name}
                             className='file-close-icon'
@@ -501,12 +505,21 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
 
           <div className='form-group row share '>
             <div className='col-md-12 text-center'>
-              <button
-                className='form-control btn btn-primary'
-                onClick={handleReset}
-              >
-                Reset
-              </button>
+              {isEdit ? (
+                <button
+                  className='form-control btn btn-primary'
+                  onClick={closeModal}
+                >
+                  Cancel
+                </button>
+              ) : (
+                <button
+                  className='form-control btn btn-primary'
+                  onClick={handleReset}
+                >
+                  Reset
+                </button>
+              )}
               <button
                 className='form-control btn btn-primary share-btn'
                 onClick={handleSubmit}
