@@ -122,7 +122,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
     }
   }
 
-  function validateUrl(inputText) {
+  function validateUrl(inputText = '') {
     const url = /^\S+$/;
     if (!inputText.match(url))
       toast.error('Invalid Url !', {
