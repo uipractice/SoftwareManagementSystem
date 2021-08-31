@@ -20,8 +20,8 @@ export default function Footer() {
     setOpen(false);
     if (!closeClick) {
       const feedback = {
-        feedbackText
-      }
+        feedbackText,
+      };
       axios
         .post(getApiUrl(`softwareInfo/feedbackMail`), feedback)
         .then((res) => {
@@ -40,8 +40,8 @@ export default function Footer() {
   const [feedbackText, setFeedbackText] = React.useState('');
 
   const handleInputChange = (e) => {
-    setFeedbackText(e.target.value);
-  }
+    setFeedbackText(e.target.value.trim());
+  };
   return (
     <div className='footer'>
       <ul>

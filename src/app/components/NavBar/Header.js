@@ -55,8 +55,8 @@ const Header = ({ validate }) => {
     setFeedback(false);
     if (!closeClick) {
       const feedback = {
-        feedbackText
-      }
+        feedbackText,
+      };
       axios
         .post(getApiUrl(`softwareInfo/feedbackMail`), feedback)
         .then((res) => {
@@ -73,8 +73,8 @@ const Header = ({ validate }) => {
     }
   };
   const handleInputChange = (e) => {
-    setFeedbackText(e.target.value);
-  }
+    setFeedbackText(e.target.value.trim());
+  };
   return (
     <div>
       <div className='navbar navbar-dark sticky-top  p-0 shadow header_nav'>

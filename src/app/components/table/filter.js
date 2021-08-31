@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import './filter.css';
-import isEmpty from 'lodash';
 
 const options = [
   { label: 'All', value: 'all', group: 'all' },
@@ -14,13 +13,14 @@ const options = [
   // { label: 'Pending', value: 'pending', group: 'time' },
 ];
 
-const FilterDropdown = (props) => {
+const FilterDropdown = ({ filterSelect }) => {
   const [checkInfo, setCheckInfo] = useState({});
 
   useEffect(() => {
     if (checkInfo) {
-      props.filterSelect(checkInfo);
+      filterSelect(checkInfo);
     }
+    //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [checkInfo]);
 
   function handleSelectedStatus({ target: { name, value } }) {

@@ -5,68 +5,30 @@
   pointer-events: none;
   opacity: 30%;
 }
-.modalDesign.deleteModal {
-  width: 532px;
-  align-items: center;
-  background: #ffffff;
-  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.35);
-  border-radius: 4px;
-  position: absolute;
-  left: 0;
-  right: 0;
-  margin: auto;
-  top: 20%;
-}
-.modalDesign.deleteModal h2 {
-  background: #f8f8f8;
-  box-shadow: 0px 1px 0px rgb(0 0 0 / 15%);
-  border-radius: 4px 4px 0px 0px;
-  font-family: Lato;
-  font-weight: bold;
-  font-size: 18px;
-  line-height: 44px;
-  color: #209ec5;
-  padding: 0 20px;
-}
-.modalDesign.deleteModal form {
-  padding: 20px;
-  position: relative;
-}
-.modalDesign.deleteModal p {
-  font-family: Lato;
-  font-weight: normal;
+.deleteModal p {
   font-size: 14px;
   line-height: 17px;
-  letter-spacing: 0.01em;
   color: #626364;
   margin-bottom: 10px;
 }
-.modalDesign.deleteModal textarea {
+.deleteModal textarea {
   border: 1px solid #bdbdbd;
-  box-sizing: border-box;
   border-radius: 4px;
-  height: 73px;
   width: 100%;
   font-size: 14px;
-  line-height: 20px;
-  letter-spacing: 0.01em;
-  color: #e0e0e0;
 }
-.modalDesign.deleteModal textarea:focus-visible {
+.deleteModal textarea:focus-visible {
   border: 1px solid #bdbdbd;
   outline: none;
 }
-.modalDesign.deleteModal .descr {
-  font-family: Lato;
-  font-weight: normal;
+.deleteModal .descr {
   font-size: 16px;
   line-height: 24px;
   text-align: center;
-  letter-spacing: 0.01em;
   color: #626364;
   padding: 20px 50px 0;
 }
-.modalDesign.deleteModal button {
+.deleteModal .cancel {
   background: #ffffff;
   border: 1px solid #209ec5;
   box-sizing: border-box;
@@ -74,22 +36,19 @@
   color: #209ec5;
   width: 115px;
 }
-.modalDesign.deleteModal .delete-btn {
+.deleteModal .delete-btn {
+  width: 115px;
+  border-radius: 2px;
   background: #209ec5 !important;
-  color: #fff;
+  border: 1px solid #209ec5 !important;
+  color: #fff !important;
 }
-.modalDesign.deleteModal .btn-primary:not(:disabled):not(.disabled).active,
-.modalDesign.deleteModal .btn-primary:not(:disabled):not(.disabled):active,
-.modalDesign.deleteModal .show > .btn-primary.dropdown-toggle {
+.deleteModal .btn-primary:not(:disabled):not(.disabled).active,
+.deleteModal .btn-primary:not(:disabled):not(.disabled):active,
+.deleteModal .show > .btn-primary.dropdown-toggle {
   background: transparent;
   border-color: #209ec5;
   color: #209ec5;
-}
-.modalDesign.deleteModal .error-msg {
-  position: absolute;
-  font-size: 10px;
-  top: 43%;
-  left: 4%;
 }
 table {
   font-family: 'Lato', sans-serif;
@@ -136,7 +95,7 @@ table th {
   border: 1px solid transparent;
 }
 .filter-row input.searchClose {
-  background: #fff;
+  background: #fff !important;
 }
 .filter-row select {
   font-size: 14px;
@@ -203,6 +162,10 @@ tfoot td {
   font-size: 14px;
   line-height: 16px;
   color: #757575;
+  padding-left: 15px;
+}
+.paginate {
+  color: #757575;
 }
 .prev-next {
   display: inline;
@@ -220,7 +183,7 @@ tfoot td {
 }
 .tableFixHead {
   overflow: auto;
-  height: calc(100vh - 310px);
+  height: calc(100vh - 306px);
   scrollbar-width: thin;
   scrollbar-color: #afaeae #e3e1e1;
 }
@@ -246,11 +209,11 @@ tfoot td {
 }
 .tableFixHead thead th:first-child,
 .tableFixHead thead th:last-child {
-  text-align: center;
+  text-align: left;
 }
 .tableFixHead tr td:first-child,
 .tableFixHead tr td:last-child {
-  text-align: center !important;
+  text-align: left !important;
 }
 .table-pagination .pageNum:focus-visible {
   outline: none !important;
@@ -318,11 +281,30 @@ tfoot td {
   font-size: 14px;
   line-height: 17px;
   margin-bottom: 11px;
-  padding: 5px;
-  min-width: 61px;
-  text-align: center;
+  padding: 5px 10px;
+  min-width: 80px;
+  text-align: left;
+  position: relative;
 }
-
+.amount img {
+  margin-left: 20px;
+}
+.subscrit button {
+  font-family: Lato;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 17px;
+  display: flex;
+  align-items: center;
+  letter-spacing: 0.02em;
+  color: #239ec5;
+  padding-left: 30px !important;
+  border: none;
+  background: transparent;
+}
+.subscrit a:hover {
+  text-decoration: none;
+}
 .tableFixHead th span {
   position: relative;
   width: 12px;
@@ -347,6 +329,7 @@ tfoot td {
 }
 .subscrit label {
   margin-bottom: 0;
+  min-width: 80px;
 }
 .close-icon {
   border: 1px solid transparent;
@@ -357,7 +340,7 @@ tfoot td {
   cursor: pointer;
   position: absolute;
   right: 10px;
-  top: 3px;
+  top: 14px;
 }
 .close-icon:after {
   content: '';
@@ -385,4 +368,87 @@ tfoot td {
 }
 .filter-row input.searchClose ~ .close-icon {
   display: block;
+}
+.carendar-modal {
+  width: 690px;
+  height: 400px;
+  align-items: center;
+  background: #ffffff;
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.35);
+  border-radius: 4px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: auto;
+  top: 20%;
+}
+.carendar-modal h2 {
+  background: #f8f8f8;
+  box-shadow: 0px 1px 0px rgb(0 0 0 / 15%);
+  border-radius: 4px 4px 0px 0px;
+  font-family: Lato;
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 44px;
+  color: #209ec5;
+  padding: 0 20px;
+}
+.carendar-modal ._modal-close {
+  box-sizing: border-box;
+  border-radius: 2px;
+  color: #209ec5;
+  background: transparent !important;
+  border: 0;
+  width: auto;
+  top: 3px;
+}
+.carendar-modal .modalBody {
+  padding: 15px 20px;
+}
+.carendar-modal .modalBody h3 {
+  font-family: Lato;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 17px;
+  display: flex;
+  align-items: center;
+  color: #929292;
+}
+.calenderGrid {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 10px 0;
+}
+.calenderGrid .calenderGridItem {
+  width: 25%;
+  border: 1px solid #d8d8d8;
+  height: 100px;
+  padding: 10px;
+  font-family: Lato;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 17px;
+  color: #929292;
+}
+.calenderGrid .amount {
+  display: flex;
+  height: auto;
+  width: 30%;
+  margin: 12px auto;
+  padding: 5px 10px;
+}
+.modalBody p {
+  font-family: Lato;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 17px;
+  color: #929292;
+  margin-top: 20px;
+  margin-bottom: 0;
+}
+.filter-row .row {
+  margin: 0;
+}
+.filter-row .row .dropdown {
+  margin-right: 22px;
 }

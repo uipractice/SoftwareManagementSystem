@@ -31,7 +31,7 @@
 }
 .modal-content {
   border: none;
-  border-radius: 0;
+  border-radius: 4px;
 }
 .modal-backdrop {
   opacity: 0.3 !important;
@@ -107,7 +107,6 @@ input[type='date'] {
 }
 
 .modal-body {
-  padding-top: 20px !important;
   padding: 20px;
 }
 

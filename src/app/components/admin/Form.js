@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ToggleButtonGroup, ToggleButton, Modal } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -27,9 +27,8 @@ const defaultFormData = {
 const nonMandatoryFields = ['websiteUrl', 'description', 'invoiceFiles'];
 
 function Form({ isOpen, closeModal, rowData, isEdit = false }) {
-  const inputRef = useRef(null);
   const [state, setState] = useState({});
-  const [invoiceFiles, setInvoiceFiles] = useState(null);
+  const [invoiceFiles, setInvoiceFiles] = useState({});
   const [billingDetails, setBillingDetails] = useState({
     pricingInDollar: '',
     pricingInRupee: '',
@@ -38,7 +37,6 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
   });
 
   useEffect(() => {
-    inputRef?.current?.focus();
     let stateData = defaultFormData;
     if (isEdit) {
       stateData = {
@@ -70,21 +68,21 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
    * @return null.
    */
   const handleOnChange = (e, key, priceSection) => {
+    const trimmedValue = e.target.value.trim();
     if (key === 'billingDetails') {
-      const value = priceSection
-        ? e.target.value.replace(/[^0-9]/g, '')
-        : e.target.value;
       setBillingDetails({
         ...billingDetails,
-        [e.target.name]: value,
+        [e.target.name]: priceSection
+          ? trimmedValue.replace(/[^0-9]/g, '')
+          : trimmedValue,
       });
     } else
       setState({
         ...state,
-        [e.target.name]: e.target.value,
+        [e.target.name]: trimmedValue,
         ...(e.target.name === 'billingCycle' && {
           nextBilling: moment()
-            .add(1, `${e.target.value === 'monthly' ? 'month' : 'year'}`)
+            .add(1, `${trimmedValue === 'monthly' ? 'month' : 'year'}`)
             .format('YYYY-MM-DD'),
         }),
       });
@@ -111,7 +109,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
     }
   }
 
-  function ValidateEmail(inputText) {
+  function validateEmail(inputText) {
     const mailformat =
       /^([a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@evoketechnologies.com(\s*,\s*|\s*$))*$/;
     if (inputText.match(mailformat)) {
@@ -124,6 +122,15 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
     }
   }
 
+  function validateUrl(inputText = '') {
+    const url = /^\S+$/;
+    if (!inputText.match(url))
+      toast.error('Invalid Url !', {
+        autoClose: 1800,
+      });
+    return inputText.match(url);
+  }
+
   /**
    * Resetting the billing details.
    *
@@ -133,7 +140,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
   const handleReset = (e) => {
     e.preventDefault();
     setState(defaultFormData);
-    setInvoiceFiles(null);
+    setInvoiceFiles({});
     setBillingDetails({
       pricingInDollar: '',
       pricingInRupee: '',
@@ -174,7 +181,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
     };
     state.billingDetails.push(newBillingRecord);
     console.log('state', state);
-    if (ValidateEmail(state.email)) {
+    if (validateEmail(state.email) && validateUrl(state.websiteUrl)) {
       axios
         .post(
           `${
@@ -202,6 +209,21 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
         });
     }
   };
+
+  const months = [
+    'january',
+    'february',
+    'march',
+    'april',
+    'may',
+    'june',
+    'july',
+    'august',
+    'september',
+    'october',
+    'november',
+    'december',
+  ];
 
   return (
     <Modal
@@ -351,24 +373,22 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
             <div className='form-group col-md-2'>
               <label htmlFor='billingMonth'>For the month of *</label>
               <select
-                className='form-control'
+                className='form-control text-capitalize'
                 onChange={(e) => handleOnChange(e, 'billingDetails')}
                 name='billingMonth'
                 value={billingDetails?.billingMonth}
                 disabled={state?.billingCycle === 'yearly'}
               >
-                <option value='january'>January</option>
-                <option value='february'>February</option>
-                <option value='march'>March</option>
-                <option value='april'>April</option>
-                <option value='may'>May</option>
-                <option value='june'>June</option>
-                <option value='july'>July</option>
-                <option value='august'>August</option>
-                <option value='september'>September</option>
-                <option value='october'>October</option>
-                <option value='november'>November</option>
-                <option value='december'>December</option>
+                {months
+                  .slice(
+                    moment().month(moment().format('MMMM')).format('M') - 2,
+                    months.length
+                  ) // Getting the list of upcoming months only
+                  .map((month) => (
+                    <option className='option' key={month} value={month}>
+                      {month}
+                    </option>
+                  ))}
               </select>
             </div>
 
@@ -380,6 +400,12 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                 onChange={handleOnChange}
                 name='nextBilling'
                 value={state?.nextBilling}
+                min={moment().subtract(1, 'month').format('YYYY-MM-DD')}
+                max={
+                  state.billingCycle === 'yearly'
+                    ? ''
+                    : moment().add(1, 'month').format('YYYY-MM-DD')
+                }
               />
             </div>
             <div className='form-group col-md-2'>
@@ -431,32 +457,31 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
               <label htmlFor='invoiceFiles'>Upload Invoice</label>
               <div
                 className={`form-control long dashed-box ${
-                  !invoiceFiles && 'pointer'
+                  Object.keys(invoiceFiles).length === 0 && 'pointer'
                 }`}
-                {...(!invoiceFiles && {
+                {...(Object.keys(invoiceFiles).length === 0 && {
                   onClick: (e) => document.getElementById('file')?.click(),
                 })}
               >
                 <div className='d-flex justify-content-center align-items-center h-100'>
-                  {invoiceFiles && Object.keys(invoiceFiles).length ? (
+                  {Object.keys(invoiceFiles).length ? (
                     <div>
-                      {invoiceFiles &&
-                        Object.keys(invoiceFiles)?.map((key) => (
-                          <div>
-                            <span
-                              key={invoiceFiles[key].name}
-                              className='file-close-icon'
-                              onClick={() => {
-                                const fileState = { ...invoiceFiles };
-                                delete fileState[key];
-                                setInvoiceFiles(fileState);
-                              }}
-                            >
-                              {invoiceFiles[key].name}
-                              &nbsp;&nbsp;
-                            </span>
-                          </div>
-                        ))}
+                      {Object.keys(invoiceFiles)?.map((key, i) => (
+                        <div key={i}>
+                          <span
+                            key={invoiceFiles[key].name}
+                            className='file-close-icon'
+                            onClick={() => {
+                              const fileState = { ...invoiceFiles };
+                              delete fileState[key];
+                              setInvoiceFiles(fileState);
+                            }}
+                          >
+                            {invoiceFiles[key].name}
+                            &nbsp;&nbsp;
+                          </span>
+                        </div>
+                      ))}
                     </div>
                   ) : (
                     <span>
@@ -480,12 +505,21 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
 
           <div className='form-group row share '>
             <div className='col-md-12 text-center'>
-              <button
-                className='form-control btn btn-primary'
-                onClick={handleReset}
-              >
-                Reset
-              </button>
+              {isEdit ? (
+                <button
+                  className='form-control btn btn-primary'
+                  onClick={closeModal}
+                >
+                  Cancel
+                </button>
+              ) : (
+                <button
+                  className='form-control btn btn-primary'
+                  onClick={handleReset}
+                >
+                  Reset
+                </button>
+              )}
               <button
                 className='form-control btn btn-primary share-btn'
                 onClick={handleSubmit}

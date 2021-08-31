@@ -2,8 +2,9 @@ import React, { useEffect, useState, useCallback } from 'react';
 import DeleteImg from '../../assets/images/delete-icon.svg';
 import EditImg from '../../assets/images/edit-icon.svg';
 import UpDownImg from '../../assets/images/sorting.svg';
+// import AttachIcon from '../../assets/images/amount-attachment.png';
 import axios from 'axios';
-import Modal from 'react-modal';
+import { Modal } from 'react-bootstrap';
 import {
   useTable,
   useSortBy,
@@ -25,13 +26,13 @@ import Download from '../../assets/images/download.svg';
 import Note from '../../assets/images/note.svg';
 
 toast.configure();
-const sample = [];
 function CompleteTable({ data }) {
   const [filteredData, setFilteredData] = useState([]);
   const [searchValue, setSearchValue] = useState();
   const [rowData, setRowData] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditFormOpen, toggleEditForm] = useState(false);
+  const [show, setShow] = useState(false);
 
   const setDefaultFilterData = useCallback((data) => {
     if (data?.length) {
@@ -54,7 +55,7 @@ function CompleteTable({ data }) {
   function handleInputChange(evt) {
     setRowData({
       ...rowData,
-      deleteReason: evt.target.value,
+      deleteReason: evt.target.value.trim(),
     });
   }
   const handleUpdateStatus = (e) => {
@@ -77,16 +78,16 @@ function CompleteTable({ data }) {
   };
   const columns = React.useMemo(
     () => [
-      {
-        Header: 'SL.NO',
-        accessor: 'serial',
-        width: 75,
-      },
+      // {
+      //   Header: 'SL.NO',
+      //   accessor: 'serial',
+      //   width: 75,
+      // },
       {
         Header: 'SOFTWARE',
         accessor: 'softwareName',
         sticky: 'left',
-        width: 136,
+        width: 160,
         Cell: ({
           row: {
             original: { websiteUrl, softwareName },
@@ -118,7 +119,7 @@ function CompleteTable({ data }) {
       {
         Header: 'USER/OWNER',
         accessor: 'owner',
-        width: 130,
+        width: 150,
       },
       {
         Header: 'BILLING CYCLE',
@@ -249,7 +250,7 @@ function CompleteTable({ data }) {
             />
             <img
               className={`p-2 pointer ${
-                row.original.status === 'deleted' && 'disableDeleteBtn'
+                row.original.status === 'deleted' ? 'disableDeleteBtn' : ''
               }`}
               src={DeleteImg}
               alt='Evoke Technologies'
@@ -282,53 +283,63 @@ function CompleteTable({ data }) {
   };
 
   // Get S3 signed urls of the attachments for a Billing Month.
-  const downloadInvoice = useCallback(
-    ({ original: rowItemData }, billingItem) => {
-      axios
-        .get(
-          getApiUrl(
-            `softwareInfo/download/${rowItemData._id}/${billingItem._id}`
-          )
-        )
-        .then((res) => {
-          const files = res.data;
-          downloadFiles(files, billingItem.invoiceFiles);
-        });
-    },
-    []
-  );
+  const downloadInvoice = useCallback((rowItemData, billingItem) => {
+    axios
+      .get(
+        getApiUrl(`softwareInfo/download/${rowItemData._id}/${billingItem._id}`)
+      )
+      .then((res) => {
+        const files = res.data;
+        downloadFiles(files, billingItem.invoiceFiles);
+      });
+  }, []);
 
   const renderRowSubComponent = useCallback(
     ({ row }) => (
       <td colSpan='12' className='rowexpandable'>
         <div className='subscrit'>
           <h3 className='rowexpandfont'>Subscription for :</h3>
-          {row.original.billingDetails.map((item, i) => (
-            <div key={i} className='label text-capitalize'>
-              <label>
-                {item.billingMonth}{' '}
-                {item.description && (
-                  <img
-                    className='px-2 pointer'
-                    src={Note}
-                    title={item.description}
-                    alt='description'
-                  />
-                )}{' '}
-              </label>
-              <div className='amount'>
-                {`₹${item.pricingInRupee} `}
-                {item.invoiceFiles.length > 0 && (
-                  <img
-                    className='pl-3 pr-2 pointer'
-                    src={Download}
-                    onClick={() => downloadInvoice(row, item)}
-                    alt='download'
-                  />
-                )}
+          {row.original.billingDetails
+            .slice(-6)
+            .reverse()
+            .map((item, i) => (
+              <div key={i} className='label text-capitalize'>
+                <label>
+                  {item.billingMonth}{' '}
+                  {item.description && (
+                    <img
+                      className='px-2 pointer'
+                      src={Note}
+                      title={item.description}
+                      alt='description'
+                    />
+                  )}{' '}
+                </label>
+                <div className='amount'>
+                  {`₹${item.pricingInRupee} `}
+                  {item.invoiceFiles.length > 0 && (
+                    <img
+                      className='pl-3 pr-2 pointer'
+                      src={Download}
+                      onClick={() => downloadInvoice(row.original, item)}
+                      alt='download'
+                    />
+                  )}
+                </div>
               </div>
+            ))}
+          {row.original.billingDetails?.length > 6 && (
+            <div style={{ alignSelf: 'flex-end', margin: '18px 0' }}>
+              <button
+                onClick={() => {
+                  setShow(true);
+                  setRowData(row.original);
+                }}
+              >
+                Show All
+              </button>
             </div>
-          ))}
+          )}
         </div>
       </td>
     ),
@@ -344,19 +355,33 @@ function CompleteTable({ data }) {
     canNextPage,
     canPreviousPage,
     pageOptions,
-    setPageSize,
+    // setPageSize,
     prepareRow,
     state,
     setGlobalFilter,
     rows: filteredTableData,
   } = useTable(
-    { columns, data: filteredData, initialState: { pageSize: 8 } },
+    { columns, data: filteredData, initialState: { pageSize: 10 } },
     useGlobalFilter,
     useSortBy,
     useExpanded,
     usePagination
   );
   const { globalFilter, pageIndex, pageSize } = state;
+
+  var start, end;
+  if (pageIndex === 0) {
+    start = 1;
+    end = filteredData.length > pageSize ? pageSize : filteredData.length;
+  } else {
+    start = pageIndex * pageSize + 1;
+    // end = (pageIndex + 1) * pageSize;
+    end =
+      filteredData.length >= (pageIndex + 1) * pageSize
+        ? (pageIndex + 1) * pageSize
+        : filteredData.length;
+  }
+
   useEffect(() => {
     if (filteredTableData?.length && globalFilter && searchValue)
       setFilteredData(addSerialNo(filteredTableData, true));
@@ -381,21 +406,38 @@ function CompleteTable({ data }) {
       setFilteredData(addSerialNo(finalFilteredData));
     }
   };
+  const months = [
+    'january',
+    'february',
+    'march',
+    'april',
+    'may',
+    'june',
+    'july',
+    'august',
+    'september',
+    'october',
+    'november',
+    'december',
+  ];
   return (
     <>
       <div className='filter-row'>
         <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eros leo
-          suscipit ipsum id ut. <br />
-          Et consectetur convallis etiam auctor ut orci. Sed id ac quis
-          tristique vehicula.
+          {
+            'One tool for all licenses! Software License Management helps to maintain Certificates, Domains or Software with ease.'
+          }
           <br />
-          Leo magna posuere pellentesque malesuada.
+          {
+            'It helps reduce repetitive documentation efforts, optimize usage, & control the cost.'
+          }
+          <br />
         </p>
-        <FilterDropdown
-          filterSelect={(selectedState) => onFilterSelect(selectedState)}
-        />
-        <div>
+
+        <div className='row'>
+          <FilterDropdown
+            filterSelect={(selectedState) => onFilterSelect(selectedState)}
+          />
           <GlobalFilter
             setFilter={(value) => {
               setGlobalFilter(value);
@@ -404,46 +446,39 @@ function CompleteTable({ data }) {
           />
         </div>
       </div>
-      <div>
-        <Modal
-          isOpen={isModalOpen}
-          shouldCloseOnOverlayClick={false}
-          onRequestClose={() => {
-            setIsModalOpen(false);
-          }}
-          className='modalDesign deleteModal'
-        >
-          <h2>Are you sure?</h2>
-          <button
-            className='_modal-close'
-            onClick={() => {
-              setIsModalOpen(false);
-            }}
+      {isModalOpen && (
+        <div>
+          <Modal
+            centered
+            backdrop='static'
+            show={isModalOpen}
+            onHide={(e) => setIsModalOpen(false)}
+            className='deleteModal'
           >
-            <svg className='_modal-close-icon' viewBox='0 0 40 40'>
-              <path d='M 10,10 L 30,30 M 30,10 L 10,30' />
-            </svg>
-          </button>
-          <form>
-            <p>Please enter the reason to delete the record.</p>
-            <textarea
-              type='text'
-              autoFocus={true}
-              style={{ color: 'black' }}
-              onChange={handleInputChange}
-              name='deleteReason'
-            />
-            <br></br>
-            <p className='descr'>
-              {' '}
-              Do you really want to delete the records? This process cannot be
-              undone.
-            </p>
-            <br></br>
-            <div className='row'>
-              <div className='col-md-6 text-right padding0'>
+            <Modal.Header closeButton className='modal-area'>
+              Are you sure?
+            </Modal.Header>
+            <Modal.Body>
+              <form>
+                <p>Please enter the reason to delete the record.</p>
+                <textarea
+                  type='text'
+                  rows='3'
+                  autoFocus={true}
+                  style={{ color: 'black' }}
+                  onChange={handleInputChange}
+                  name='deleteReason'
+                />
+                <p className='descr'>
+                  Take a deep breath! Because if deleted once,it is gone
+                  forever.
+                </p>
+              </form>
+            </Modal.Body>
+            <Modal.Footer>
+              <div>
                 <button
-                  className='form-control btn btn-primary'
+                  className='form-control btn cancel'
                   onClick={() => {
                     setIsModalOpen(false);
                   }}
@@ -451,7 +486,7 @@ function CompleteTable({ data }) {
                   Cancel
                 </button>
               </div>
-              <div className='col-md-6'>
+              <div>
                 <button
                   onClick={handleUpdateStatus}
                   disabled={!rowData?.deleteReason}
@@ -460,10 +495,80 @@ function CompleteTable({ data }) {
                   Delete
                 </button>
               </div>
-            </div>
-          </form>
-        </Modal>
-      </div>
+            </Modal.Footer>
+          </Modal>
+        </div>
+      )}
+      {show && (
+        <div>
+          <Modal
+            centered
+            size='lg'
+            show={show}
+            backdrop='static'
+            onHide={() => setShow(false)}
+          >
+            <Modal.Header closeButton className='modal-area'>
+              <h3>Subscription Detail</h3>
+            </Modal.Header>
+            <Modal.Body className='rowexpandfont'>
+              <div className='d-flex justify-content-between px-1'>
+                <div>{rowData.softwareName}</div>
+                <div className='prev-next'>
+                  {/* <button onClick={() => {}} disabled={!canPreviousPage}>
+                  <img src={leftIcon} alt='prev' />
+                </button>{' '} */}
+                  {moment(rowData.createdAt).format('YYYY')}{' '}
+                  {/* <button onClick={() => {}} disabled={!canNextPage}>
+                  <img src={rightIcon} alt='next' />
+                </button>{' '} */}
+                </div>
+              </div>
+              <div className='calenderGrid'>
+                {months.map((month) => {
+                  const billingItem =
+                    rowData.billingDetails?.filter(
+                      (item) => item.billingMonth === month
+                    ) || [];
+                  return (
+                    <div
+                      key={month}
+                      className='calenderGridItem text-capitalize'
+                    >
+                      {month}
+                      {billingItem?.length !== 0 && (
+                        <div className='amount'>
+                          {`₹${billingItem[0]?.pricingInRupee}`}
+                          {billingItem[0].invoiceFiles.length > 0 && (
+                            <img
+                              src={Download}
+                              // src={AttachIcon}
+                              onClick={() =>
+                                downloadInvoice(rowData, billingItem[0])
+                              }
+                              alt='download'
+                              className='pointer px-1'
+                            />
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+              <div>
+                <span>
+                  {'Total Amount:  ₹'}
+                  {rowData.billingDetails?.reduce(
+                    (result, item) => (result += Number(item.pricingInRupee)),
+                    0
+                  )}
+                </span>
+              </div>
+            </Modal.Body>
+          </Modal>
+        </div>
+      )}
       <div className='table-responsive grid tableFixHead'>
         <table {...getTableProps()} className='table table-striped '>
           <thead>
@@ -536,18 +641,21 @@ function CompleteTable({ data }) {
         </table>
       </div>
       <div className='table-pagination'>
-        <label>Rows per page:</label>
+        <span className='paginate'>
+          <b>{start}</b> to <b>{end}</b> of <b>{filteredData.length}</b>
+        </span>
+        {/* <label>Rows per page:</label>
         <select
           value={pageSize}
           onChange={(e) => setPageSize(Number(e.target.value))}
           className='pageNum'
         >
-          {[8, 10, 20, 50, 100].map((pageSize, i) => (
+          {[10, 20, 50, 100].map((pageSize, i) => (
             <option key={pageSize} value={pageSize}>
               {pageSize}
             </option>
           ))}
-        </select>
+        </select> */}
         <span>
           Page{' '}
           <strong>
