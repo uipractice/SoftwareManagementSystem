@@ -219,14 +219,17 @@ input[type='date'] {
 }
 .form-control:focus,
 .form-control:active,
-.form-control:-internal-autofill-selected {
+.form-control:-internal-autofill-selected,
+.form-control::-moz-focus-inner,
+textarea:focus-visible {
   box-shadow: 0 0 0;
   border-color: #209ec5;
   background-color: rgba(32, 158, 197, 0.05) !important;
 }
 select.form-control:focus,
 select.form-control:active,
-select.form-control:-internal-autofill-selected {
+select.form-control:-internal-autofill-selected
+  select.form-control::-moz-focus-inner {
   background-color: transparent !important;
 }
 .share {
@@ -248,4 +251,15 @@ input[type='date']::-webkit-calendar-picker-indicator {
   background-size: 20px 20px;
   background-repeat: no-repeat;
   color: rgba(204, 204, 204, 0);
+}
+.software-modal .form-control:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+.selected-items {
+  display: inline-flex;
+  flex-wrap: wrap;
+}
+.selected-items div {
+  margin-right: 10px;
 }

@@ -288,7 +288,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
               />
             </div>
             <div className='form-group col-md-4'>
-              <label htmlFor='websiteUrl'>URL</label>
+              <label htmlFor='websiteUrl'>URL ( Ex: https:// )</label>
               <input
                 type='text'
                 className='form-control'
@@ -465,7 +465,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
               >
                 <div className='d-flex justify-content-center align-items-center h-100'>
                   {Object.keys(invoiceFiles).length ? (
-                    <div>
+                    <div className='selected-items'>
                       {Object.keys(invoiceFiles)?.map((key, i) => (
                         <div key={i}>
                           <span
