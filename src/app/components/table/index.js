@@ -78,11 +78,11 @@ function CompleteTable({ data }) {
   };
   const columns = React.useMemo(
     () => [
-      {
-        Header: 'SL.NO',
-        accessor: 'serial',
-        width: 75,
-      },
+      // {
+      //   Header: 'SL.NO',
+      //   accessor: 'serial',
+      //   width: 75,
+      // },
       {
         Header: 'SOFTWARE',
         accessor: 'softwareName',
@@ -470,8 +470,8 @@ function CompleteTable({ data }) {
                   name='deleteReason'
                 />
                 <p className='descr'>
-                  Do you really want to delete the records? This process cannot
-                  be undone.
+                  Take a deep breath! Because if deleted once,it is gone
+                  forever.
                 </p>
               </form>
             </Modal.Body>
