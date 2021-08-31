@@ -209,11 +209,11 @@ tfoot td {
 }
 .tableFixHead thead th:first-child,
 .tableFixHead thead th:last-child {
-  text-align: center;
+  text-align: left;
 }
 .tableFixHead tr td:first-child,
 .tableFixHead tr td:last-child {
-  text-align: center !important;
+  text-align: left !important;
 }
 .table-pagination .pageNum:focus-visible {
   outline: none !important;
