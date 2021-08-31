@@ -42,6 +42,10 @@ function Login() {
       sessionStorage.setItem('auth-token', token);
       history.push('/admin');
     } else {
+      setState({
+        ...state,
+        enteredPassword:''
+      })
       toast.error('Wrong user or password !', {
         autoClose: 2000,
       });
@@ -83,6 +87,7 @@ function Login() {
                   className='form-control'
                   onChange={handleCredentials}
                   name='enteredUserName'
+                  value={state.enteredUserName}
                 />
               </div>
 
@@ -93,6 +98,7 @@ function Login() {
                   className='form-control'
                   onChange={handleCredentials}
                   name='enteredPassword'
+                  value={state.enteredPassword}
                 />
               </div>
 
