@@ -288,7 +288,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
               />
             </div>
             <div className='form-group col-md-4'>
-              <label htmlFor='websiteUrl'>URL</label>
+              <label htmlFor='websiteUrl'>URL ( Ex: https:// )</label>
               <input
                 type='text'
                 className='form-control'

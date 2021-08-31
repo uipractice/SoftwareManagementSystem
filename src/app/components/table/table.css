@@ -216,6 +216,19 @@ tfoot td {
 .tableFixHead tr td:last-child {
   text-align: left !important;
 }
+.tableFixHead tr td:first-child div {
+  padding-left: 10px;
+}
+.tableFixHead tr td:first-child div a {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 210px;
+  display: block;
+}
+.tableFixHead thead th:first-child {
+  padding-left: 20px !important;
+}
 .table-pagination .pageNum:focus-visible {
   outline: none !important;
 }
