@@ -223,7 +223,7 @@ tfoot td {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  width: 210px;
+  width: 160px;
   display: block;
 }
 .tableFixHead thead th:first-child {

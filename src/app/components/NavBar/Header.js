@@ -82,7 +82,9 @@ const Header = ({ validate }) => {
           <a className='navbar-brand col-md-6 px-4' href='/admin'>
             <img src={Logo} alt='Evoke Technologies' />
           </a>
-          <h3>Software Management System </h3>
+          <h3>
+            <span>e</span>Soft
+          </h3>
         </div>
 
         <ul className='navbar-nav px-3'>

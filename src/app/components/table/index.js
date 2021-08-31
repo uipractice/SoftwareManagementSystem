@@ -87,7 +87,7 @@ function CompleteTable({ data }) {
         Header: 'SOFTWARE',
         accessor: 'softwareName',
         sticky: 'left',
-        width: 220,
+        width: 170,
         Cell: ({
           row: {
             original: { websiteUrl, softwareName },
@@ -124,7 +124,7 @@ function CompleteTable({ data }) {
       {
         Header: 'USER/OWNER',
         accessor: 'owner',
-        width: 170,
+        width: 150,
       },
       {
         Header: 'BILLING CYCLE',
@@ -201,7 +201,7 @@ function CompleteTable({ data }) {
       {
         Header: 'NEXT BILLING',
         accessor: 'nextBilling',
-        width: 120,
+        width: 130,
         Cell: ({
           row: {
             original: { nextBilling },
