@@ -217,13 +217,17 @@ function CompleteTable({ data }) {
             original: { nextBilling },
           },
         }) => {
-          const days = moment(nextBilling).diff(moment(), 'days');
+          const todaysDate = moment().format('YYYY-MM-DD');
+          const days = moment(nextBilling, 'YYYY-MM-DD').diff(
+            moment(todaysDate),
+            'days'
+          );
           return (
             <div
               className={`timeline ${
                 days >= 10
                   ? `timelineGreen`
-                  : days > 7
+                  : days >= 7
                   ? `timelineYellow`
                   : `timelineRed`
               }`}
