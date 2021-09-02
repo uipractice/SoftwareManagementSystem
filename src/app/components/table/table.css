@@ -187,9 +187,10 @@ tfoot td {
 }
 .tableFixHead {
   overflow: auto;
-  height: calc(100vh - 306px);
+  height: calc(100vh - 300px);
   scrollbar-width: thin;
   scrollbar-color: #afaeae #e3e1e1;
+  background: #fff;
 }
 .tableFixHead::-webkit-scrollbar {
   width: 5px;
@@ -218,6 +219,19 @@ tfoot td {
 .tableFixHead tr td:first-child,
 .tableFixHead tr td:last-child {
   text-align: left !important;
+}
+.tableFixHead tr td:first-child div {
+  padding-left: 10px;
+}
+.tableFixHead tr td:first-child div a {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 160px;
+  display: block;
+}
+.tableFixHead thead th:first-child {
+  padding-left: 20px !important;
 }
 .table-pagination .pageNum:focus-visible {
   outline: none !important;
@@ -451,7 +465,7 @@ tfoot td {
   margin-bottom: 0;
 }
 .filter-row .row {
-  margin: 0;
+  margin: 20px 0;
 }
 .filter-row .row .dropdown {
   margin-right: 22px;

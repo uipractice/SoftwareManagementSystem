@@ -87,7 +87,7 @@ function CompleteTable({ data }) {
         Header: 'SOFTWARE',
         accessor: 'softwareName',
         sticky: 'left',
-        width: 160,
+        width: 170,
         Cell: ({
           row: {
             original: { websiteUrl, softwareName },
@@ -95,7 +95,12 @@ function CompleteTable({ data }) {
         }) => (
           <div>
             {websiteUrl ? (
-              <a href={websiteUrl} target='_blank' rel='noreferrer'>
+              <a
+                href={websiteUrl}
+                target='_blank'
+                rel='noreferrer'
+                title={softwareName}
+              >
                 {softwareName}
               </a>
             ) : (
@@ -196,7 +201,7 @@ function CompleteTable({ data }) {
       {
         Header: 'NEXT BILLING',
         accessor: 'nextBilling',
-        width: 120,
+        width: 130,
         Cell: ({
           row: {
             original: { nextBilling },

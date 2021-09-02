@@ -61,12 +61,17 @@
   display: flex;
   margin-bottom: 0;
 }
+.navbar h3 span {
+  color: #f16a21;
+}
 .navbar-brand img {
   border-right: 2px solid #7b7b7b;
   padding-right: 15px;
 }
 .navbar-brand {
   margin-right: 7px;
+  display: inline-table;
+  padding-right: 8px !important;
 }
 .nav-item > div {
   top: 10px !important;
