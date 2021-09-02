@@ -217,13 +217,17 @@ function CompleteTable({ data }) {
             original: { nextBilling },
           },
         }) => {
-          const days = moment(nextBilling).diff(moment(), 'days');
+          const todaysDate = moment().format('YYYY-MM-DD');
+          const days = moment(nextBilling, 'YYYY-MM-DD').diff(
+            moment(todaysDate),
+            'days'
+          );
           return (
             <div
               className={`timeline ${
                 days >= 10
                   ? `timelineGreen`
-                  : days > 7
+                  : days >= 7
                   ? `timelineYellow`
                   : `timelineRed`
               }`}
@@ -245,7 +249,9 @@ function CompleteTable({ data }) {
         Cell: ({ row }) => (
           <div>
             <img
-              className='p-2 pointer'
+              className={`p-2 pointer ${
+                row.original.status === 'deleted' ? 'disableEditBtn' : ''
+              }`}
               src={EditImg}
               alt='Evoke Technologies'
               onClick={() => {
@@ -380,7 +386,6 @@ function CompleteTable({ data }) {
     end = filteredData.length > pageSize ? pageSize : filteredData.length;
   } else {
     start = pageIndex * pageSize + 1;
-    // end = (pageIndex + 1) * pageSize;
     end =
       filteredData.length >= (pageIndex + 1) * pageSize
         ? (pageIndex + 1) * pageSize

@@ -5,6 +5,10 @@
   pointer-events: none;
   opacity: 30%;
 }
+.disableEditBtn {
+  pointer-events: none;
+  opacity: 30%;
+}
 .deleteModal p {
   font-size: 14px;
   line-height: 17px;

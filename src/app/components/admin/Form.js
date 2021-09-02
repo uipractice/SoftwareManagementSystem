@@ -54,6 +54,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
             .format('MMMM')
             .toLowerCase(),
         }),
+        invoiceFiles: [],
       };
       delete prevBillingDetails._id;
       setBillingDetails(prevBillingDetails);
@@ -82,11 +83,17 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
     } else if (e.target.name === 'billingCycle') {
       setState({
         ...state,
+        [e.target.name]: e.target.value,
         ...(e.target.name === 'billingCycle' && {
           nextBilling: moment()
             .add(1, `${e.target.value === 'monthly' ? 'month' : 'year'}`)
             .format('YYYY-MM-DD'),
         }),
+      });
+    } else if (e.target.name === 'nextBilling') {
+      setState({
+        ...state,
+        [e.target.name]: e.target.value,
       });
     } else if (url) {
       const value = e.target.value.trim();
@@ -399,6 +406,12 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                 onChange={handleOnChange}
                 name='nextBilling'
                 value={state?.nextBilling}
+                // min={moment().subtract(1, 'month').format('YYYY-MM-DD')}
+                // max={
+                //   state.billingCycle === 'yearly'
+                //     ? ''
+                //     : moment().add(1, 'month').format('YYYY-MM-DD')
+                // }
               />
             </div>
             <div className='form-group col-md-2'>
