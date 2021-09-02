@@ -78,16 +78,16 @@ function CompleteTable({ data }) {
   };
   const columns = React.useMemo(
     () => [
-      {
-        Header: 'SL.NO',
-        accessor: 'serial',
-        width: 75,
-      },
+      // {
+      //   Header: 'SL.NO',
+      //   accessor: 'serial',
+      //   width: 75,
+      // },
       {
         Header: 'SOFTWARE',
         accessor: 'softwareName',
         sticky: 'left',
-        width: 160,
+        width: 170,
         Cell: ({
           row: {
             original: { websiteUrl, softwareName },
@@ -95,7 +95,12 @@ function CompleteTable({ data }) {
         }) => (
           <div>
             {websiteUrl ? (
-              <a href={websiteUrl} target='_blank' rel='noreferrer'>
+              <a
+                href={websiteUrl}
+                target='_blank'
+                rel='noreferrer'
+                title={softwareName}
+              >
                 {softwareName}
               </a>
             ) : (
@@ -196,7 +201,7 @@ function CompleteTable({ data }) {
       {
         Header: 'NEXT BILLING',
         accessor: 'nextBilling',
-        width: 120,
+        width: 130,
         Cell: ({
           row: {
             original: { nextBilling },
@@ -212,13 +217,17 @@ function CompleteTable({ data }) {
             original: { nextBilling },
           },
         }) => {
-          const days = moment(nextBilling).diff(moment(), 'days');
+          const todaysDate = moment().format('YYYY-MM-DD');
+          const days = moment(nextBilling, 'YYYY-MM-DD').diff(
+            moment(todaysDate),
+            'days'
+          );
           return (
             <div
               className={`timeline ${
                 days >= 10
                   ? `timelineGreen`
-                  : days > 7
+                  : days >= 7
                   ? `timelineYellow`
                   : `timelineRed`
               }`}
@@ -240,7 +249,9 @@ function CompleteTable({ data }) {
         Cell: ({ row }) => (
           <div>
             <img
-              className='p-2 pointer'
+              className={`p-2 pointer ${
+                row.original.status === 'deleted' ? 'disableEditBtn' : ''
+              }`}
               src={EditImg}
               alt='Evoke Technologies'
               onClick={() => {
@@ -361,7 +372,7 @@ function CompleteTable({ data }) {
     setGlobalFilter,
     rows: filteredTableData,
   } = useTable(
-    { columns, data: filteredData, initialState: { pageSize: 10 } },
+    { columns, data: filteredData, initialState: { pageSize: 6 } },
     useGlobalFilter,
     useSortBy,
     useExpanded,
@@ -375,7 +386,6 @@ function CompleteTable({ data }) {
     end = filteredData.length > pageSize ? pageSize : filteredData.length;
   } else {
     start = pageIndex * pageSize + 1;
-    // end = (pageIndex + 1) * pageSize;
     end =
       filteredData.length >= (pageIndex + 1) * pageSize
         ? (pageIndex + 1) * pageSize
@@ -425,7 +435,7 @@ function CompleteTable({ data }) {
       <div className='filter-row'>
         <p>
           {
-            'One tool for all licenses! Software License Management helps to maintain Certificates, Domains or Software with ease.'
+            'One tool for all licenses! eSoft helps to maintain Certificates, Domains or Software with ease.'
           }
           <br />
           {
@@ -470,8 +480,8 @@ function CompleteTable({ data }) {
                   name='deleteReason'
                 />
                 <p className='descr'>
-                  Do you really want to delete the records? This process cannot
-                  be undone.
+                  Take a deep breath! Because if deleted once,it is gone
+                  forever.
                 </p>
               </form>
             </Modal.Body>

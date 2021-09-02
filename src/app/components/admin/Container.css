@@ -31,7 +31,7 @@
 }
 .modal-content {
   border: none;
-  border-radius: 0;
+  border-radius: 4px;
 }
 .modal-backdrop {
   opacity: 0.3 !important;
@@ -146,11 +146,25 @@ input[type='date'] {
   letter-spacing: 0.01em;
   color: #929292;
 }
+.form-group .help-text {
+  font-family: Lato;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0.01em;
+  color: #929292;
+  margin-left: 5px;
+}
 .form-group select,
 .form-group .form-control {
   height: 44px;
   font-size: 14px;
+  color: #57565c;
   /* padding-left: 5px; */
+}
+input:-internal-autofill-selected {
+  background-color: #fff !important;
+  color: #57565c;
 }
 .form-group .long {
   height: 70px;
@@ -219,14 +233,17 @@ input[type='date'] {
 }
 .form-control:focus,
 .form-control:active,
-.form-control:-internal-autofill-selected {
+.form-control:-internal-autofill-selected,
+.form-control::-moz-focus-inner,
+textarea:focus-visible {
   box-shadow: 0 0 0;
   border-color: #209ec5;
   background-color: rgba(32, 158, 197, 0.05) !important;
 }
 select.form-control:focus,
 select.form-control:active,
-select.form-control:-internal-autofill-selected {
+select.form-control:-internal-autofill-selected
+  select.form-control::-moz-focus-inner {
   background-color: transparent !important;
 }
 .share {
@@ -248,4 +265,15 @@ input[type='date']::-webkit-calendar-picker-indicator {
   background-size: 20px 20px;
   background-repeat: no-repeat;
   color: rgba(204, 204, 204, 0);
+}
+.software-modal .form-control:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+.selected-items {
+  display: inline-flex;
+  flex-wrap: wrap;
+}
+.selected-items div {
+  margin-right: 10px;
 }

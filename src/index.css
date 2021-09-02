@@ -1,5 +1,5 @@
 body {
-  background: #f2f2f2;
+  background: #f8f8fb;
   font-family: Lato;
   height: 100vh;
 }
@@ -424,6 +424,11 @@ a:focus {
   text-transform: uppercase;
 }
 
+.deleteModal .modal-footer {
+  justify-content: center !important;
+  border-top: 0px;
+}
+
 .btn_white {
   border: 1px solid #209ec5;
   color: #209ec5;
@@ -511,9 +516,14 @@ a:focus {
   text-align: left;
   position: relative;
 }
-.form-control:focus {
+.form-control:focus,
+textarea:focus-visible {
   box-shadow: 0 0 0;
-  border-color: #ced4da;
+  border-color: #209ec5 !important;
+  background-color: rgba(32, 158, 197, 0.05) !important;
+}
+textarea:focus-visible {
+  outline: none;
 }
 .project-details-form .btn-outline-info,
 .project-details-form .btn-outline-info:hover {

@@ -42,6 +42,10 @@ function Login() {
       sessionStorage.setItem('auth-token', token);
       history.push('/admin');
     } else {
+      setState({
+        ...state,
+        enteredPassword: '',
+      });
       toast.error('Wrong user or password !', {
         autoClose: 2000,
       });
@@ -72,7 +76,7 @@ function Login() {
             <div className='form_main'>
               <div className='login-form-title '>
                 <h3>Sign in</h3>
-                <p>Welcome to Software Management System</p>
+                <p>Welcome to eSoft</p>
               </div>
 
               <div className='validate-input m-b-20'>
@@ -83,6 +87,7 @@ function Login() {
                   className='form-control'
                   onChange={handleCredentials}
                   name='enteredUserName'
+                  value={state.enteredUserName}
                 />
               </div>
 
@@ -93,6 +98,7 @@ function Login() {
                   className='form-control'
                   onChange={handleCredentials}
                   name='enteredPassword'
+                  value={state.enteredPassword}
                 />
               </div>
 

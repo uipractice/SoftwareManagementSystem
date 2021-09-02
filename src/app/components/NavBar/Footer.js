@@ -55,7 +55,10 @@ export default function Footer() {
         </li>
         <Feedback
           isOpen={open}
-          closeModal={(e, closeClick) => handleClose(e, closeClick)}
+          closeModal={(e, closeClick) => {
+            setFeedbackText('');
+            handleClose(e, closeClick);
+          }}
           handleInputChange={(e) => handleInputChange(e)}
           feedbackText={feedbackText}
         />

@@ -79,10 +79,12 @@ const Header = ({ validate }) => {
     <div>
       <div className='navbar navbar-dark sticky-top  p-0 shadow header_nav'>
         <div className='row'>
-          <a className='navbar-brand col-md-6 px-4' href='/admin'>
+          <a className='navbar-brand col-md-6 px-4' href='/#/admin'>
             <img src={Logo} alt='Evoke Technologies' />
           </a>
-          <h3>Software Management System </h3>
+          <h3>
+            <span>e</span>Soft
+          </h3>
         </div>
 
         <ul className='navbar-nav px-3'>
@@ -127,7 +129,10 @@ const Header = ({ validate }) => {
         </ul>
         <Feedback
           isOpen={feedback}
-          closeModal={(e, closeClick) => handleSubmit(e, closeClick)}
+          closeModal={(e, closeClick) => {
+            setFeedbackText('');
+            handleSubmit(e, closeClick);
+          }}
           handleInputChange={(e) => handleInputChange(e)}
           feedbackText={feedbackText}
         />
