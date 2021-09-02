@@ -366,7 +366,7 @@ function CompleteTable({ data }) {
     setGlobalFilter,
     rows: filteredTableData,
   } = useTable(
-    { columns, data: filteredData, initialState: { pageSize: 10 } },
+    { columns, data: filteredData, initialState: { pageSize: 6 } },
     useGlobalFilter,
     useSortBy,
     useExpanded,
@@ -430,7 +430,7 @@ function CompleteTable({ data }) {
       <div className='filter-row'>
         <p>
           {
-            'One tool for all licenses! Software License Management helps to maintain Certificates, Domains or Software with ease.'
+            'One tool for all licenses! eSoft helps to maintain Certificates, Domains or Software with ease.'
           }
           <br />
           {
