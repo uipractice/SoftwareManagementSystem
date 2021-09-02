@@ -240,7 +240,9 @@ function CompleteTable({ data }) {
         Cell: ({ row }) => (
           <div>
             <img
-              className='p-2 pointer'
+              className={`p-2 pointer ${
+                row.original.status === 'deleted' ? 'disableEditBtn' : ''
+              }`}
               src={EditImg}
               alt='Evoke Technologies'
               onClick={() => {
@@ -361,7 +363,7 @@ function CompleteTable({ data }) {
     setGlobalFilter,
     rows: filteredTableData,
   } = useTable(
-    { columns, data: filteredData, initialState: { pageSize: 10 } },
+    { columns, data: filteredData, initialState: { pageSize: 5 } },
     useGlobalFilter,
     useSortBy,
     useExpanded,

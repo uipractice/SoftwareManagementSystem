@@ -400,12 +400,12 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                 onChange={handleOnChange}
                 name='nextBilling'
                 value={state?.nextBilling}
-                min={moment().subtract(1, 'month').format('YYYY-MM-DD')}
-                max={
-                  state.billingCycle === 'yearly'
-                    ? ''
-                    : moment().add(1, 'month').format('YYYY-MM-DD')
-                }
+                // min={moment().subtract(1, 'month').format('YYYY-MM-DD')}
+                // max={
+                //   state.billingCycle === 'yearly'
+                //     ? ''
+                //     : moment().add(1, 'month').format('YYYY-MM-DD')
+                // }
               />
             </div>
             <div className='form-group col-md-2'>
