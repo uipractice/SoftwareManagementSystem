@@ -386,7 +386,6 @@ function CompleteTable({ data }) {
     end = filteredData.length > pageSize ? pageSize : filteredData.length;
   } else {
     start = pageIndex * pageSize + 1;
-    // end = (pageIndex + 1) * pageSize;
     end =
       filteredData.length >= (pageIndex + 1) * pageSize
         ? (pageIndex + 1) * pageSize
