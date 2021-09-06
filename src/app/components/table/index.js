@@ -53,10 +53,18 @@ function CompleteTable({ data }) {
   }, [setDefaultFilterData, data]);
 
   function handleInputChange(evt) {
-    setRowData({
-      ...rowData,
-      deleteReason: evt.target.value.trim(),
-    });
+    const value = evt.target.value.replace(/[^a-zA-Z0-9 ]/g, '');
+    if (value.match(/[a-zA-Z0-9]+([\s]+)*$/)) {
+      setRowData({
+        ...rowData,
+        deleteReason: value,
+      });
+    } else {
+      setRowData({
+        ...rowData,
+        deleteReason: '',
+      });
+    }
   }
   const handleUpdateStatus = (e) => {
     e.preventDefault();
@@ -478,6 +486,7 @@ function CompleteTable({ data }) {
                   style={{ color: 'black' }}
                   onChange={handleInputChange}
                   name='deleteReason'
+                  value={rowData.deleteReason}
                 />
                 <p className='descr'>
                   Take a deep breath! Because if deleted once,it is gone
