@@ -102,7 +102,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
         [e.target.name]: value,
       });
     } else {
-      const value = e.target.value.replace(/[^a-zA-Z0-9 ]/g,'');
+      const value = e.target.value.replace(/[^a-zA-Z0-9 ]/g, '');
       if (value.match(/[a-zA-z]+([\s]+)*$/)) {
         setState({
           ...state,
@@ -462,14 +462,15 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
             </div>
             <div className='form-group col-md-6'>
               <label htmlFor='invoiceFiles'>Upload Invoice</label>
-              <span className='help-text'>
-                (*Select all files at a time)
-              </span>
+              <span className='help-text'>(*Select all files at a time)</span>
               <div
                 className={`form-control long dashed-box ${
-                  !invoiceFiles && 'pointer'
+                  (invoiceFiles === null ||
+                    Object.keys(invoiceFiles).length <= 0) &&
+                  'pointer'
                 }`}
-                {...(!invoiceFiles && {
+                {...((invoiceFiles === null ||
+                  Object.keys(invoiceFiles).length <= 0) && {
                   onClick: (e) => document.getElementById('file')?.click(),
                 })}
               >
@@ -506,7 +507,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                 id='file'
                 type='file'
                 name='invoiceFiles'
-                multiple={true} // single file upload
+                multiple // single file upload
                 className='form-control '
                 onChange={(e) => setInvoiceFiles(e.target.files)}
                 style={{ display: 'none' }}
