@@ -24,7 +24,7 @@ const defaultFormData = {
   billingDetails: [], // pricingInDollar pricingInRupee billingMonth nextBilling, desc, invoiceFiles
 };
 
-const nonMandatoryFields = ['websiteUrl', 'description', 'invoiceFiles'];
+const nonMandatoryFields = ['websiteUrl', 'invoiceFiles'];
 
 function Form({ isOpen, closeModal, rowData, isEdit = false }) {
   const inputRef = useRef(null);
@@ -72,9 +72,13 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
    */
   const handleOnChange = (e, key, priceSection, url = false) => {
     if (key === 'billingDetails') {
+      let data='';
+      if(!priceSection){
+        data = e.target.value.replace(/[^a-zA-Z0-9 ]/g, '');
+      }
       const value = priceSection
         ? e.target.value.replace(/[^0-9]/g, '')
-        : e.target.value;
+        : data.match(/[a-zA-Z0-9]+([\s]+)*$/) ? data.replace(/[^a-zA-Z0-9 ]/g, '') : '';
       setBillingDetails({
         ...billingDetails,
         [e.target.name]:
@@ -102,8 +106,8 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
         [e.target.name]: value,
       });
     } else {
-      const value = e.target.value.replace(/[^a-zA-Z0-9 ]/g,'');
-      if (value.match(/[a-zA-z]+([\s]+)*$/)) {
+      const value = e.target.value.replace(/[^a-zA-Z0-9 ]/g,'')
+      if (value.match(/[a-zA-Z0-9]+([\s]+)*$/)) {
         setState({
           ...state,
           [e.target.name]: value,
@@ -158,8 +162,13 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
    * @return null.
    */
   const handleReset = (e) => {
+    let resetData = defaultFormData;
+    resetData.team = state.team;
+    resetData.owner = state.owner;
+    resetData.websiteUrl = state.websiteUrl;
+    resetData.softwareName = state.softwareName;
     e.preventDefault();
-    setState(defaultFormData);
+    setState(resetData);
     setInvoiceFiles(null);
     setBillingDetails({
       pricingInDollar: '',
