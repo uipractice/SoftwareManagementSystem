@@ -102,10 +102,11 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
         [e.target.name]: value,
       });
     } else {
-      if (e.target.value.match(/[a-zA-z]+([\s]+)*$/)) {
+      const value = e.target.value.replace(/[^a-zA-Z0-9 ]/g,'');
+      if (value.match(/[a-zA-z]+([\s]+)*$/)) {
         setState({
           ...state,
-          [e.target.name]: e.target.value,
+          [e.target.name]: value,
         });
       } else {
         setState({
@@ -462,8 +463,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
             <div className='form-group col-md-6'>
               <label htmlFor='invoiceFiles'>Upload Invoice</label>
               <span className='help-text'>
-                (*For uploading multiple files, select all required files at
-                once)
+                (*Select all files at a time)
               </span>
               <div
                 className={`form-control long dashed-box ${
