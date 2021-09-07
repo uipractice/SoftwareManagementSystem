@@ -1,7 +1,8 @@
 import React from 'react';
 import { Modal, Button } from 'react-bootstrap';
 
-function Feedback({ isOpen, closeModal, feedbackText, handleInputChange }) {
+function Feedback({ isOpen, closeModal, handleInputChange,  feedbackText }) {
+  const feedBackText = /[a-zA-Z0-9]+([\s]+)*$/;
   return (
     <Modal
       centered
@@ -17,19 +18,20 @@ function Feedback({ isOpen, closeModal, feedbackText, handleInputChange }) {
       <Modal.Body>
         <div className='py-2'>
           <h3>Hello Friends</h3>
-          <p>Your review will help us go give you the better experience</p>
+          <p>Your review will help us to provide you better experience</p>
           <textarea
             type='text'
             autoFocus={true}
             style={{ color: 'black' }}
             onChange={(e) => handleInputChange(e)}
             name='deleteReason'
+            value={feedbackText}
           />
           <Button
             onClick={(e) => closeModal(e, false)}
             autoFocus
             className='feedback-submit'
-            disabled={feedbackText === ''}
+            disabled={!feedbackText.match(feedBackText)}
           >
             Send
           </Button>

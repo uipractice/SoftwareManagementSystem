@@ -40,7 +40,8 @@ export default function Footer() {
   const [feedbackText, setFeedbackText] = React.useState('');
 
   const handleInputChange = (e) => {
-    setFeedbackText(e.target.value.trim());
+    const value = e.target.value.replace(/[^a-zA-Z0-9 ]/g,'');
+    setFeedbackText(value);
   };
   return (
     <div className='footer'>
