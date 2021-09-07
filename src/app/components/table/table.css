@@ -3,11 +3,11 @@
   cursor: not-allowed;   
   display: none; */
   pointer-events: none;
-  opacity: 30%;
+  opacity: 0.3;
 }
 .disableEditBtn {
   pointer-events: none;
-  opacity: 30%;
+  opacity: 0.3;
 }
 .deleteModal p {
   font-size: 14px;
@@ -69,6 +69,7 @@ table th {
   padding: 0 10px !important;
   height: 40px;
   line-height: 40px;
+  border-top: 0 !important;
 }
 .filter-row h5 {
   float: left;
