@@ -73,7 +73,8 @@ const Header = ({ validate }) => {
     }
   };
   const handleInputChange = (e) => {
-    setFeedbackText(e.target.value.trim());
+    const value = e.target.value.replace(/[^a-zA-Z0-9 ]/g,'');
+    setFeedbackText(value);
   };
   return (
     <div>
