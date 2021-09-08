@@ -160,6 +160,7 @@ input[type='date'] {
   height: 44px;
   font-size: 14px;
   color: #57565c;
+  line-height: 27px;
   /* padding-left: 5px; */
 }
 input:-internal-autofill-selected {

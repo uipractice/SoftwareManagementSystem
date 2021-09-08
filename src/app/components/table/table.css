@@ -223,7 +223,8 @@ tfoot td {
 .tableFixHead tr td:first-child div {
   padding-left: 10px;
 }
-.tableFixHead tr td:first-child div a {
+.tableFixHead tr td:first-child div a,
+.tableFixHead tr td:first-child div.ellipse-css {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
