@@ -77,7 +77,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
         data = e.target.value.replace(/[^a-zA-Z0-9 ]/g, '');
       }
       const value = priceSection
-        ? e.target.value.replace(/[^0-9]/g, '')
+        ? e.target.value.replace(/[^0-9.]/g, '')
         : data.match(/[a-zA-Z0-9]+([\s]+)*$/) ? data.replace(/[^a-zA-Z0-9 ]/g, '') : '';
       setBillingDetails({
         ...billingDetails,
