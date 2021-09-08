@@ -712,7 +712,7 @@ textarea:focus-visible {
 }
 .feedback-modal button.feedback-submit:disabled {
   pointer-events: none;
-  opacity: 30%;
+  opacity: 0.3;
 }
 .feedback-modal textarea {
   border: 1px solid #bdbdbd;
@@ -762,6 +762,12 @@ textarea:focus-visible {
 }
 .feedback-modal .MuiDialogContent-root {
   padding-top: 25px;
+}
+.esoftColor {
+  color: #f8a066;
+}
+.esoftColor span {
+  color: #f16a21;
 }
 @media (max-width: 448px) {
   .footer {

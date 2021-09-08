@@ -76,7 +76,12 @@ function Login() {
             <div className='form_main'>
               <div className='login-form-title '>
                 <h3>Sign in</h3>
-                <p>Welcome to eSoft</p>
+                <p>
+                  Welcome to{' '}
+                  <span className='esoftColor'>
+                    <span>e</span>Soft
+                  </span>
+                </p>
               </div>
 
               <div className='validate-input m-b-20'>

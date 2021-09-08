@@ -72,8 +72,8 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
    */
   const handleOnChange = (e, key, priceSection, url = false) => {
     if (key === 'billingDetails') {
-      let data='';
-      if(!priceSection){
+      let data = '';
+      if (!priceSection) {
         data = e.target.value.replace(/[^a-zA-Z0-9 ]/g, '');
       }
       const value = priceSection
@@ -106,7 +106,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
         [e.target.name]: value,
       });
     } else {
-      const value = e.target.value.replace(/[^a-zA-Z0-9 ]/g,'')
+      const value = e.target.value.replace(/[^a-zA-Z0-9 ]/g, '');
       if (value.match(/[a-zA-Z0-9]+([\s]+)*$/)) {
         setState({
           ...state,
@@ -302,7 +302,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
               />
             </div>
             <div className='form-group col-md-4'>
-              <label htmlFor='websiteUrl'>URL</label>
+              <label htmlFor='websiteUrl'>URL ( Ex: https:// )</label>
               <input
                 type='text'
                 className='form-control'
@@ -459,32 +459,34 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
           </div>
           <div className='row'>
             <div className='form-group col-md-6'>
-              <label htmlFor='description'>Pricing Description</label>
+              <label htmlFor='description'>Description</label>
               <textarea
                 type='text'
                 className='form-control long'
                 onChange={(e) => handleOnChange(e, 'billingDetails')}
                 name='description'
+                maxLength='250'
                 value={billingDetails?.description}
                 style={{ resize: 'none' }}
               />
             </div>
             <div className='form-group col-md-6'>
               <label htmlFor='invoiceFiles'>Upload Invoice</label>
-              <span className='help-text'>
-                (*Select all files at a time)
-              </span>
+              <span className='help-text'>(*Select all files at a time)</span>
               <div
                 className={`form-control long dashed-box ${
-                  !invoiceFiles && 'pointer'
+                  (invoiceFiles === null ||
+                    Object.keys(invoiceFiles).length <= 0) &&
+                  'pointer'
                 }`}
-                {...(!invoiceFiles && {
+                {...((invoiceFiles === null ||
+                  Object.keys(invoiceFiles).length <= 0) && {
                   onClick: (e) => document.getElementById('file')?.click(),
                 })}
               >
                 <div className='d-flex justify-content-center align-items-center h-100'>
                   {invoiceFiles && Object.keys(invoiceFiles).length ? (
-                    <div>
+                    <div className='selected-items'>
                       {invoiceFiles &&
                         Object.keys(invoiceFiles)?.map((key) => (
                           <div>
