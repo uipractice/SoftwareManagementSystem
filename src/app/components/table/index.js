@@ -101,7 +101,7 @@ function CompleteTable({ data }) {
             original: { websiteUrl, softwareName },
           },
         }) => (
-          <div>
+          <div className='ellipse-css' title={softwareName}>
             {websiteUrl ? (
               <a
                 href={websiteUrl}
