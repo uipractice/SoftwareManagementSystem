@@ -238,7 +238,8 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
         });
     }
   };
-  console.log(invoiceFiles, 'invoiceFiles');
+  const mailformat =
+  /^([a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@evoketechnologies.com(\s*,\s*|\s*$))*$/;
   return (
     <Modal
       centered
@@ -344,7 +345,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                 onChange={(e) => handleEmailChange(e, true)}
                 onKeyDown={(e) => handleEmailChange(e, true)}
                 name='email'
-                value={state.email && state.email.toLowerCase()}
+                value={state.email && state.email.match(mailformat) && state.email.toLowerCase()}
                 rows='3'
                 cols='50'
               />
