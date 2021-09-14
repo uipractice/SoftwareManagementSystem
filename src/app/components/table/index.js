@@ -84,6 +84,11 @@ function CompleteTable({ data }) {
       })
       .catch((err) => console.log(err.response));
   };
+  const customSorting = (c1, c2) => {
+    // console.log(c1, typeof c1,c2, typeof c2)
+    return c1.localeCompare(c2,undefined,{numeric:true})
+    //  c1  > c2?  1: c<c2?-1:0 
+  };
   const columns = React.useMemo(
     () => [
       // {
@@ -96,6 +101,12 @@ function CompleteTable({ data }) {
         accessor: 'softwareName',
         sticky: 'left',
         width: 170,
+        sortType: (a, b) => {
+          return customSorting(
+            a.original.softwareName,
+            b.original.softwareName
+          );
+        },
         Cell: ({
           row: {
             original: { websiteUrl, softwareName },
@@ -122,27 +133,57 @@ function CompleteTable({ data }) {
         accessor: 'softwareType',
         sticky: 'left',
         width: 120,
+        sortType: (a, b) => {
+          return customSorting(
+            a.original.softwareType,
+            b.original.softwareType
+          );
+        }
       },
       {
         Header: 'TEAM',
         accessor: 'team',
         sticky: 'left',
         width: 120,
+        sortType: (a, b) => {
+          return customSorting(
+            a.original.team,
+            b.original.team
+          );
+        }
       },
       {
         Header: 'USER/OWNER',
         accessor: 'owner',
         width: 150,
+        sortType: (a, b) => {
+          return customSorting(
+            a.original.owner,
+            b.original.owner
+          );
+        }
       },
       {
         Header: 'BILLING CYCLE',
         accessor: 'billingCycle',
         width: 130,
+        sortType: (a, b) => {
+          return customSorting(
+            a.original.billingCycle,
+            b.original.billingCycle
+          );
+        }
       },
       {
         Header: 'PRICING IN $',
         accessor: 'pricingInDollar',
         width: 125,
+        sortType: (a, b) => {
+          return customSorting(
+            a.original.billingDetails[0].pricingInDollar.toString(),
+            b.original.billingDetails[0].pricingInDollar.toString()
+          );
+        },
         Cell: ({
           row: {
             original: { billingDetails },
@@ -158,6 +199,12 @@ function CompleteTable({ data }) {
         Header: 'PRICING IN ₹',
         accessor: 'pricingInRupee',
         width: 125,
+        sortType: (a, b) => {
+          return customSorting(
+            a.original.billingDetails[0].pricingInRupee.toString(),
+            b.original.billingDetails[0].pricingInRupee.toString()
+          );
+        },
         Cell: ({
           row: {
             original: { billingDetails },
@@ -171,8 +218,19 @@ function CompleteTable({ data }) {
       },
       {
         Header: 'TOTAL IN ₹',
-        accessor: 'totalAmount',
+        accessor: (originalRow)=>{
+         return  originalRow.billingDetails?.reduce(
+            (result, item) => (result += Number(item.pricingInRupee)),
+            0
+          )
+        },
         width: 130,
+        sortType: (a, b) => {
+          return customSorting(
+            a.values['TOTAL IN ₹'].toString(),
+            b.values['TOTAL IN ₹'].toString() 
+          );
+        },
         // id: "expander",
         Cell: ({
           row: {
@@ -210,6 +268,12 @@ function CompleteTable({ data }) {
         Header: 'NEXT BILLING',
         accessor: 'nextBilling',
         width: 130,
+        sortType: (a, b) => {
+          return customSorting(
+            a.original.nextBilling,
+            b.original.nextBilling
+          );
+        },
         Cell: ({
           row: {
             original: { nextBilling },
@@ -218,8 +282,21 @@ function CompleteTable({ data }) {
       },
       {
         Header: 'TIMELINE',
-        accessor: 'timeline',
+        accessor: (originalRow)=>{
+          const todaysDate = moment().format('YYYY-MM-DD');
+          const days = moment(originalRow.nextBilling, 'YYYY-MM-DD').diff(
+            moment(todaysDate),
+            'days'
+          )
+          return days
+        },
         width: 100,
+        sortType: (a, b) => {
+          return customSorting(
+            a.values.TIMELINE.toString(),
+            b.values.TIMELINE.toString()
+          );
+        },
         Cell: ({
           row: {
             original: { nextBilling },
@@ -380,7 +457,11 @@ function CompleteTable({ data }) {
     setGlobalFilter,
     rows: filteredTableData,
   } = useTable(
-    { columns, data: filteredData, initialState: { pageSize: 6 } },
+    { columns, data: filteredData, initialState: { pageSize: 6,sortBy:[
+      {
+        id:"softwareName"
+      }
+    ] } },
     useGlobalFilter,
     useSortBy,
     useExpanded,
