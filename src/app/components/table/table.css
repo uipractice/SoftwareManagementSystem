@@ -183,12 +183,13 @@ tfoot td {
 }
 .tableFixHead {
   overflow: auto;
-  height: calc(100vh - 300px);
+  height: calc(100vh - 270px);
   scrollbar-width: thin;
   scrollbar-color: #afaeae #e3e1e1;
 }
 .tableFixHead table {
   background: #fff;
+  border-bottom: 0;
 }
 .tableFixHead::-webkit-scrollbar {
   width: 5px;
