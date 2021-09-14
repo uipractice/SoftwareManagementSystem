@@ -312,6 +312,10 @@ a:focus {
 .grid tr td a {
   padding: 0;
 }
+.grid tr td a:hover {
+  text-decoration: none !important;
+  color: #007bff;
+}
 .grid tr td a.delete-icon img {
   padding-left: 10px;
 }
