@@ -86,8 +86,8 @@ function CompleteTable({ data }) {
   };
   const customSorting = (c1, c2) => {
     // console.log(c1, typeof c1,c2, typeof c2)
-    return c1.localeCompare(c2,undefined,{numeric:true})
-    //  c1  > c2?  1: c<c2?-1:0 
+    return c1.localeCompare(c2, undefined, { numeric: true });
+    //  c1  > c2?  1: c<c2?-1:0
   };
   const columns = React.useMemo(
     () => [
@@ -138,7 +138,7 @@ function CompleteTable({ data }) {
             a.original.softwareType,
             b.original.softwareType
           );
-        }
+        },
       },
       {
         Header: 'TEAM',
@@ -146,22 +146,16 @@ function CompleteTable({ data }) {
         sticky: 'left',
         width: 120,
         sortType: (a, b) => {
-          return customSorting(
-            a.original.team,
-            b.original.team
-          );
-        }
+          return customSorting(a.original.team, b.original.team);
+        },
       },
       {
         Header: 'USER/OWNER',
         accessor: 'owner',
         width: 150,
         sortType: (a, b) => {
-          return customSorting(
-            a.original.owner,
-            b.original.owner
-          );
-        }
+          return customSorting(a.original.owner, b.original.owner);
+        },
       },
       {
         Header: 'BILLING CYCLE',
@@ -172,7 +166,7 @@ function CompleteTable({ data }) {
             a.original.billingCycle,
             b.original.billingCycle
           );
-        }
+        },
       },
       {
         Header: 'PRICING IN $',
@@ -218,17 +212,17 @@ function CompleteTable({ data }) {
       },
       {
         Header: 'TOTAL IN ₹',
-        accessor: (originalRow)=>{
-         return  originalRow.billingDetails?.reduce(
+        accessor: (originalRow) => {
+          return originalRow.billingDetails?.reduce(
             (result, item) => (result += Number(item.pricingInRupee)),
             0
-          )
+          );
         },
         width: 130,
         sortType: (a, b) => {
           return customSorting(
             a.values['TOTAL IN ₹'].toString(),
-            b.values['TOTAL IN ₹'].toString() 
+            b.values['TOTAL IN ₹'].toString()
           );
         },
         // id: "expander",
@@ -269,10 +263,7 @@ function CompleteTable({ data }) {
         accessor: 'nextBilling',
         width: 130,
         sortType: (a, b) => {
-          return customSorting(
-            a.original.nextBilling,
-            b.original.nextBilling
-          );
+          return customSorting(a.original.nextBilling, b.original.nextBilling);
         },
         Cell: ({
           row: {
@@ -282,13 +273,13 @@ function CompleteTable({ data }) {
       },
       {
         Header: 'TIMELINE',
-        accessor: (originalRow)=>{
+        accessor: (originalRow) => {
           const todaysDate = moment().format('YYYY-MM-DD');
           const days = moment(originalRow.nextBilling, 'YYYY-MM-DD').diff(
             moment(todaysDate),
             'days'
-          )
-          return days
+          );
+          return days;
         },
         width: 100,
         sortType: (a, b) => {
@@ -457,11 +448,18 @@ function CompleteTable({ data }) {
     setGlobalFilter,
     rows: filteredTableData,
   } = useTable(
-    { columns, data: filteredData, initialState: { pageSize: 6,sortBy:[
-      {
-        id:"softwareName"
-      }
-    ] } },
+    {
+      columns,
+      data: filteredData,
+      initialState: {
+        pageSize: 5,
+        sortBy: [
+          {
+            id: 'softwareName',
+          },
+        ],
+      },
+    },
     useGlobalFilter,
     useSortBy,
     useExpanded,
@@ -739,12 +737,11 @@ function CompleteTable({ data }) {
             })}
           </tbody>
         </table>
-      </div>
-      <div className='table-pagination'>
-        <span className='paginate'>
-          <b>{start}</b> to <b>{end}</b> of <b>{filteredData.length}</b>
-        </span>
-        {/* <label>Rows per page:</label>
+        <div className='table-pagination'>
+          <span className='paginate'>
+            <b>{start}</b> to <b>{end}</b> of <b>{filteredData.length}</b>
+          </span>
+          {/* <label>Rows per page:</label>
         <select
           value={pageSize}
           onChange={(e) => setPageSize(Number(e.target.value))}
@@ -756,21 +753,23 @@ function CompleteTable({ data }) {
             </option>
           ))}
         </select> */}
-        <span>
-          Page{' '}
-          <strong>
-            {pageIndex + 1} of {pageOptions.length}
-          </strong>{' '}
-        </span>
-        <div className='prev-next'>
-          <button onClick={() => previousPage()} disabled={!canPreviousPage}>
-            <img src={leftIcon} alt='prev' />
-          </button>{' '}
-          <button onClick={() => nextPage()} disabled={!canNextPage}>
-            <img src={rightIcon} alt='next' />
-          </button>{' '}
+          <span>
+            Page{' '}
+            <strong>
+              {pageIndex + 1} of {pageOptions.length}
+            </strong>{' '}
+          </span>
+          <div className='prev-next'>
+            <button onClick={() => previousPage()} disabled={!canPreviousPage}>
+              <img src={leftIcon} alt='prev' />
+            </button>{' '}
+            <button onClick={() => nextPage()} disabled={!canNextPage}>
+              <img src={rightIcon} alt='next' />
+            </button>{' '}
+          </div>
         </div>
       </div>
+
       {isEditFormOpen && (
         <Form
           isOpen={isEditFormOpen}
