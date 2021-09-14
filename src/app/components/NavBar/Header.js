@@ -89,12 +89,12 @@ const Header = ({ validate }) => {
         </div>
 
         <ul className='navbar-nav px-3'>
-          <li className='notification-btn'>
+          {/* <li className='notification-btn'>
             <div>
               <img src={NotificationIcon} alt='NoticicationIcon' />
             </div>
           </li>
-          <li className='vertical-line'></li>
+          <li className='vertical-line'></li> */}
 
           <li className='nav-item text-nowrap'>
             <OverlayTrigger
