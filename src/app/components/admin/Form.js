@@ -106,13 +106,8 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
         [e.target.name]: value,
       });
     } else {
-<<<<<<< HEAD
-      const value = e.target.value.replace(/[^a-zA-Z0-9 ]/g, '');
-      if (value.match(/[a-zA-z]+([\s]+)*$/)) {
-=======
       const value = e.target.value.replace(/[^a-zA-Z0-9 ]/g,'')
       if (value.match(/[a-zA-Z0-9]+([\s]+)*$/)) {
->>>>>>> 59a1b49a117f9b1d245703b03360cd0cf7704777
         setState({
           ...state,
           [e.target.name]: value,
@@ -173,7 +168,15 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
     resetData.websiteUrl = state.websiteUrl;
     resetData.softwareName = state.softwareName;
     e.preventDefault();
-    setState(resetData);
+    isEdit ?
+    setState(resetData) :
+    setState({
+     softwareName:'',
+     owner:'',
+      team:'',
+      websiteUrl:'',
+      email:''
+    })
     setInvoiceFiles(null);
     setBillingDetails({
       pricingInDollar: '',
@@ -464,7 +467,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
           </div>
           <div className='row'>
             <div className='form-group col-md-6'>
-              <label htmlFor='description'>Pricing Description</label>
+              <label htmlFor='description'>Pricing Description *</label>
               <textarea
                 type='text'
                 className='form-control long'
