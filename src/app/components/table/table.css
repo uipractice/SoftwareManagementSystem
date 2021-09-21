@@ -3,11 +3,11 @@
   cursor: not-allowed;   
   display: none; */
   pointer-events: none;
-  opacity: 30%;
+  opacity: 0.3;
 }
 .disableEditBtn {
   pointer-events: none;
-  opacity: 30%;
+  opacity: 0.3;
 }
 .deleteModal p {
   font-size: 14px;
@@ -69,6 +69,7 @@ table th {
   padding: 0 10px !important;
   height: 40px;
   line-height: 40px;
+  border-top: 0 !important;
 }
 .filter-row h5 {
   float: left;
@@ -182,12 +183,13 @@ tfoot td {
 }
 .tableFixHead {
   overflow: auto;
-  height: calc(100vh - 300px);
+  height: calc(100vh - 270px);
   scrollbar-width: thin;
   scrollbar-color: #afaeae #e3e1e1;
 }
 .tableFixHead table {
   background: #fff;
+  border-bottom: 0;
 }
 .tableFixHead::-webkit-scrollbar {
   width: 5px;
@@ -222,7 +224,8 @@ tfoot td {
 .tableFixHead tr td:first-child div {
   padding-left: 10px;
 }
-.tableFixHead tr td:first-child div a {
+.tableFixHead tr td:first-child div a,
+.tableFixHead tr td:first-child div.ellipse-css {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

@@ -72,12 +72,12 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
    */
   const handleOnChange = (e, key, priceSection, url = false) => {
     if (key === 'billingDetails') {
-      let data='';
-      if(!priceSection){
+      let data = '';
+      if (!priceSection) {
         data = e.target.value.replace(/[^a-zA-Z0-9 ]/g, '');
       }
       const value = priceSection
-        ? e.target.value.replace(/[^0-9]/g, '')
+        ? e.target.value.replace(/[^0-9.]/g, '')
         : data.match(/[a-zA-Z0-9]+([\s]+)*$/) ? data.replace(/[^a-zA-Z0-9 ]/g, '') : '';
       setBillingDetails({
         ...billingDetails,
@@ -106,7 +106,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
         [e.target.name]: value,
       });
     } else {
-      const value = e.target.value.replace(/[^a-zA-Z0-9 ]/g,'')
+      const value = e.target.value.replace(/[^a-zA-Z0-9 ]/g, '');
       if (value.match(/[a-zA-Z0-9]+([\s]+)*$/)) {
         setState({
           ...state,
@@ -246,7 +246,8 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
         });
     }
   };
-  console.log(invoiceFiles, 'invoiceFiles');
+  const mailformat =
+  /^([a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@evoketechnologies.com(\s*,\s*|\s*$))*$/;
   return (
     <Modal
       centered
@@ -310,7 +311,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
               />
             </div>
             <div className='form-group col-md-4'>
-              <label htmlFor='websiteUrl'>URL</label>
+              <label htmlFor='websiteUrl'>URL ( Ex: https:// )</label>
               <input
                 type='text'
                 className='form-control'
@@ -352,7 +353,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                 onChange={(e) => handleEmailChange(e, true)}
                 onKeyDown={(e) => handleEmailChange(e, true)}
                 name='email'
-                value={state.email && state.email.toLowerCase()}
+                value={state.email && state.email.match(mailformat) && state.email.toLowerCase()}
                 rows='3'
                 cols='50'
               />
@@ -473,6 +474,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                 className='form-control long'
                 onChange={(e) => handleOnChange(e, 'billingDetails')}
                 name='description'
+                maxLength='250'
                 value={billingDetails?.description}
                 style={{ resize: 'none' }}
               />
@@ -493,7 +495,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
               >
                 <div className='d-flex justify-content-center align-items-center h-100'>
                   {invoiceFiles && Object.keys(invoiceFiles).length ? (
-                    <div>
+                    <div className='selected-items'>
                       {invoiceFiles &&
                         Object.keys(invoiceFiles)?.map((key) => (
                           <div>

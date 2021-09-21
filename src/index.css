@@ -312,6 +312,10 @@ a:focus {
 .grid tr td a {
   padding: 0;
 }
+.grid tr td a:hover {
+  text-decoration: none !important;
+  color: #007bff;
+}
 .grid tr td a.delete-icon img {
   padding-left: 10px;
 }
@@ -712,7 +716,7 @@ textarea:focus-visible {
 }
 .feedback-modal button.feedback-submit:disabled {
   pointer-events: none;
-  opacity: 30%;
+  opacity: 0.3;
 }
 .feedback-modal textarea {
   border: 1px solid #bdbdbd;
@@ -762,6 +766,19 @@ textarea:focus-visible {
 }
 .feedback-modal .MuiDialogContent-root {
   padding-top: 25px;
+}
+.esoftColor {
+  color: #f8a066;
+}
+.esoftColor span {
+  color: #f16a21;
+}
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  box-shadow: 0 0 0 30px white inset !important;
+  -webkit-box-shadow: 0 0 0 30px white inset !important;
 }
 @media (max-width: 448px) {
   .footer {
