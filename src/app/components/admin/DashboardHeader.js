@@ -21,7 +21,7 @@ export function DashboardHeader() {
           className='btn work_btn work_btn_blue center modal-button'
           onClick={showModal}
         >
-          ADD SOFTWARE/TOOL
+          ADD TOOL/SOFTWARE
         </button>
 
         {isShown && <Form isOpen={isShown} closeModal={closeModal} />}

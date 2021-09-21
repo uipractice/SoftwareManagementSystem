@@ -55,6 +55,8 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
             .toLowerCase(),
         }),
         invoiceFiles: [],
+        pricingInDollar:'',
+        pricingInRupee:''
       };
       delete prevBillingDetails._id;
       setBillingDetails(prevBillingDetails);
