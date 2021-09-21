@@ -604,6 +604,7 @@ function CompleteTable({ data }) {
             size='lg'
             show={show}
             backdrop='static'
+            className='subscriptionModal'
             onHide={() => setShow(false)}
           >
             <Modal.Header closeButton className='modal-area'>
