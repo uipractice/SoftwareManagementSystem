@@ -344,6 +344,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                 className='form-control'
                 onChange={(e) => handleEmailChange(e, true)}
                 onKeyDown={(e) => handleEmailChange(e, true)}
+                disabled={isEdit}
                 name='email'
                 value={state.email && state.email.match(mailformat) && state.email.toLowerCase()}
                 rows='3'
@@ -521,6 +522,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                 multiple={true} // single file upload
                 className='form-control '
                 onChange={(e) => setInvoiceFiles(e.target.files)}
+                onClick={(e)=>e.target.value=null}
                 style={{ display: 'none' }}
               />
             </div>
