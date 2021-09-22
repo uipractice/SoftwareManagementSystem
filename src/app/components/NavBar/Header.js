@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 // assets
 import Logo from '../../assets/images/eoke_logo.svg';
-import NotificationIcon from '../../assets/images/bell.svg';
+// import NotificationIcon from '../../assets/images/bell.svg';
 import ProfileIcon from '../../assets/images/user-icon.svg';
 import FeedbackIcon from '../../assets/images/feedback.svg';
 import LogoutIcon from '../../assets/images/Logout_icon.svg';
