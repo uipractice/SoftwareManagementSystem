@@ -40,14 +40,12 @@ function CompleteTable({ data }) {
       setFilteredData(addSerialNo(filterResult));
     }
   }, []);
-
   const addSerialNo = (dataArr = [], tableFilter = false) => {
     return dataArr?.map((value, index) => ({
       ...(tableFilter ? value.original : value),
       serial: index + 1,
     }));
   };
-
   useEffect(() => {
     setDefaultFilterData(data);
   }, [setDefaultFilterData, data]);
@@ -432,6 +430,7 @@ function CompleteTable({ data }) {
     ),
     [downloadInvoice]
   );
+  
   const {
     getTableProps,
     getTableBodyProps,
@@ -738,7 +737,7 @@ function CompleteTable({ data }) {
             })}
           </tbody>
         </table>
-        <div className='table-pagination'>
+        {page.length > 0 && <div className='table-pagination'>
           <span className='paginate'>
             <b>{start}</b> to <b>{end}</b> of <b>{filteredData.length}</b>
           </span>
@@ -768,7 +767,7 @@ function CompleteTable({ data }) {
               <img src={rightIcon} alt='next' />
             </button>{' '}
           </div>
-        </div>
+        </div>}
       </div>
 
       {isEditFormOpen && (
