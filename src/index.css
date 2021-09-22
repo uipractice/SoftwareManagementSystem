@@ -780,6 +780,12 @@ input:-webkit-autofill:active {
   box-shadow: 0 0 0 30px white inset !important;
   -webkit-box-shadow: 0 0 0 30px white inset !important;
 }
+.subscriptionModal .modal-dialog {
+  max-width: 690px;
+}
+.subscriptionModal .modal-body {
+  padding-top: 10px;
+}
 @media (max-width: 448px) {
   .footer {
     height: 60px;
