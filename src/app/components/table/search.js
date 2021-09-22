@@ -10,13 +10,13 @@ function GlobalFilter({ setFilter }) {
     <form>
       <input
       onChange={(e) => {
-        const value = e.target.value.replace(/[^a-zA-Z0-9 ]/g, '');
-        if(value.match(/[a-zA-Z0-9]+([\s]+)*$/)){
+        const value = e.target.value !== ' ' && e.target.value.replace(/[^a-zA-Z0-9 ]/g, '');
+        if(value && value.match(/[a-zA-Z0-9]+([\s]+)*$/)){
         setSearchText(value);
         onChange(value);
         }else{
           setSearchText('');
-        onChange(value);
+          onChange(value);
         }
       }}
         type='search'
