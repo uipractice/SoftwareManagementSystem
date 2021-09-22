@@ -44,6 +44,7 @@ function Login() {
     } else {
       setState({
         ...state,
+        enteredUserName: '',
         enteredPassword: '',
       });
       toast.error('Wrong user or password !', {
