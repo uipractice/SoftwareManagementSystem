@@ -170,26 +170,17 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
     resetData.owner = state.owner;
     resetData.websiteUrl = state.websiteUrl;
     resetData.softwareName = state.softwareName;
-<<<<<<< HEAD
     resetData.email = state.email;
     isEdit ? 
-=======
-    e.preventDefault();
-    isEdit ?
->>>>>>> b4de48c3b3570cf61d429f40080cf264e25824c6
     setState(resetData) :
     setState({
      softwareName:'',
      owner:'',
       team:'',
       websiteUrl:'',
-<<<<<<< HEAD
       email:'',
       softwareType: 'software',
       billingCycle: 'monthly',
-=======
-      email:''
->>>>>>> b4de48c3b3570cf61d429f40080cf264e25824c6
     })
     setInvoiceFiles(null);
     setBillingDetails({
