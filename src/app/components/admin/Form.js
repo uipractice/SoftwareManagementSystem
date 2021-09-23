@@ -55,6 +55,8 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
             .toLowerCase(),
         }),
         invoiceFiles: [],
+        pricingInDollar:'',
+        pricingInRupee:''
       };
       delete prevBillingDetails._id;
       setBillingDetails(prevBillingDetails);
@@ -162,13 +164,24 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
    * @return null.
    */
   const handleReset = (e) => {
-    let resetData = defaultFormData;
+    e.preventDefault();
+    let resetData = {...defaultFormData}
     resetData.team = state.team;
     resetData.owner = state.owner;
     resetData.websiteUrl = state.websiteUrl;
     resetData.softwareName = state.softwareName;
-    e.preventDefault();
-    setState(resetData);
+    resetData.email = state.email;
+    isEdit ? 
+    setState(resetData) :
+    setState({
+     softwareName:'',
+     owner:'',
+      team:'',
+      websiteUrl:'',
+      email:'',
+      softwareType: 'software',
+      billingCycle: 'monthly',
+    })
     setInvoiceFiles(null);
     setBillingDetails({
       pricingInDollar: '',
@@ -344,6 +357,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                 className='form-control'
                 onChange={(e) => handleEmailChange(e, true)}
                 onKeyDown={(e) => handleEmailChange(e, true)}
+                disabled={isEdit}
                 name='email'
                 value={state.email && state.email.match(mailformat) && state.email.toLowerCase()}
                 rows='3'
@@ -460,7 +474,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
           </div>
           <div className='row'>
             <div className='form-group col-md-6'>
-              <label htmlFor='description'>Description</label>
+              <label htmlFor='description'>Pricing Description *</label>
               <textarea
                 type='text'
                 className='form-control long'
@@ -518,9 +532,10 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                 id='file'
                 type='file'
                 name='invoiceFiles'
-                multiple={true} // single file upload
+                multiple // single file upload
                 className='form-control '
                 onChange={(e) => setInvoiceFiles(e.target.files)}
+                onClick={(e)=>e.target.value=null}
                 style={{ display: 'none' }}
               />
             </div>
