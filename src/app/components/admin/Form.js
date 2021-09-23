@@ -162,13 +162,24 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
    * @return null.
    */
   const handleReset = (e) => {
-    let resetData = defaultFormData;
+    e.preventDefault();
+    let resetData = {...defaultFormData}
     resetData.team = state.team;
     resetData.owner = state.owner;
     resetData.websiteUrl = state.websiteUrl;
     resetData.softwareName = state.softwareName;
-    e.preventDefault();
-    setState(resetData);
+    resetData.email = state.email;
+    isEdit ? 
+    setState(resetData) :
+    setState({
+     softwareName:'',
+     owner:'',
+      team:'',
+      websiteUrl:'',
+      email:'',
+      softwareType: 'software',
+      billingCycle: 'monthly',
+    })
     setInvoiceFiles(null);
     setBillingDetails({
       pricingInDollar: '',
