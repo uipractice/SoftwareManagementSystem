@@ -278,3 +278,11 @@ input[type='date']::-webkit-calendar-picker-indicator {
 .selected-items div {
   margin-right: 10px;
 }
+.email-help-text {
+  font-family: Lato;
+  font-weight: normal;
+  font-size: 10px;
+  line-height: 20px;
+  letter-spacing: 0.01em;
+  color: #929292;
+}
