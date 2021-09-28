@@ -55,8 +55,8 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
             .toLowerCase(),
         }),
         invoiceFiles: [],
-        pricingInDollar:'',
-        pricingInRupee:''
+        pricingInDollar: '',
+        pricingInRupee: '',
       };
       delete prevBillingDetails._id;
       setBillingDetails(prevBillingDetails);
@@ -80,7 +80,9 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
       }
       const value = priceSection
         ? e.target.value.replace(/[^0-9.]/g, '')
-        : data.match(/[a-zA-Z0-9]+([\s]+)*$/) ? data.replace(/[^a-zA-Z0-9 ]/g, '') : '';
+        : data.match(/[a-zA-Z0-9]+([\s]+)*$/)
+        ? data.replace(/[^a-zA-Z0-9 ]/g, '')
+        : '';
       setBillingDetails({
         ...billingDetails,
         [e.target.name]:
@@ -165,24 +167,24 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
    */
   const handleReset = (e) => {
     e.preventDefault();
-    let resetData = {...defaultFormData}
+    let resetData = { ...defaultFormData };
     resetData.team = state.team;
     resetData.owner = state.owner;
     resetData.websiteUrl = state.websiteUrl;
     resetData.softwareName = state.softwareName;
     resetData.email = state.email;
-    isEdit ? 
-    setState(resetData) :
-    setState({
-      ...state,
-     softwareName:'',
-     owner:'',
-      team:'',
-      websiteUrl:'',
-      email:'',
-      softwareType: 'software',
-      billingCycle: 'monthly',
-    })
+    isEdit
+      ? setState(resetData)
+      : setState({
+          ...state,
+          softwareName: '',
+          owner: '',
+          team: '',
+          websiteUrl: '',
+          email: '',
+          softwareType: 'software',
+          billingCycle: 'monthly',
+        });
     setInvoiceFiles(null);
     setBillingDetails({
       pricingInDollar: '',
@@ -253,7 +255,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
     }
   };
   const mailformat =
-  /^([a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@evoketechnologies.com(\s*,\s*|\s*$))*$/;
+    /^([a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@evoketechnologies.com(\s*,\s*|\s*$))*$/;
   return (
     <Modal
       centered
@@ -317,7 +319,8 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
               />
             </div>
             <div className='form-group col-md-4'>
-              <label htmlFor='websiteUrl'>URL ( Ex: https:// )</label>
+              <label htmlFor='websiteUrl'>URL </label>
+              <span class='help-text'>( Ex: https:// )</span>
               <input
                 type='text'
                 className='form-control'
@@ -352,7 +355,11 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
               />
             </div>
             <div className='form-group col-md-4'>
-              <label htmlFor='email'>Email Id * </label><span className='email-help-text' > (To add multiple emails, please add seperator(,) after .com)</span>
+              <label htmlFor='email'>Email Id * </label>
+              <span className='email-help-text'>
+                {' '}
+                (To add multiple emails, please add seperator(,) after .com)
+              </span>
               <textarea
                 type='textarea'
                 className='form-control'
@@ -360,7 +367,11 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                 onKeyDown={(e) => handleEmailChange(e, true)}
                 disabled={isEdit}
                 name='email'
-                value={state.email && state.email.match(mailformat) && state.email.toLowerCase()}
+                value={
+                  state.email &&
+                  state.email.match(mailformat) &&
+                  state.email.toLowerCase()
+                }
                 rows='3'
                 cols='50'
               />
@@ -536,7 +547,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                 multiple // single file upload
                 className='form-control '
                 onChange={(e) => setInvoiceFiles(e.target.files)}
-                onClick={(e)=>e.target.value=null}
+                onClick={(e) => (e.target.value = null)}
                 style={{ display: 'none' }}
               />
             </div>
