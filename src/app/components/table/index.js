@@ -613,13 +613,13 @@ function CompleteTable({ data }) {
               <div className='d-flex justify-content-between px-1'>
                 <div>{rowData.softwareName}</div>
                 <div className='prev-next'>
-                  {/* <button onClick={() => {}} disabled={!canPreviousPage}>
-                  <img src={leftIcon} alt='prev' />
-                </button>{' '} */}
+                  <button onClick={() => {}} disabled={!canPreviousPage}>
+                    <img src={leftIcon} alt='prev' />
+                  </button>{' '}
                   {moment(rowData.createdAt).format('YYYY')}{' '}
-                  {/* <button onClick={() => {}} disabled={!canNextPage}>
-                  <img src={rightIcon} alt='next' />
-                </button>{' '} */}
+                  <button onClick={() => {}} disabled={!canNextPage}>
+                    <img src={rightIcon} alt='next' />
+                  </button>{' '}
                 </div>
               </div>
               <div className='calenderGrid'>
@@ -636,7 +636,7 @@ function CompleteTable({ data }) {
                       {month}
                       {billingItem?.length !== 0 && (
                         <div className='amount'>
-                          {`₹${billingItem[0]?.pricingInRupee}`}
+                          <span>{`₹${billingItem[0]?.pricingInRupee}`}</span>
                           {billingItem[0].invoiceFiles.length > 0 && (
                             <img
                               src={Download}
