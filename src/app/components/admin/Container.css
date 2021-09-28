@@ -169,6 +169,7 @@ input:-internal-autofill-selected {
 }
 .form-group .long {
   height: 70px;
+  overflow: auto;
 }
 .form-group .dashed-box {
   border: 1px dashed #bdbdbd !important;

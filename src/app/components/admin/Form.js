@@ -176,6 +176,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
     isEdit
       ? setState(resetData)
       : setState({
+          ...state,
           softwareName: '',
           owner: '',
           team: '',
