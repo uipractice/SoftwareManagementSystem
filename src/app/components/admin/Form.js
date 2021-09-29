@@ -358,7 +358,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
               <label htmlFor='email'>Email Id * </label>
               <span className='email-help-text'>
                 {' '}
-                (To add multiple emails, please add seperator(,) after .com)
+                (Add multiple emails with (,) sepration)
               </span>
               <textarea
                 type='textarea'
