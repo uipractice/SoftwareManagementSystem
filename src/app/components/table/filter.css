@@ -85,3 +85,10 @@ input[type='radio']:checked:after {
   visibility: visible;
   border: 2px solid #03ae78;
 }
+.filter-row .dropdown-menu li label {
+  margin-bottom: 0;
+  cursor: pointer;
+}
+.filter-row .dropdown-menu li {
+  cursor: pointer;
+}
