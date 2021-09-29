@@ -383,7 +383,7 @@ function CompleteTable({ data }) {
     ({ row }) => (
       <td colSpan='12' className='rowexpandable'>
         <div className='subscrit'>
-          <h3 className='rowexpandfont'>Subscription for :</h3>
+          <h3 className='rowexpandfont'>Subscription for:</h3>
           {row.original.billingDetails
             .slice(-6)
             .reverse()
@@ -430,7 +430,7 @@ function CompleteTable({ data }) {
     ),
     [downloadInvoice]
   );
-  
+
   const {
     getTableProps,
     getTableBodyProps,
@@ -737,11 +737,12 @@ function CompleteTable({ data }) {
             })}
           </tbody>
         </table>
-        {page.length > 0 && <div className='table-pagination'>
-          <span className='paginate'>
-            <b>{start}</b> to <b>{end}</b> of <b>{filteredData.length}</b>
-          </span>
-          {/* <label>Rows per page:</label>
+        {page.length > 0 && (
+          <div className='table-pagination'>
+            <span className='paginate'>
+              <b>{start}</b> to <b>{end}</b> of <b>{filteredData.length}</b>
+            </span>
+            {/* <label>Rows per page:</label>
         <select
           value={pageSize}
           onChange={(e) => setPageSize(Number(e.target.value))}
@@ -753,21 +754,25 @@ function CompleteTable({ data }) {
             </option>
           ))}
         </select> */}
-          <span>
-            Page{' '}
-            <strong>
-              {pageIndex + 1} of {pageOptions.length}
-            </strong>{' '}
-          </span>
-          <div className='prev-next'>
-            <button onClick={() => previousPage()} disabled={!canPreviousPage}>
-              <img src={leftIcon} alt='prev' />
-            </button>{' '}
-            <button onClick={() => nextPage()} disabled={!canNextPage}>
-              <img src={rightIcon} alt='next' />
-            </button>{' '}
+            <span>
+              Page{' '}
+              <strong>
+                {pageIndex + 1} of {pageOptions.length}
+              </strong>{' '}
+            </span>
+            <div className='prev-next'>
+              <button
+                onClick={() => previousPage()}
+                disabled={!canPreviousPage}
+              >
+                <img src={leftIcon} alt='prev' />
+              </button>{' '}
+              <button onClick={() => nextPage()} disabled={!canNextPage}>
+                <img src={rightIcon} alt='next' />
+              </button>{' '}
+            </div>
           </div>
-        </div>}
+        )}
       </div>
 
       {isEditFormOpen && (
