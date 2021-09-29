@@ -55,8 +55,9 @@ const FilterDropdown = ({ filterSelect }) => {
                 checked={checkInfo[option.group] === option.value}
                 type='radio'
                 onChange={handleSelectedStatus}
+                id={option.value}
               />
-              {option.label}
+              <label for={option.value}>{option.label}</label>
             </li>
           ))}
         </ul>
