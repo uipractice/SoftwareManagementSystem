@@ -29,7 +29,7 @@ const nonMandatoryFields = ['websiteUrl', 'invoiceFiles'];
 function Form({ isOpen, closeModal, rowData, isEdit = false }) {
   const inputRef = useRef(null);
   const [state, setState] = useState({});
-  const [invoiceFiles, setInvoiceFiles] = useState(null);
+  const [invoiceFiles, setInvoiceFiles] = useState([]);
   const [billingDetails, setBillingDetails] = useState({
     pricingInDollar: '',
     pricingInRupee: '',
@@ -185,7 +185,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
           softwareType: 'software',
           billingCycle: 'monthly',
         });
-    setInvoiceFiles(null);
+    setInvoiceFiles([]);
     setBillingDetails({
       pricingInDollar: '',
       pricingInRupee: '',
@@ -195,7 +195,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
   };
 
   const uploadInvoiceFiles = ({ _id: id, ...rest }, billing) => {
-    if (invoiceFiles && Object.keys(invoiceFiles).length) {
+    if (invoiceFiles && invoiceFiles.length > 0) {
       const formData = new FormData();
       for (let file in invoiceFiles) {
         formData.append('fileName', invoiceFiles[file]);
@@ -209,6 +209,18 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
           console.log('Error in Upload : ', err);
         });
     }
+  };
+  const handleAddFile = () => {
+    document.getElementById('invoiceFiles').click();
+  };
+
+  const addAttachment = (fileInput) => {
+    const files = [...invoiceFiles];
+    for (const file of fileInput.target.files) {
+      files.push(file);
+    }
+    console.log('files', files);
+    setInvoiceFiles(files);
   };
 
   /**
@@ -358,8 +370,9 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
               <label htmlFor='email'>Email Id * </label>
               <span className='email-help-text'>
                 {' '}
-                (Add multiple emails with (,) sepration)
+                (Add multiple emails with (,) separation)
               </span>
+
               <textarea
                 type='textarea'
                 className='form-control'
@@ -501,52 +514,59 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
               <label htmlFor='invoiceFiles'>Upload Invoice</label>
               <span className='help-text'>(*Select all files at a time)</span>
               <div
-                className={`form-control long dashed-box ${
-                  (invoiceFiles === null ||
-                    Object.keys(invoiceFiles).length <= 0) &&
+                className={`form-control long dashed-box  ${
+                  (invoiceFiles === null || invoiceFiles.length <= 0) &&
                   'pointer'
+                } ${
+                  (invoiceFiles === null || invoiceFiles.length > 0) &&
+                  'files-container'
                 }`}
-                {...((invoiceFiles === null ||
-                  Object.keys(invoiceFiles).length <= 0) && {
-                  onClick: (e) => document.getElementById('file')?.click(),
-                })}
+                // {...((invoiceFiles === null ||
+                //   Object.keys(invoiceFiles).length <= 0) && {
+                //   onClick: (e) => document.getElementById("invoiceFiles")?.click(),
+                // })}
               >
-                <div className='d-flex justify-content-center align-items-center h-100'>
-                  {invoiceFiles && Object.keys(invoiceFiles).length ? (
-                    <div className='selected-items'>
-                      {invoiceFiles &&
-                        Object.keys(invoiceFiles)?.map((key) => (
-                          <div>
-                            <span
-                              key={invoiceFiles[key].name}
-                              className='file-close-icon'
-                              onClick={() => {
-                                const fileState = { ...invoiceFiles };
-                                delete fileState[key];
-                                setInvoiceFiles(fileState);
-                              }}
-                            >
-                              {invoiceFiles[key].name}
-                              &nbsp;&nbsp;
-                            </span>
-                          </div>
-                        ))}
+                {/* <div className="d-flex justify-content-center align-items-center h-100"> */}
+
+                <div
+                  className={`${invoiceFiles.length <= 0 && 'no-selected-items'}
+                  ${invoiceFiles.length > 0 && 'selected-items'}`}
+                >
+                  {invoiceFiles.map((item, key) => (
+                    <div>
+                      <span
+                        key={invoiceFiles[key].name}
+                        className='file-close-icon'
+                        onClick={() => {
+                          const fileState = [...invoiceFiles];
+                          // delete fileState[key];
+                          fileState.splice(key, 1);
+                          setInvoiceFiles(fileState);
+                        }}
+                      >
+                        {invoiceFiles[key].name}
+                        &nbsp;&nbsp;
+                      </span>
                     </div>
-                  ) : (
-                    <span>
-                      Click here to upload
-                      <img className='px-2' src={Upload} alt='download' />
-                    </span>
-                  )}
+                  ))}
+                </div>
+                <div className='addFileBtn'>
+                  <a
+                    onClick={(e) => handleAddFile(e)}
+                    href='javascript:void(0)'
+                  >
+                    Add files here
+                    <img className='px-2' src={Upload} alt='download' />
+                  </a>
                 </div>
               </div>
               <input
-                id='file'
+                id='invoiceFiles'
                 type='file'
                 name='invoiceFiles'
                 multiple // single file upload
-                className='form-control '
-                onChange={(e) => setInvoiceFiles(e.target.files)}
+                className='form-control'
+                onChange={(e) => addAttachment(e)}
                 onClick={(e) => (e.target.value = null)}
                 style={{ display: 'none' }}
               />
