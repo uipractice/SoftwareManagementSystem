@@ -794,6 +794,11 @@ input:-webkit-autofill:active {
     top: 25px !important;
   }
 }
+.hidden {
+  visibility: hidden;
+  width: 1px;
+  height: 1px;
+}
 /*
 @media screen and (min-height:1951px){
 	.records_table{
