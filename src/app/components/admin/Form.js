@@ -366,11 +366,11 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                 value={state?.owner}
               />
             </div>
-            <div className="form-group col-md-4">
-              <label htmlFor="email">Email Id * </label>
-              <span className="email-help-text">
-                {" "}
-                (To add multiple emails, please add seperator(,) after .com)
+            <div className='form-group col-md-4'>
+              <label htmlFor='email'>Email Id * </label>
+              <span className='email-help-text'>
+                {' '}
+                (Add multiple emails with (,) separation)
               </span>
 
               <textarea

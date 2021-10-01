@@ -285,7 +285,8 @@ tfoot td {
 }
 .subscrit {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
+  margin-left: 9em;
 }
 .label {
   line-height: 33px;
