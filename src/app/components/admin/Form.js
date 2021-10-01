@@ -1,40 +1,40 @@
-import React, { useState, useEffect, useRef } from "react";
-import { ToggleButtonGroup, ToggleButton, Modal } from "react-bootstrap";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import NumberFormat from "react-number-format";
-import axios from "axios";
-import moment from "moment";
-import Upload from "../../assets/images/upload.svg";
+import React, { useState, useEffect, useRef } from 'react';
+import { ToggleButtonGroup, ToggleButton, Modal } from 'react-bootstrap';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import NumberFormat from 'react-number-format';
+import axios from 'axios';
+import moment from 'moment';
+import Upload from '../../assets/images/upload.svg';
 // Helpers
-import { getApiUrl } from "../utils/helper";
+import { getApiUrl } from '../utils/helper';
 
 toast.configure();
 
 // default fotm data
 const defaultFormData = {
-  softwareName: "",
-  softwareType: "software",
-  team: "",
-  owner: "",
-  email: "",
-  websiteUrl: "",
-  billingCycle: "monthly",
-  nextBilling: moment().add(1, "month").format("YYYY-MM-DD"),
+  softwareName: '',
+  softwareType: 'software',
+  team: '',
+  owner: '',
+  email: '',
+  websiteUrl: '',
+  billingCycle: 'monthly',
+  nextBilling: moment().add(1, 'month').format('YYYY-MM-DD'),
   billingDetails: [], // pricingInDollar pricingInRupee billingMonth nextBilling, desc, invoiceFiles
 };
 
-const nonMandatoryFields = ["websiteUrl", "invoiceFiles"];
+const nonMandatoryFields = ['websiteUrl', 'invoiceFiles'];
 
 function Form({ isOpen, closeModal, rowData, isEdit = false }) {
   const inputRef = useRef(null);
   const [state, setState] = useState({});
   const [invoiceFiles, setInvoiceFiles] = useState([]);
   const [billingDetails, setBillingDetails] = useState({
-    pricingInDollar: "",
-    pricingInRupee: "",
-    billingMonth: moment().format("MMMM").toLowerCase(),
-    description: "",
+    pricingInDollar: '',
+    pricingInRupee: '',
+    billingMonth: moment().format('MMMM').toLowerCase(),
+    description: '',
   });
 
   useEffect(() => {
@@ -44,19 +44,19 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
       stateData = {
         ...rowData,
         nextBilling: moment(rowData?.nextBilling)
-          .add(1, "month")
-          .format("YYYY-MM-DD"),
+          .add(1, 'month')
+          .format('YYYY-MM-DD'),
       };
       const prevBillingDetails = {
         ...rowData?.billingDetails?.[rowData.billingDetails.length - 1],
-        ...(rowData?.billingCycle === "monthly" && {
+        ...(rowData?.billingCycle === 'monthly' && {
           billingMonth: moment(rowData.nextBilling)
-            .format("MMMM")
+            .format('MMMM')
             .toLowerCase(),
         }),
         invoiceFiles: [],
-        pricingInDollar: "",
-        pricingInRupee: "",
+        pricingInDollar: '',
+        pricingInRupee: '',
       };
       delete prevBillingDetails._id;
       setBillingDetails(prevBillingDetails);
@@ -73,32 +73,32 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
    * @return null.
    */
   const handleOnChange = (e, key, priceSection, url = false) => {
-    if (key === "billingDetails") {
-      let data = "";
+    if (key === 'billingDetails') {
+      let data = '';
       if (!priceSection) {
-        data = e.target.value.replace(/[^a-zA-Z0-9 ]/g, "");
+        data = e.target.value.replace(/[^a-zA-Z0-9 ]/g, '');
       }
       const value = priceSection
-        ? e.target.value.replace(/[^0-9.]/g, "")
+        ? e.target.value.replace(/[^0-9.]/g, '')
         : data.match(/[a-zA-Z0-9]+([\s]+)*$/)
-        ? data.replace(/[^a-zA-Z0-9 ]/g, "")
-        : "";
+        ? data.replace(/[^a-zA-Z0-9 ]/g, '')
+        : '';
       setBillingDetails({
         ...billingDetails,
         [e.target.name]:
-          priceSection && value > 0 ? value : !priceSection ? value : "",
+          priceSection && value > 0 ? value : !priceSection ? value : '',
       });
-    } else if (e.target.name === "billingCycle") {
+    } else if (e.target.name === 'billingCycle') {
       setState({
         ...state,
         [e.target.name]: e.target.value,
-        ...(e.target.name === "billingCycle" && {
+        ...(e.target.name === 'billingCycle' && {
           nextBilling: moment()
-            .add(1, `${e.target.value === "monthly" ? "month" : "year"}`)
-            .format("YYYY-MM-DD"),
+            .add(1, `${e.target.value === 'monthly' ? 'month' : 'year'}`)
+            .format('YYYY-MM-DD'),
         }),
       });
-    } else if (e.target.name === "nextBilling") {
+    } else if (e.target.name === 'nextBilling') {
       setState({
         ...state,
         [e.target.name]: e.target.value,
@@ -110,7 +110,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
         [e.target.name]: value,
       });
     } else {
-      const value = e.target.value.replace(/[^a-zA-Z0-9 ]/g, "");
+      const value = e.target.value.replace(/[^a-zA-Z0-9 ]/g, '');
       if (value.match(/[a-zA-Z0-9]+([\s]+)*$/)) {
         setState({
           ...state,
@@ -119,17 +119,17 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
       } else {
         setState({
           ...state,
-          [e.target.name]: "",
+          [e.target.name]: '',
         });
       }
     }
   };
 
   function handleEmailChange(e, email) {
-    if (e.key === "@" && !state.autoFill && email) {
+    if (e.key === '@' && !state.autoFill && email) {
       setState({
         ...state,
-        [e.target.name]: e.target.value + "@evoketechnologies.com",
+        [e.target.name]: e.target.value + '@evoketechnologies.com',
         autoFill: true,
       });
     } else if (!state.autoFill) {
@@ -152,7 +152,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
     if (inputText.match(mailformat)) {
       return true;
     } else {
-      toast.error("Invalid email ID !", {
+      toast.error('Invalid email ID !', {
         autoClose: 1800,
       });
       return false;
@@ -177,41 +177,41 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
       ? setState(resetData)
       : setState({
           ...state,
-          softwareName: "",
-          owner: "",
-          team: "",
-          websiteUrl: "",
-          email: "",
-          softwareType: "software",
-          billingCycle: "monthly",
+          softwareName: '',
+          owner: '',
+          team: '',
+          websiteUrl: '',
+          email: '',
+          softwareType: 'software',
+          billingCycle: 'monthly',
         });
     setInvoiceFiles([]);
     setBillingDetails({
-      pricingInDollar: "",
-      pricingInRupee: "",
-      billingMonth: moment().format("MMMM").toLowerCase(),
-      description: "",
+      pricingInDollar: '',
+      pricingInRupee: '',
+      billingMonth: moment().format('MMMM').toLowerCase(),
+      description: '',
     });
   };
 
   const uploadInvoiceFiles = ({ _id: id, ...rest }, billing) => {
-    if (invoiceFiles && invoiceFiles.length>0) {
+    if (invoiceFiles && invoiceFiles.length > 0) {
       const formData = new FormData();
       for (let file in invoiceFiles) {
-        formData.append("fileName", invoiceFiles[file]);
+        formData.append('fileName', invoiceFiles[file]);
       }
       axios
         .post(getApiUrl(`softwareInfo/multiple/${id}`), formData)
         .then((res) => {
-          console.log("Files Uploaded : ", res.data.status);
+          console.log('Files Uploaded : ', res.data.status);
         })
         .catch((err) => {
-          console.log("Error in Upload : ", err);
+          console.log('Error in Upload : ', err);
         });
     }
   };
   const handleAddFile = () => {
-    document.getElementById("invoiceFiles").click();
+    document.getElementById('invoiceFiles').click();
   };
 
   const addAttachment = (fileInput) => {
@@ -219,7 +219,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
     for (const file of fileInput.target.files) {
       files.push(file);
     }
-    console.log("files", files);
+    console.log('files', files);
     setInvoiceFiles(files);
   };
 
@@ -234,10 +234,10 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
     const newBillingRecord = {
       ...billingDetails,
       nextBilling: state.nextBilling,
-      createdAt: moment().format("YYYY-MM-DD"),
+      createdAt: moment().format('YYYY-MM-DD'),
     };
     state.billingDetails.push(newBillingRecord);
-    console.log("state", state);
+    console.log('state', state);
     if (ValidateEmail(state.email)) {
       axios
         .post(
@@ -252,14 +252,14 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
           if (res.data && Object.keys(res.data)?.length) {
             uploadInvoiceFiles(res.data);
             closeModal();
-            toast.success("Data Saved Successfully !", {
+            toast.success('Data Saved Successfully !', {
               autoClose: 1000,
             });
             setTimeout(() => {
               window.location.reload();
             }, 1000);
           } else {
-            toast.error("Data Saved FAILED !", {
+            toast.error('Data Saved FAILED !', {
               autoClose: 1000,
             });
           }
@@ -271,97 +271,97 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
   return (
     <Modal
       centered
-      size="lg"
-      style={{ borderRadius: "0 !important" }}
+      size='lg'
+      style={{ borderRadius: '0 !important' }}
       show={isOpen}
-      backdrop="static"
+      backdrop='static'
       onHide={closeModal}
-      className="software-modal"
+      className='software-modal'
     >
-      <Modal.Header closeButton className="modal-area">
+      <Modal.Header closeButton className='modal-area'>
         <h3>Add Tool/Software</h3>
       </Modal.Header>
       <Modal.Body>
         <form>
-          <div className="row">
-            <div className="form-group col-md-4">
-              <label htmlFor="softwareType">Select Type *</label>
+          <div className='row'>
+            <div className='form-group col-md-4'>
+              <label htmlFor='softwareType'>Select Type *</label>
               <ToggleButtonGroup
-                type="radio"
-                name="softwareType"
+                type='radio'
+                name='softwareType'
                 value={state?.softwareType}
                 disabled={isEdit}
                 onChange={(val) => setState({ ...state, softwareType: val })}
               >
                 <ToggleButton
                   disabled={isEdit}
-                  checked={state?.softwareType === "certificate"}
-                  value={"certificate"}
-                  className="certificate"
+                  checked={state?.softwareType === 'certificate'}
+                  value={'certificate'}
+                  className='certificate'
                 >
                   Certificate
                 </ToggleButton>
                 <ToggleButton
                   disabled={isEdit}
-                  checked={state?.softwareType === "domain"}
-                  value={"domain"}
-                  className="domian"
+                  checked={state?.softwareType === 'domain'}
+                  value={'domain'}
+                  className='domian'
                 >
                   Domain
                 </ToggleButton>
                 <ToggleButton
                   disabled={isEdit}
-                  checked={state?.softwareType === "software"}
-                  value={"software"}
-                  className="software"
+                  checked={state?.softwareType === 'software'}
+                  value={'software'}
+                  className='software'
                 >
                   Software
                 </ToggleButton>
               </ToggleButtonGroup>
             </div>
-            <div className="form-group col-md-4">
-              <label htmlFor="softwareName">Tool/Software *</label>
+            <div className='form-group col-md-4'>
+              <label htmlFor='softwareName'>Tool/Software *</label>
               <input
-                type="text"
-                className="form-control"
+                type='text'
+                className='form-control'
                 onChange={handleOnChange}
-                name="softwareName"
+                name='softwareName'
                 disabled={isEdit}
                 value={state?.softwareName}
               />
             </div>
-            <div className="form-group col-md-4">
-              <label htmlFor="websiteUrl">URL </label>
-              <span class="help-text">( Ex: https:// )</span>
+            <div className='form-group col-md-4'>
+              <label htmlFor='websiteUrl'>URL </label>
+              <span class='help-text'>( Ex: https:// )</span>
               <input
-                type="text"
-                className="form-control"
-                onChange={(e) => handleOnChange(e, "", false, true)}
-                name="websiteUrl"
+                type='text'
+                className='form-control'
+                onChange={(e) => handleOnChange(e, '', false, true)}
+                name='websiteUrl'
                 disabled={isEdit}
                 value={state?.websiteUrl}
               />
             </div>
           </div>
-          <div className="row">
-            <div className="form-group col-md-4">
-              <label htmlFor="team">Team/Project/Business Unit *</label>
+          <div className='row'>
+            <div className='form-group col-md-4'>
+              <label htmlFor='team'>Team/Project/Business Unit *</label>
               <input
-                type="text"
-                className="form-control"
+                type='text'
+                className='form-control'
                 onChange={handleOnChange}
-                name="team"
+                name='team'
                 disabled={isEdit}
                 value={state?.team}
               />
             </div>
-            <div className="form-group col-md-4">
-              <label htmlFor="owner">User/Owner *</label>
+            <div className='form-group col-md-4'>
+              <label htmlFor='owner'>User/Owner *</label>
               <input
-                type="text"
-                className="form-control"
+                type='text'
+                className='form-control'
                 onChange={handleOnChange}
-                name="owner"
+                name='owner'
                 disabled={isEdit}
                 value={state?.owner}
               />
@@ -374,87 +374,87 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
               </span>
 
               <textarea
-                type="textarea"
-                className="form-control"
+                type='textarea'
+                className='form-control'
                 onChange={(e) => handleEmailChange(e, true)}
                 onKeyDown={(e) => handleEmailChange(e, true)}
                 disabled={isEdit}
-                name="email"
+                name='email'
                 value={
                   state.email &&
                   state.email.match(mailformat) &&
                   state.email.toLowerCase()
                 }
-                rows="3"
-                cols="50"
+                rows='3'
+                cols='50'
               />
             </div>
           </div>
 
-          <div className="row"></div>
-          <div className="row">
-            <div className="form-group col-md-4">
-              <label htmlFor="billingCycle">Billing Cycle *</label>
+          <div className='row'></div>
+          <div className='row'>
+            <div className='form-group col-md-4'>
+              <label htmlFor='billingCycle'>Billing Cycle *</label>
               <ToggleButtonGroup
-                type="radio"
-                name="billingCycle"
+                type='radio'
+                name='billingCycle'
                 value={state?.billingCycle}
                 disabled={isEdit}
                 onChange={(val) =>
                   handleOnChange({
-                    target: { name: "billingCycle", value: val },
+                    target: { name: 'billingCycle', value: val },
                   })
                 }
               >
                 <ToggleButton
                   disabled={isEdit}
-                  checked={state?.billingCycle === "monthly"}
-                  value={"monthly"}
+                  checked={state?.billingCycle === 'monthly'}
+                  value={'monthly'}
                 >
                   Monthly
                 </ToggleButton>
                 <ToggleButton
                   disabled={isEdit}
-                  checked={state?.billingCycle === "yearly"}
-                  value={"yearly"}
-                  className="yearly"
+                  checked={state?.billingCycle === 'yearly'}
+                  value={'yearly'}
+                  className='yearly'
                 >
                   Yearly
                 </ToggleButton>
               </ToggleButtonGroup>
             </div>
 
-            <div className="form-group col-md-2">
-              <label htmlFor="billingMonth">For the month of *</label>
+            <div className='form-group col-md-2'>
+              <label htmlFor='billingMonth'>For the month of *</label>
               <select
-                className="form-control"
-                onChange={(e) => handleOnChange(e, "billingDetails")}
-                name="billingMonth"
+                className='form-control'
+                onChange={(e) => handleOnChange(e, 'billingDetails')}
+                name='billingMonth'
                 value={billingDetails?.billingMonth}
-                disabled={state?.billingCycle === "yearly"}
+                disabled={state?.billingCycle === 'yearly'}
               >
-                <option value="january">January</option>
-                <option value="february">February</option>
-                <option value="march">March</option>
-                <option value="april">April</option>
-                <option value="may">May</option>
-                <option value="june">June</option>
-                <option value="july">July</option>
-                <option value="august">August</option>
-                <option value="september">September</option>
-                <option value="october">October</option>
-                <option value="november">November</option>
-                <option value="december">December</option>
+                <option value='january'>January</option>
+                <option value='february'>February</option>
+                <option value='march'>March</option>
+                <option value='april'>April</option>
+                <option value='may'>May</option>
+                <option value='june'>June</option>
+                <option value='july'>July</option>
+                <option value='august'>August</option>
+                <option value='september'>September</option>
+                <option value='october'>October</option>
+                <option value='november'>November</option>
+                <option value='december'>December</option>
               </select>
             </div>
 
-            <div className="form-group col-md-2">
-              <label htmlFor="nextBilling">Next Billing Date *</label>
+            <div className='form-group col-md-2'>
+              <label htmlFor='nextBilling'>Next Billing Date *</label>
               <input
-                type="date"
-                className="form-control"
+                type='date'
+                className='form-control'
                 onChange={handleOnChange}
-                name="nextBilling"
+                name='nextBilling'
                 value={state?.nextBilling}
                 // min={moment().subtract(1, 'month').format('YYYY-MM-DD')}
                 // max={
@@ -464,62 +464,62 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                 // }
               />
             </div>
-            <div className="form-group col-md-2">
-              <label htmlFor="pricingInDollar">Pricing in $ *</label>
+            <div className='form-group col-md-2'>
+              <label htmlFor='pricingInDollar'>Pricing in $ *</label>
               <NumberFormat
-                thousandsGroupStyle="thousand"
-                prefix="$ "
-                decimalSeparator="."
-                displayType="input"
-                type="text"
-                className="form-control"
-                onChange={(e) => handleOnChange(e, "billingDetails", true)}
-                name="pricingInDollar"
+                thousandsGroupStyle='thousand'
+                prefix='$ '
+                decimalSeparator='.'
+                displayType='input'
+                type='text'
+                className='form-control'
+                onChange={(e) => handleOnChange(e, 'billingDetails', true)}
+                name='pricingInDollar'
                 value={billingDetails?.pricingInDollar}
                 thousandSeparator={true}
                 allowNegative={true}
               />
             </div>
-            <div className="form-group col-md-2">
-              <label htmlFor="pricingInRupee">Pricing in ₹ *</label>
+            <div className='form-group col-md-2'>
+              <label htmlFor='pricingInRupee'>Pricing in ₹ *</label>
               <NumberFormat
-                thousandsGroupStyle="thousand"
+                thousandsGroupStyle='thousand'
                 value={billingDetails?.pricingInRupee}
-                prefix="₹ "
-                decimalSeparator="."
-                displayType="input"
-                type="text"
-                name="pricingInRupee"
-                className="form-control"
-                onChange={(e) => handleOnChange(e, "billingDetails", true)}
+                prefix='₹ '
+                decimalSeparator='.'
+                displayType='input'
+                type='text'
+                name='pricingInRupee'
+                className='form-control'
+                onChange={(e) => handleOnChange(e, 'billingDetails', true)}
                 thousandSeparator={true}
                 allowNegative={true}
               />
             </div>
           </div>
-          <div className="row">
-            <div className="form-group col-md-6">
-              <label htmlFor="description">Pricing Description *</label>
+          <div className='row'>
+            <div className='form-group col-md-6'>
+              <label htmlFor='description'>Pricing Description *</label>
               <textarea
-                type="text"
-                className="form-control long"
-                onChange={(e) => handleOnChange(e, "billingDetails")}
-                name="description"
-                maxLength="250"
+                type='text'
+                className='form-control long'
+                onChange={(e) => handleOnChange(e, 'billingDetails')}
+                name='description'
+                maxLength='250'
                 value={billingDetails?.description}
-                style={{ resize: "none" }}
+                style={{ resize: 'none' }}
               />
             </div>
-            <div className="form-group col-md-6">
-              <label htmlFor="invoiceFiles">Upload Invoice</label>
-              <span className="help-text">(*Select all files at a time)</span>
+            <div className='form-group col-md-6'>
+              <label htmlFor='invoiceFiles'>Upload Invoice</label>
+              <span className='help-text'>(*Select all files at a time)</span>
               <div
                 className={`form-control long dashed-box  ${
                   (invoiceFiles === null || invoiceFiles.length <= 0) &&
-                  "pointer"
+                  'pointer'
                 } ${
                   (invoiceFiles === null || invoiceFiles.length > 0) &&
-                  "files-container"
+                  'files-container'
                 }`}
                 // {...((invoiceFiles === null ||
                 //   Object.keys(invoiceFiles).length <= 0) && {
@@ -529,14 +529,14 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                 {/* <div className="d-flex justify-content-center align-items-center h-100"> */}
 
                 <div
-                  className={`${invoiceFiles.length <= 0 && "no-selected-items"}
-                  ${invoiceFiles.length > 0 && "selected-items"}`}
+                  className={`${invoiceFiles.length <= 0 && 'no-selected-items'}
+                  ${invoiceFiles.length > 0 && 'selected-items'}`}
                 >
                   {invoiceFiles.map((item, key) => (
                     <div>
                       <span
                         key={invoiceFiles[key].name}
-                        className="file-close-icon"
+                        className='file-close-icon'
                         onClick={() => {
                           const fileState = [...invoiceFiles];
                           // delete fileState[key];
@@ -550,53 +550,52 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                     </div>
                   ))}
                 </div>
-                <div>
+                <div className='addFileBtn'>
                   <a
                     onClick={(e) => handleAddFile(e)}
-                    href="javascript:void(0)"
+                    href='javascript:void(0)'
                   >
                     Add files here
-                    <img className="px-2" src={Upload} alt="download" />
+                    <img className='px-2' src={Upload} alt='download' />
                   </a>
                 </div>
-
               </div>
               <input
-                id="invoiceFiles"
-                type="file"
-                name="invoiceFiles"
+                id='invoiceFiles'
+                type='file'
+                name='invoiceFiles'
                 multiple // single file upload
-                className="form-control"
+                className='form-control'
                 onChange={(e) => addAttachment(e)}
                 onClick={(e) => (e.target.value = null)}
-                style={{ display: "none" }}
+                style={{ display: 'none' }}
               />
             </div>
           </div>
 
-          <div className="form-group row share ">
-            <div className="col-md-12 text-center">
+          <div className='form-group row share '>
+            <div className='col-md-12 text-center'>
               <button
-                className="form-control btn btn-primary"
+                className='form-control btn btn-primary'
                 onClick={handleReset}
               >
                 Reset
               </button>
               <button
-                className="form-control btn btn-primary share-btn"
+                className='form-control btn btn-primary share-btn'
                 onClick={handleSubmit}
                 disabled={
                   Object.keys(state).some((key) =>
-                    nonMandatoryFields.includes(key) ? false : state[key] === ""
+                    nonMandatoryFields.includes(key) ? false : state[key] === ''
                   ) ||
                   Object.keys(billingDetails).some((key) =>
                     nonMandatoryFields.includes(key)
                       ? false
-                      : billingDetails[key] === ""
+                      : billingDetails[key] === ''
                   )
                 }
               >
-                {isEdit ? "Renew" : "Save"}
+                {isEdit ? 'Renew' : 'Save'}
               </button>
             </div>
           </div>
