@@ -386,7 +386,7 @@ function CompleteTable({ data }) {
           <h3 className='rowexpandfont'>Subscription for:</h3>
           {row.original.billingDetails
             .slice(-6)
-            .reverse()
+            // .reverse()
             .map((item, i) => (
               <div key={i} className='label text-capitalize'>
                 <label>
