@@ -186,7 +186,7 @@ input:-internal-autofill-selected {
   color: #626364 !important;
   background: url('../../assets/images/down-arrow.svg') no-repeat 90%;
 }
-.form-group .files-container{
+.form-group .files-container {
   display: inline-flex;
   justify-content: left;
   /* align-items: baseline; */
@@ -289,7 +289,7 @@ input[type='date']::-webkit-calendar-picker-indicator {
   text-align: left;
   margin: auto;
 }
-.no-selected-item{
+.no-selected-item {
   flex: none;
 }
 .selected-items div {
@@ -304,6 +304,11 @@ input[type='date']::-webkit-calendar-picker-indicator {
   color: #929292;
 }
 
-a:hover{
-  text-decoration:none  !important;
+a:hover {
+  text-decoration: none !important;
+}
+.addFileBtn {
+  position: sticky;
+  right: 0;
+  top: 15px;
 }
