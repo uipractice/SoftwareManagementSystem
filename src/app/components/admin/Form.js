@@ -510,9 +510,8 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                 style={{ resize: 'none' }}
               />
             </div>
-            <div className='form-group col-md-6'>
-              <label htmlFor='invoiceFiles'>Upload Invoice</label>
-              <span className='help-text'>(*Select all files at a time)</span>
+            <div className="form-group col-md-6">
+              <label htmlFor="invoiceFiles">Upload Invoice</label>
               <div
                 className={`form-control long dashed-box  ${
                   (invoiceFiles === null || invoiceFiles.length <= 0) &&
@@ -535,8 +534,8 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                   {invoiceFiles.map((item, key) => (
                     <div>
                       <span
-                        key={invoiceFiles[key].name}
-                        className='file-close-icon'
+                        key={key}
+                        className="file-close-icon"
                         onClick={() => {
                           const fileState = [...invoiceFiles];
                           // delete fileState[key];
