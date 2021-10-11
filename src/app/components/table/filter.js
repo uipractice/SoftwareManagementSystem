@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './filter.css';
 
 const options = [
-  { label: 'All', value: 'all', group: 'all' },
+  { label: 'Active', value: 'all', group: 'all' },
   { label: 'Deleted', value: 'deleted', group: 'status' },
   { label: 'Certificate', value: 'certificate', group: 'softwareType' },
   { label: 'Domain', value: 'domain', group: 'softwareType' },
@@ -31,7 +31,7 @@ const FilterDropdown = ({ filterSelect }) => {
     }
     setCheckInfo(state);
   }
-
+  
   return (
     <>
       <div className='dropdown'>

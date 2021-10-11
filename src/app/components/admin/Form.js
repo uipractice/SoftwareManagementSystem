@@ -253,14 +253,14 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
             uploadInvoiceFiles(res.data);
             closeModal();
             toast.success('Data Saved Successfully !', {
-              autoClose: 1000,
+              autoClose: 2000,
             });
             setTimeout(() => {
               window.location.reload();
-            }, 1000);
+            }, 2000);
           } else {
             toast.error('Data Saved FAILED !', {
-              autoClose: 1000,
+              autoClose: 2000,
             });
           }
         });
