@@ -14,7 +14,7 @@ const options = [
 ];
 
 const FilterDropdown = ({ filterSelect }) => {
-  const [checkInfo, setCheckInfo] = useState({all: 'all', status: 'all'});
+  const [checkInfo, setCheckInfo] = useState({all: 'all'});
 
   useEffect(() => {
     if (checkInfo) {
@@ -24,11 +24,9 @@ const FilterDropdown = ({ filterSelect }) => {
   }, [checkInfo]);
 
   function handleSelectedStatus({ target: { name, value } }) {
-    console.log("target",name,value)
     let state = { [name]: value };
     if (!['all'].includes(value)) {
       state = { ...checkInfo, ...state };
-      console.log("state",state)
       delete state.all;
     }
     setCheckInfo(state);
