@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import DeleteImg from '../../assets/images/delete-icon.svg';
 import EditImg from '../../assets/images/edit-icon.svg';
 import UpDownImg from '../../assets/images/sorting.svg';
+import Renew from '../../assets/images/Renew.png';
 // import AttachIcon from '../../assets/images/amount-attachment.png';
 import axios from 'axios';
 import { Modal } from 'react-bootstrap';
@@ -326,8 +327,9 @@ function CompleteTable({ data }) {
               className={`p-2 pointer ${
                 row.original.status === 'deleted' ? 'disableEditBtn' : ''
               }`}
-              src={EditImg}
+              src={Renew}
               alt='Evoke Technologies'
+              height='31px'
               onClick={() => {
                 setRowData(row.original);
                 toggleEditForm(true);
