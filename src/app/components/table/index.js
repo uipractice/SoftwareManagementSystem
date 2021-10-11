@@ -10,7 +10,7 @@ import {
   useSortBy,
   useGlobalFilter,
   usePagination,
-  useExpanded,
+  useExpanded
 } from 'react-table';
 import './table.css';
 import GlobalFilter from './search';
@@ -26,7 +26,7 @@ import Download from '../../assets/images/download.svg';
 import Note from '../../assets/images/note.svg';
 
 toast.configure();
-function CompleteTable({ data }) {
+function CompleteTable({ data,sortByDateCreated }) {
   const [filteredData, setFilteredData] = useState([]);
   const [searchValue, setSearchValue] = useState();
   const [rowData, setRowData] = useState({});
@@ -50,7 +50,7 @@ function CompleteTable({ data }) {
 
   useEffect(() => {
     setDefaultFilterData(data);
-  }, [setDefaultFilterData, data]);
+  }, [setDefaultFilterData, data,sortByDateCreated]);
 
   function handleInputChange(evt) {
     const value = evt.target.value.replace(/[^a-zA-Z0-9 ]/g, '');
@@ -432,6 +432,9 @@ function CompleteTable({ data }) {
     ),
     [downloadInvoice]
   );
+const orderColumns =React.useMemo((a)=>{
+console.log("a",a)
+})
   const {
     getTableProps,
     getTableBodyProps,
@@ -453,9 +456,16 @@ function CompleteTable({ data }) {
       data: filteredData,
       initialState: {
         pageSize: 5,
+        autoResetSortBy:false,
+        manualSortBy:true,
         sortBy: [
           {
-            id: 'softwareName',
+            id: !sortByDateCreated?'billingCycle':'',
+            desc:false
+          },
+          {
+            id: !sortByDateCreated?'TIMELINE':'',
+            desc:false
           },
         ],
       },
