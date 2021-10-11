@@ -40,14 +40,12 @@ function CompleteTable({ data,sortByDateCreated }) {
       setFilteredData(addSerialNo(filterResult));
     }
   }, []);
-
   const addSerialNo = (dataArr = [], tableFilter = false) => {
     return dataArr?.map((value, index) => ({
       ...(tableFilter ? value.original : value),
       serial: index + 1,
     }));
   };
-
   useEffect(() => {
     setDefaultFilterData(data);
   }, [setDefaultFilterData, data,sortByDateCreated]);
@@ -385,10 +383,10 @@ function CompleteTable({ data,sortByDateCreated }) {
     ({ row }) => (
       <td colSpan='12' className='rowexpandable'>
         <div className='subscrit'>
-          <h3 className='rowexpandfont'>Subscription for :</h3>
+          <h3 className='rowexpandfont'>Subscription for:</h3>
           {row.original.billingDetails
             .slice(-6)
-            .reverse()
+            // .reverse()
             .map((item, i) => (
               <div key={i} className='label text-capitalize'>
                 <label>
@@ -624,13 +622,13 @@ console.log("a",a)
               <div className='d-flex justify-content-between px-1'>
                 <div>{rowData.softwareName}</div>
                 <div className='prev-next'>
-                  {/* <button onClick={() => {}} disabled={!canPreviousPage}>
-                  <img src={leftIcon} alt='prev' />
-                </button>{' '} */}
+                  <button onClick={() => {}} disabled={!canPreviousPage}>
+                    <img src={leftIcon} alt='prev' />
+                  </button>{' '}
                   {moment(rowData.createdAt).format('YYYY')}{' '}
-                  {/* <button onClick={() => {}} disabled={!canNextPage}>
-                  <img src={rightIcon} alt='next' />
-                </button>{' '} */}
+                  <button onClick={() => {}} disabled={!canNextPage}>
+                    <img src={rightIcon} alt='next' />
+                  </button>{' '}
                 </div>
               </div>
               <div className='calenderGrid'>
@@ -647,7 +645,7 @@ console.log("a",a)
                       {month}
                       {billingItem?.length !== 0 && (
                         <div className='amount'>
-                          {`₹${billingItem[0]?.pricingInRupee}`}
+                          <span>{`₹${billingItem[0]?.pricingInRupee}`}</span>
                           {billingItem[0].invoiceFiles.length > 0 && (
                             <img
                               src={Download}
@@ -748,11 +746,12 @@ console.log("a",a)
             })}
           </tbody>
         </table>
-        <div className='table-pagination'>
-          <span className='paginate'>
-            <b>{start}</b> to <b>{end}</b> of <b>{filteredData.length}</b>
-          </span>
-          {/* <label>Rows per page:</label>
+        {page.length > 0 && (
+          <div className='table-pagination'>
+            <span className='paginate'>
+              <b>{start}</b> to <b>{end}</b> of <b>{filteredData.length}</b>
+            </span>
+            {/* <label>Rows per page:</label>
         <select
           value={pageSize}
           onChange={(e) => setPageSize(Number(e.target.value))}
@@ -764,21 +763,25 @@ console.log("a",a)
             </option>
           ))}
         </select> */}
-          <span>
-            Page{' '}
-            <strong>
-              {pageIndex + 1} of {pageOptions.length}
-            </strong>{' '}
-          </span>
-          <div className='prev-next'>
-            <button onClick={() => previousPage()} disabled={!canPreviousPage}>
-              <img src={leftIcon} alt='prev' />
-            </button>{' '}
-            <button onClick={() => nextPage()} disabled={!canNextPage}>
-              <img src={rightIcon} alt='next' />
-            </button>{' '}
+            <span>
+              Page{' '}
+              <strong>
+                {pageIndex + 1} of {pageOptions.length}
+              </strong>{' '}
+            </span>
+            <div className='prev-next'>
+              <button
+                onClick={() => previousPage()}
+                disabled={!canPreviousPage}
+              >
+                <img src={leftIcon} alt='prev' />
+              </button>{' '}
+              <button onClick={() => nextPage()} disabled={!canNextPage}>
+                <img src={rightIcon} alt='next' />
+              </button>{' '}
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {isEditFormOpen && (

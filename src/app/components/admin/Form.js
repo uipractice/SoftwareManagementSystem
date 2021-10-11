@@ -29,7 +29,7 @@ const nonMandatoryFields = ['websiteUrl', 'invoiceFiles'];
 function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) {
   const inputRef = useRef(null);
   const [state, setState] = useState({});
-  const [invoiceFiles, setInvoiceFiles] = useState(null);
+  const [invoiceFiles, setInvoiceFiles] = useState([]);
   const [billingDetails, setBillingDetails] = useState({
     pricingInDollar: '',
     pricingInRupee: '',
@@ -55,8 +55,8 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
             .toLowerCase(),
         }),
         invoiceFiles: [],
-        pricingInDollar:'',
-        pricingInRupee:''
+        pricingInDollar: '',
+        pricingInRupee: '',
       };
       delete prevBillingDetails._id;
       setBillingDetails(prevBillingDetails);
@@ -80,7 +80,9 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
       }
       const value = priceSection
         ? e.target.value.replace(/[^0-9.]/g, '')
-        : data.match(/[a-zA-Z0-9]+([\s]+)*$/) ? data.replace(/[^a-zA-Z0-9 ]/g, '') : '';
+        : data.match(/[a-zA-Z0-9]+([\s]+)*$/)
+        ? data.replace(/[^a-zA-Z0-9 ]/g, '')
+        : '';
       setBillingDetails({
         ...billingDetails,
         [e.target.name]:
@@ -164,22 +166,26 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
    * @return null.
    */
   const handleReset = (e) => {
-    let resetData = defaultFormData;
+    e.preventDefault();
+    let resetData = { ...defaultFormData };
     resetData.team = state.team;
     resetData.owner = state.owner;
     resetData.websiteUrl = state.websiteUrl;
     resetData.softwareName = state.softwareName;
-    e.preventDefault();
-    isEdit ?
-    setState(resetData) :
-    setState({
-     softwareName:'',
-     owner:'',
-      team:'',
-      websiteUrl:'',
-      email:''
-    })
-    setInvoiceFiles(null);
+    resetData.email = state.email;
+    isEdit
+      ? setState(resetData)
+      : setState({
+          ...state,
+          softwareName: '',
+          owner: '',
+          team: '',
+          websiteUrl: '',
+          email: '',
+          softwareType: 'software',
+          billingCycle: 'monthly',
+        });
+    setInvoiceFiles([]);
     setBillingDetails({
       pricingInDollar: '',
       pricingInRupee: '',
@@ -189,7 +195,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
   };
 
   const uploadInvoiceFiles = ({ _id: id, ...rest }, billing) => {
-    if (invoiceFiles && Object.keys(invoiceFiles).length) {
+    if (invoiceFiles && invoiceFiles.length > 0) {
       const formData = new FormData();
       for (let file in invoiceFiles) {
         formData.append('fileName', invoiceFiles[file]);
@@ -203,6 +209,18 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
           console.log('Error in Upload : ', err);
         });
     }
+  };
+  const handleAddFile = () => {
+    document.getElementById('invoiceFiles').click();
+  };
+
+  const addAttachment = (fileInput) => {
+    const files = [...invoiceFiles];
+    for (const file of fileInput.target.files) {
+      files.push(file);
+    }
+    console.log('files', files);
+    setInvoiceFiles(files);
   };
 
   /**
@@ -244,14 +262,14 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
             // }, 1000);
           } else {
             toast.error('Data Saved FAILED !', {
-              autoClose: 1000,
+              autoClose: 2000,
             });
           }
         });
     }
   };
   const mailformat =
-  /^([a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@evoketechnologies.com(\s*,\s*|\s*$))*$/;
+    /^([a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@evoketechnologies.com(\s*,\s*|\s*$))*$/;
   return (
     <Modal
       centered
@@ -315,7 +333,8 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
               />
             </div>
             <div className='form-group col-md-4'>
-              <label htmlFor='websiteUrl'>URL ( Ex: https:// )</label>
+              <label htmlFor='websiteUrl'>URL </label>
+              <span class='help-text'>( Ex: https:// )</span>
               <input
                 type='text'
                 className='form-control'
@@ -351,13 +370,23 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
             </div>
             <div className='form-group col-md-4'>
               <label htmlFor='email'>Email Id * </label>
+              <span className='email-help-text'>
+                {' '}
+                (Add multiple emails with (,) separation)
+              </span>
+
               <textarea
                 type='textarea'
                 className='form-control'
                 onChange={(e) => handleEmailChange(e, true)}
                 onKeyDown={(e) => handleEmailChange(e, true)}
+                disabled={isEdit}
                 name='email'
-                value={state.email && state.email.match(mailformat) && state.email.toLowerCase()}
+                value={
+                  state.email &&
+                  state.email.match(mailformat) &&
+                  state.email.toLowerCase()
+                }
                 rows='3'
                 cols='50'
               />
@@ -483,56 +512,63 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
                 style={{ resize: 'none' }}
               />
             </div>
-            <div className='form-group col-md-6'>
-              <label htmlFor='invoiceFiles'>Upload Invoice</label>
-              <span className='help-text'>(*Select all files at a time)</span>
+            <div className="form-group col-md-6">
+              <label htmlFor="invoiceFiles">Upload Invoice</label>
               <div
-                className={`form-control long dashed-box ${
-                  (invoiceFiles === null ||
-                    Object.keys(invoiceFiles).length <= 0) &&
+                className={`form-control long dashed-box  ${
+                  (invoiceFiles === null || invoiceFiles.length <= 0) &&
                   'pointer'
+                } ${
+                  (invoiceFiles === null || invoiceFiles.length > 0) &&
+                  'files-container'
                 }`}
-                {...((invoiceFiles === null ||
-                  Object.keys(invoiceFiles).length <= 0) && {
-                  onClick: (e) => document.getElementById('file')?.click(),
-                })}
+                // {...((invoiceFiles === null ||
+                //   Object.keys(invoiceFiles).length <= 0) && {
+                //   onClick: (e) => document.getElementById("invoiceFiles")?.click(),
+                // })}
               >
-                <div className='d-flex justify-content-center align-items-center h-100'>
-                  {invoiceFiles && Object.keys(invoiceFiles).length ? (
-                    <div className='selected-items'>
-                      {invoiceFiles &&
-                        Object.keys(invoiceFiles)?.map((key) => (
-                          <div>
-                            <span
-                              key={invoiceFiles[key].name}
-                              className='file-close-icon'
-                              onClick={() => {
-                                const fileState = { ...invoiceFiles };
-                                delete fileState[key];
-                                setInvoiceFiles(fileState);
-                              }}
-                            >
-                              {invoiceFiles[key].name}
-                              &nbsp;&nbsp;
-                            </span>
-                          </div>
-                        ))}
+                {/* <div className="d-flex justify-content-center align-items-center h-100"> */}
+
+                <div
+                  className={`${invoiceFiles.length <= 0 && 'no-selected-items'}
+                  ${invoiceFiles.length > 0 && 'selected-items'}`}
+                >
+                  {invoiceFiles.map((item, key) => (
+                    <div>
+                      <span
+                        key={key}
+                        className="file-close-icon"
+                        onClick={() => {
+                          const fileState = [...invoiceFiles];
+                          // delete fileState[key];
+                          fileState.splice(key, 1);
+                          setInvoiceFiles(fileState);
+                        }}
+                      >
+                        {invoiceFiles[key].name}
+                        &nbsp;&nbsp;
+                      </span>
                     </div>
-                  ) : (
-                    <span>
-                      Click here to upload
-                      <img className='px-2' src={Upload} alt='download' />
-                    </span>
-                  )}
+                  ))}
+                </div>
+                <div className='addFileBtn'>
+                  <a
+                    onClick={(e) => handleAddFile(e)}
+                    href='javascript:void(0)'
+                  >
+                    Add files here
+                    <img className='px-2' src={Upload} alt='download' />
+                  </a>
                 </div>
               </div>
               <input
-                id='file'
+                id='invoiceFiles'
                 type='file'
                 name='invoiceFiles'
                 multiple // single file upload
-                className='form-control '
-                onChange={(e) => setInvoiceFiles(e.target.files)}
+                className='form-control'
+                onChange={(e) => addAttachment(e)}
+                onClick={(e) => (e.target.value = null)}
                 style={{ display: 'none' }}
               />
             </div>
