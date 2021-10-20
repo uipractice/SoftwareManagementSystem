@@ -13,7 +13,7 @@ import {
   useExpanded,
 } from 'react-table';
 import './table.css';
-import GlobalFilter from './search';
+import GlobalFilter from './GlobalFilter';
 import rightIcon from '../../assets/images/right-icon.svg';
 import leftIcon from '../../assets/images/left-icon.svg';
 import { toast } from 'react-toastify';
@@ -21,7 +21,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import moment from 'moment';
 import Form from '../admin/Form';
 import { getApiUrl } from '../utils/helper';
-import FilterDropdown from './filter';
+import FilterDropdown from './FilterDropdown';
 import Download from '../../assets/images/download.svg';
 import Note from '../../assets/images/note.svg';
 
@@ -273,11 +273,11 @@ function CompleteTable({ data }) {
         Header: 'TIMELINE',
         accessor: (originalRow) => {
           const todaysDate = moment().format('YYYY-MM-DD');
-          const days = moment(originalRow.nextBilling, 'YYYY-MM-DD').diff(
+          return moment(originalRow.nextBilling, 'YYYY-MM-DD').diff(
             moment(todaysDate),
             'days'
           );
-          return days;
+           
         },
         width: 100,
         sortType: (a, b) => {
@@ -613,11 +613,11 @@ function CompleteTable({ data }) {
               <div className='d-flex justify-content-between px-1'>
                 <div>{rowData.softwareName}</div>
                 <div className='prev-next'>
-                  <button onClick={() => {}} disabled={!canPreviousPage}>
+                  <button  disabled={!canPreviousPage}>
                     <img src={leftIcon} alt='prev' />
                   </button>{' '}
                   {moment(rowData.createdAt).format('YYYY')}{' '}
-                  <button onClick={() => {}} disabled={!canNextPage}>
+                  <button disabled={!canNextPage}>
                     <img src={rightIcon} alt='next' />
                   </button>{' '}
                 </div>

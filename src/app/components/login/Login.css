@@ -46,7 +46,7 @@
   width: 350px;
 }
 .login-form-title h3 {
-  font-family: Lato;
+  font-family: 'Lato', sans-serif;
   font-style: normal;
   font-weight: bold;
   font-size: 24px;
@@ -54,7 +54,7 @@
   color: #023047;
 }
 .login-form-title p {
-  font-family: Lato;
+  font-family: 'Lato', sans-serif;
   font-style: normal;
   font-weight: normal;
   font-size: 14px;
@@ -64,7 +64,7 @@
   margin-bottom: 50px;
 }
 .validate-input .form-label {
-  font-family: Lato;
+  font-family: 'Lato', sans-serif;
   font-style: normal;
   font-weight: normal;
   font-size: 14px;

@@ -551,7 +551,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                 </div>
                 <div className='addFileBtn'>
                   <a
-                    onClick={(e) => handleAddFile(e)}
+                    onClick={(e) => handleAddFile()}
                     href='javascript:void(0)'
                   >
                     Add files here

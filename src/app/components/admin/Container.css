@@ -22,7 +22,7 @@
   -webkit-overflow-scrolling: touch;
 }
 .modal-area h3 {
-  font-family: Lato;
+  font-family: 'Lato', sans-serif;
   font-weight: bold;
   font-size: 18px;
   line-height: 22px;
@@ -139,7 +139,7 @@ input[type='date'] {
 }
 .form-group label,
 .form-group select {
-  font-family: Lato;
+  font-family: 'Lato', sans-serif;
   font-weight: normal;
   font-size: 14px;
   line-height: 20px;
@@ -147,7 +147,7 @@ input[type='date'] {
   color: #929292;
 }
 .form-group .help-text {
-  font-family: Lato;
+  font-family: 'Lato', sans-serif;
   font-weight: normal;
   font-size: 10px;
   line-height: 20px;
@@ -296,7 +296,7 @@ input[type='date']::-webkit-calendar-picker-indicator {
   margin-right: 10px;
 }
 .email-help-text {
-  font-family: Lato;
+  font-family: 'Lato', sans-serif;
   font-weight: normal;
   font-size: 10px;
   line-height: 20px;

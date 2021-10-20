@@ -73,7 +73,7 @@ table th {
 }
 .filter-row h5 {
   float: left;
-  font-family: Lato;
+  font-family: 'Lato', sans-serif;
   font-weight: bold;
   font-size: 14px;
   line-height: 17px;
@@ -122,7 +122,7 @@ table th {
   background-color: rgba(32, 158, 197, 0.05) !important;
 }
 .filter-row p {
-  font-family: Lato;
+  font-family: 'Lato', sans-serif;
   font-weight: normal;
   font-size: 16px;
   line-height: 24px;
@@ -273,7 +273,7 @@ tfoot td {
 }
 
 .rowexpandfont {
-  font-family: Lato;
+  font-family: 'Lato', sans-serif;
   font-style: normal;
   font-weight: normal;
   font-size: 14px;
@@ -311,7 +311,7 @@ tfoot td {
   position: relative;
 }
 .subscrit button {
-  font-family: Lato;
+  font-family: 'Lato', sans-serif;
   font-weight: bold;
   font-size: 14px;
   line-height: 17px;
@@ -407,7 +407,7 @@ tfoot td {
   background: #f8f8f8;
   box-shadow: 0px 1px 0px rgb(0 0 0 / 15%);
   border-radius: 4px 4px 0px 0px;
-  font-family: Lato;
+  font-family: 'Lato', sans-serif;
   font-weight: bold;
   font-size: 18px;
   line-height: 44px;
@@ -427,7 +427,7 @@ tfoot td {
   padding: 15px 20px;
 }
 .carendar-modal .modalBody h3 {
-  font-family: Lato;
+  font-family: 'Lato', sans-serif;
   font-weight: normal;
   font-size: 14px;
   line-height: 17px;
@@ -445,7 +445,7 @@ tfoot td {
   border: 1px solid #d8d8d8;
   height: 90px;
   padding: 10px;
-  font-family: Lato;
+  font-family: 'Lato', sans-serif;
   font-weight: normal;
   font-size: 14px;
   line-height: 17px;
@@ -465,7 +465,7 @@ tfoot td {
   justify-content: space-between;
 }
 .modalBody p {
-  font-family: Lato;
+  font-family: 'Lato', sans-serif;
   font-weight: normal;
   font-size: 14px;
   line-height: 17px;
