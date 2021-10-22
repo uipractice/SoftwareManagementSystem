@@ -33,9 +33,9 @@ function CompleteTable({ data }) {
   const [isEditFormOpen, toggleEditForm] = useState(false);
   const [show, setShow] = useState(false);
 
-  const setDefaultFilterData = useCallback((data) => {
-    if (data?.length) {
-      let filterResult = data.filter((row) => row.status !== 'deleted');
+  const setDefaultFilterData = useCallback((filterData) => {
+    if (filterData?.length) {
+      let filterResult = filterData.filter((row) => row.status !== 'deleted');
       setFilteredData(addSerialNo(filterResult));
     }
   }, []);
@@ -86,6 +86,16 @@ function CompleteTable({ data }) {
     return c1.localeCompare(c2, undefined, { numeric: true });
     //  c1  > c2?  1: c<c2?-1:0
   };
+  const getTimeLineClass = (days) => {
+    return days >= 7
+    ? 'timelineYellow'
+    : 'timelineRed'
+  }
+  const getExpiredText = (days) => {
+    return  days < 0
+    ? `Expired`
+    : `${days} day${days === 1 ? '' : 's'}`
+  }
   const columns = React.useMemo(
     () => [
       // {
@@ -299,18 +309,14 @@ function CompleteTable({ data }) {
             <div
               className={`timeline ${
                 days >= 10
-                  ? `timelineGreen`
-                  : days >= 7
-                  ? `timelineYellow`
-                  : `timelineRed`
+                  ? 'timelineGreen'
+                  : getTimeLineClass(days)
               }`}
             >
               <p>
                 {days === 0
                   ? `Today`
-                  : days < 0
-                  ? `Expired`
-                  : `${days} day${days === 1 ? '' : 's'}`}
+                  : getExpiredText(days)}
               </p>
             </div>
           );
