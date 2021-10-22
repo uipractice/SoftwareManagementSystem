@@ -216,6 +216,7 @@ tfoot td {
 }
 .tableFixHead thead th:first-child {
   text-align: left;
+  padding-left: 20px !important;
 }
 .tableFixHead thead th:last-child,
 .tableFixHead tr td:last-child {
@@ -235,9 +236,7 @@ tfoot td {
   width: 160px;
   display: block;
 }
-.tableFixHead thead th:first-child {
-  padding-left: 20px !important;
-}
+
 .table-pagination .pageNum:focus-visible {
   outline: none !important;
 }
@@ -370,9 +369,6 @@ tfoot td {
   width: 10px;
   height: 10px;
   cursor: pointer;
-}
-.filter-row input.searchClose {
-  background: none;
 }
 .filter-row input[type='search']::-webkit-search-cancel-button,
 .filter-row input[type='search']::-webkit-search-decoration {

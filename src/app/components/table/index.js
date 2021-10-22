@@ -2,7 +2,6 @@ import React, { useEffect, useState, useCallback } from 'react';
 import DeleteImg from '../../assets/images/delete-icon.svg';
 import EditImg from '../../assets/images/edit-icon.svg';
 import UpDownImg from '../../assets/images/sorting.svg';
-// import AttachIcon from '../../assets/images/amount-attachment.png';
 import axios from 'axios';
 import { Modal } from 'react-bootstrap';
 import {
@@ -700,10 +699,10 @@ function CompleteTable({ data }) {
             ))}
           </thead>
           <tbody {...getTableBodyProps()}>
-            {page.map((row, index) => {
+            {page.map((row, keyValue) => {
               prepareRow(row);
               return (
-                <React.Fragment key={index}>
+                <React.Fragment key={keyValue}>
                   <tr className='text-capital' {...row.getRowProps()}>
                     {row.cells.map((cell, index) => {
                       let style = {};
