@@ -98,11 +98,6 @@ function CompleteTable({ data }) {
   }
   const columns = React.useMemo(
     () => [
-      // {
-      //   Header: 'SL.NO',
-      //   accessor: 'serial',
-      //   width: 75,
-      // },
       {
         Header: 'SOFTWARE',
         accessor: 'softwareName',
@@ -221,7 +216,7 @@ function CompleteTable({ data }) {
         Header: 'TOTAL IN ₹',
         accessor: (originalRow) => {
           return originalRow.billingDetails?.reduce(
-            (result, item) => (result += Number(item.pricingInRupee)),
+            (result, item) => (result = result + Number(item.pricingInRupee)),
             0
           );
         },
@@ -249,7 +244,7 @@ function CompleteTable({ data }) {
             >
               <div>
                 {billingDetails?.reduce(
-                  (result, item) => (result += Number(item.pricingInRupee)),
+                  (result, item) => (result = result + Number(item.pricingInRupee)),
                   0
                 )}
                 &nbsp;&nbsp;
@@ -663,7 +658,7 @@ function CompleteTable({ data }) {
                 <span>
                   {'Total Amount:  ₹'}
                   {rowData.billingDetails?.reduce(
-                    (result, item) => (result += Number(item.pricingInRupee)),
+                    (result, item) => (result = result + Number(item.pricingInRupee)),
                     0
                   )}
                 </span>
