@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import DeleteImg from '../../assets/images/delete-icon.svg';
-import EditImg from '../../assets/images/edit-icon.svg';
+import Renew from '../../assets/images/Renew.png';
 import UpDownImg from '../../assets/images/sorting.svg';
 import axios from 'axios';
 import { Modal } from 'react-bootstrap';
@@ -538,7 +538,7 @@ function CompleteTable({ data,sortByDateCreated }) {
    
     if (filterKeys?.length) {
       const finalFilteredData = filterKeys.reduce((result, key) => {
-        const filteredData = result.filter((row) =>{
+        const filteredDataResult = result.filter((row) =>{
           if(filterKeys.includes(key)){
             console.log(filterState[key])
             if(filterState[key] === 'all'){
@@ -782,7 +782,7 @@ function CompleteTable({ data,sortByDateCreated }) {
             ))}
           </thead>
           <tbody {...getTableBodyProps()}>
-            {!noRecords ? page.map((row, index) => {
+            {!noRecords ? page.map((row, keyValue) => {
               prepareRow(row);
               return (
                 <React.Fragment key={keyValue}>
