@@ -184,6 +184,9 @@ tfoot td {
 .padding0 {
   padding: 0;
 }
+.table thead th{
+  vertical-align: middle !important;
+}
 .tableFixHead {
   overflow: auto;
   height: calc(100vh - 270px);

@@ -26,7 +26,7 @@ const defaultFormData = {
 
 const nonMandatoryFields = ['websiteUrl', 'invoiceFiles'];
 
-function Form({ isOpen, closeModal, rowData, isEdit = false }) {
+function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) {
   const inputRef = useRef(null);
   const [state, setState] = useState({});
   const [invoiceFiles, setInvoiceFiles] = useState([]);
@@ -267,11 +267,13 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
             uploadInvoiceFiles(res.data);
             closeModal();
             toast.success('Data Saved Successfully !', {
-              autoClose: 2000,
+              autoClose: 1000,
+              onClose:updateToolStatus(true)
             });
-            setTimeout(() => {
-              window.location.reload();
-            }, 2000);
+            
+            // setTimeout(() => {
+            //   window.location.reload();
+            // }, 1000);
           } else {
             toast.error('Data Saved FAILED !', {
               autoClose: 2000,
