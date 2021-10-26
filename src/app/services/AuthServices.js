@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { getApiUrl } from '../components/utils/helper';
-import React from 'react';
 
 const AuthServices={
 

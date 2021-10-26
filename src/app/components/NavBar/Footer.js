@@ -23,7 +23,7 @@ export default function Footer() {
         feedbackText,
       };
       axios
-        .post(getApiUrl(`softwareInfo/feedbackMail`), feedback)
+        .post(getApiUrl(`softwareInfo/feebackMail`), feedback)
         .then((res) => {
           console.log(res.data);
           toast.success('A Reminder mail has been triggered !', {

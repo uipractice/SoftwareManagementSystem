@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import './filter.css';
 
 const options = [
-  { label: 'Active', value: 'all', group: 'all' },
+  { label: 'Active', value: 'all', group: 'status' },
   { label: 'Deleted', value: 'deleted', group: 'status' },
+  { label: 'Expired', value: 'expired', group: 'status' },
   { label: 'Certificate', value: 'certificate', group: 'softwareType' },
   { label: 'Domain', value: 'domain', group: 'softwareType' },
   { label: 'Software', value: 'software', group: 'softwareType' },
@@ -14,7 +15,7 @@ const options = [
 ];
 
 const FilterDropdown = ({ filterSelect }) => {
-  const [checkInfo, setCheckInfo] = useState({all: 'all'});
+  const [checkInfo, setCheckInfo] = useState({status: 'all'});
 
   useEffect(() => {
     if (checkInfo) {
@@ -27,7 +28,9 @@ const FilterDropdown = ({ filterSelect }) => {
     let state = { [name]: value };
     if (!['all'].includes(value)) {
       state = { ...checkInfo, ...state };
-      delete state.all;
+      if(state.status ==='all'){
+        delete state.status;
+      }
     }
     setCheckInfo(state);
   }

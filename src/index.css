@@ -1,6 +1,6 @@
 body {
   background: #f8f8fb;
-  font-family: Lato;
+  font-family: 'Lato', sans-serif;
   height: 100vh;
 }
 
@@ -25,7 +25,7 @@ a:focus {
 
 .work_area_title {
   color: #57565c;
-  font-family: Lato;
+  font-family: 'Lato', sans-serif;
   font-size: 24px;
   font-style: normal;
   font-weight: 600;
@@ -37,7 +37,7 @@ a:focus {
 
 .work_btn {
   min-width: 253px;
-  font-family: Lato;
+  font-family: 'Lato', sans-serif;
   font-size: 14px;
   font-weight: 400;
   border-radius: 2px;
@@ -80,7 +80,7 @@ a:focus {
 }
 
 .count {
-  font-family: Lato;
+  font-family: 'Lato', sans-serif;
   font-style: normal;
   font-weight: bold;
   font-size: 32px;
@@ -89,7 +89,7 @@ a:focus {
 }
 
 .count_text {
-  font-family: Lato;
+  font-family: 'Lato', sans-serif;
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
@@ -161,7 +161,7 @@ a:focus {
 }
 
 .table_title {
-  font-family: Lato;
+  font-family: 'Lato', sans-serif;
   font-style: normal;
   font-weight: 600;
   font-size: 14px;
@@ -279,7 +279,7 @@ a:focus {
 }
 
 .grid th {
-  font-family: Lato;
+  font-family: 'Lato', sans-serif;
   font-style: normal;
   font-weight: 400;
   font-size: 12px;
@@ -288,7 +288,7 @@ a:focus {
   border-bottom: 0 !important;
   background: #fff;
   height: 40px;
-  line-height: 40px;
+  /* line-height: 40px; */
 }
 
 .grid tr {
@@ -420,7 +420,7 @@ a:focus {
 
 #shareform .modal-footer button {
   width: 150px;
-  font-family: Lato;
+  font-family: 'Lato', sans-serif;
   font-size: 14px;
   font-weight: 400;
   border-radius: 2px;
@@ -484,7 +484,7 @@ a:focus {
   border-radius: 2px 0px 0px 2px !important;
 }
 .MuiToggleButton-label {
-  font-family: Lato;
+  font-family: 'Lato', sans-serif;
   font-size: 14px;
   line-height: 18px;
   letter-spacing: 0.1px;
@@ -503,7 +503,7 @@ a:focus {
 .project-details-form h2 {
   padding: 20px;
   margin: 0;
-  font-family: Lato;
+  font-family: 'Lato', sans-serif;
   font-weight: bold;
   font-size: 18px;
   line-height: 22px;
@@ -687,7 +687,7 @@ textarea:focus-visible {
   text-decoration: none;
 }
 .project-head {
-  font-family: Lato;
+  font-family: 'Lato', sans-serif;
   font-weight: bold;
   font-size: 16px;
   line-height: 19px;
@@ -705,7 +705,7 @@ textarea:focus-visible {
   border-radius: 4px 4px 0px 0px;
 }
 #alert-dialog-title h2 {
-  font-family: Lato;
+  font-family: 'Lato', sans-serif;
   font-weight: bold;
   font-size: 18px;
   line-height: 22px;
@@ -753,7 +753,7 @@ textarea:focus-visible {
   line-height: 22px;
   letter-spacing: 0.01em;
   color: #626364;
-  font-family: Lato;
+  font-family: 'Lato', sans-serif;
   margin-bottom: 30px;
 }
 .feedback-modal #alert-dialog-description p {

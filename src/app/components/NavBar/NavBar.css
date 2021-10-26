@@ -52,7 +52,7 @@
   background: url('../../assets/images/user-icon.svg') no-repeat center center;
 }
 .navbar h3 {
-  font-family: Lato;
+  font-family: 'Lato', sans-serif;
   font-weight: 900;
   font-size: 24px;
   line-height: 24px;

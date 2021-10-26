@@ -1,9 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import DeleteImg from '../../assets/images/delete-icon.svg';
-import EditImg from '../../assets/images/edit-icon.svg';
-import UpDownImg from '../../assets/images/sorting.svg';
 import Renew from '../../assets/images/Renew.png';
-// import AttachIcon from '../../assets/images/amount-attachment.png';
+import UpDownImg from '../../assets/images/sorting.svg';
 import axios from 'axios';
 import { Modal } from 'react-bootstrap';
 import {
@@ -11,10 +9,10 @@ import {
   useSortBy,
   useGlobalFilter,
   usePagination,
-  useExpanded,
+  useExpanded
 } from 'react-table';
 import './table.css';
-import GlobalFilter from './search';
+import GlobalFilter from './GlobalFilter';
 import rightIcon from '../../assets/images/right-icon.svg';
 import leftIcon from '../../assets/images/left-icon.svg';
 import { toast } from 'react-toastify';
@@ -22,22 +20,26 @@ import 'react-toastify/dist/ReactToastify.css';
 import moment from 'moment';
 import Form from '../admin/Form';
 import { getApiUrl } from '../utils/helper';
-import FilterDropdown from './filter';
+import FilterDropdown from './FilterDropdown';
 import Download from '../../assets/images/download.svg';
 import Note from '../../assets/images/note.svg';
 
 toast.configure();
-function CompleteTable({ data }) {
+function CompleteTable({ data,sortByDateCreated }) {
   const [filteredData, setFilteredData] = useState([]);
   const [searchValue, setSearchValue] = useState();
   const [rowData, setRowData] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditFormOpen, toggleEditForm] = useState(false);
   const [show, setShow] = useState(false);
+  const [noRecords, setNoRecords] = useState(false);
 
-  const setDefaultFilterData = useCallback((data) => {
-    if (data?.length) {
-      let filterResult = data.filter((row) => row.status !== 'deleted');
+  const [enteredValue, setEnteredValue] = useState('');
+
+
+  const setDefaultFilterData = useCallback((filterData) => {
+    if (filterData?.length) {
+      let filterResult = filterData.filter((row) => row.status !== 'deleted');
       setFilteredData(addSerialNo(filterResult));
     }
   }, []);
@@ -49,7 +51,7 @@ function CompleteTable({ data }) {
   };
   useEffect(() => {
     setDefaultFilterData(data);
-  }, [setDefaultFilterData, data]);
+  }, [setDefaultFilterData, data,sortByDateCreated]);
 
   function handleInputChange(evt) {
     const value = evt.target.value.replace(/[^a-zA-Z0-9 ]/g, '');
@@ -83,18 +85,54 @@ function CompleteTable({ data }) {
       })
       .catch((err) => console.log(err.response));
   };
-  const customSorting = (c1, c2) => {
-    // console.log(c1, typeof c1,c2, typeof c2)
-    return c1.localeCompare(c2, undefined, { numeric: true });
-    //  c1  > c2?  1: c<c2?-1:0
+  const customSorting = (c1, c2,header) => {
+
+    if(header==='TIMELINE')
+    {
+      if(c1===c2){
+        return 0
+      }
+      else if(c1 <0){
+        return 1
+      }
+      else if (c2 <0){
+        return -1
+      }
+      else if (c1<c2){
+        return -1
+      }
+      
+      
+    }else{
+      if(c1 !== undefined && c2 !==undefined)
+     return c1.localeCompare(c2, undefined, { numeric: true });
+    }
+    
+
   };
+  const getTimeLineClass = (days) => {
+    return days >= 7
+    ? 'timelineYellow'
+    : 'timelineRed'
+  }
+  const getExpiredDays = (days) => {
+    return days ===1
+    ? ''
+    : 's'
+  }
+  const getExpiredText = (days) => {
+    return  days < 0
+    ? `Expired`
+    : `${days} day${getExpiredDays(days)}`
+  }
   const columns = React.useMemo(
     () => [
-      // {
-      //   Header: 'SL.NO',
-      //   accessor: 'serial',
-      //   width: 75,
-      // },
+      {
+        Header: 'Date Created',
+        accessor: 'createdAt',
+        width: 10,
+        isVisible:"false"
+      },
       {
         Header: 'SOFTWARE',
         accessor: 'softwareName',
@@ -213,7 +251,7 @@ function CompleteTable({ data }) {
         Header: 'TOTAL IN ₹',
         accessor: (originalRow) => {
           return originalRow.billingDetails?.reduce(
-            (result, item) => (result += Number(item.pricingInRupee)),
+            (result, item) => (Number(item.pricingInRupee)),
             0
           );
         },
@@ -241,7 +279,7 @@ function CompleteTable({ data }) {
             >
               <div>
                 {billingDetails?.reduce(
-                  (result, item) => (result += Number(item.pricingInRupee)),
+                  (result, item) => (Number(item.pricingInRupee)),
                   0
                 )}
                 &nbsp;&nbsp;
@@ -274,19 +312,22 @@ function CompleteTable({ data }) {
         Header: 'TIMELINE',
         accessor: (originalRow) => {
           const todaysDate = moment().format('YYYY-MM-DD');
-          const days = moment(originalRow.nextBilling, 'YYYY-MM-DD').diff(
+          return moment(originalRow.nextBilling, 'YYYY-MM-DD').diff(
             moment(todaysDate),
             'days'
           );
-          return days;
+         
+          // return days ;
         },
         width: 100,
         sortType: (a, b) => {
           return customSorting(
-            a.values.TIMELINE.toString(),
-            b.values.TIMELINE.toString()
+            a.values.TIMELINE,
+            b.values.TIMELINE,
+            'TIMELINE'
           );
         },
+        
         Cell: ({
           row: {
             original: { nextBilling },
@@ -301,18 +342,14 @@ function CompleteTable({ data }) {
             <div
               className={`timeline ${
                 days >= 10
-                  ? `timelineGreen`
-                  : days >= 7
-                  ? `timelineYellow`
-                  : `timelineRed`
+                  ? 'timelineGreen'
+                  : getTimeLineClass(days)
               }`}
             >
               <p>
                 {days === 0
                   ? `Today`
-                  : days < 0
-                  ? `Expired`
-                  : `${days} day${days === 1 ? '' : 's'}`}
+                  : getExpiredText(days)}
               </p>
             </div>
           );
@@ -438,6 +475,7 @@ function CompleteTable({ data }) {
     getTableBodyProps,
     headerGroups,
     page,
+    gotoPage,
     nextPage,
     previousPage,
     canNextPage,
@@ -454,9 +492,17 @@ function CompleteTable({ data }) {
       data: filteredData,
       initialState: {
         pageSize: 5,
+        autoResetSortBy:false,
+        manualSortBy:true,
+        hiddenColumns: ['createdAt'],
         sortBy: [
           {
-            id: 'softwareName',
+            id:sortByDateCreated===false ?'billingCycle':'createdAt',
+            desc:sortByDateCreated===false?false:true
+          },
+          {
+            id:sortByDateCreated===false?'TIMELINE':'createdAt',
+            desc:sortByDateCreated===false?false:true
           },
         ],
       },
@@ -489,16 +535,52 @@ function CompleteTable({ data }) {
 
   const onFilterSelect = (filterState) => {
     const filterKeys = Object.keys(filterState);
+   
     if (filterKeys?.length) {
       const finalFilteredData = filterKeys.reduce((result, key) => {
-        const filteredData = result.filter((row) =>
-          key === 'all'
-            ? row.status !== 'deleted'
-            : filterKeys.includes('status')
-            ? row[key] === filterState[key]
-            : row[key] === filterState[key] && row.status !== 'deleted'
+        const filteredDataResult = result.filter((row) =>{
+          if(filterKeys.includes(key)){
+            console.log(filterState[key])
+            if(filterState[key] === 'all'){
+              return row.status !== 'deleted'
+            }else if (filterState['status'] === 'deleted') {
+                if(filterState['softwareType'] && row.status === 'deleted'){
+                return row[key] === filterState[key]
+            }
+            if(filterState['billingCycle'] && row.status === 'deleted'){
+              return row[key] === filterState[key]
+          }
+              return  row.status === 'deleted'
+            }
+            else if (filterState['status'] === 'expired') {
+               if(row.status !=="deleted"){
+              const todaysDate = moment().format('YYYY-MM-DD');
+              const days = moment(row.nextBilling, 'YYYY-MM-DD').diff(
+                moment(todaysDate),
+                'days'
+              );
+              if(days<0){
+                    if(key === 'softwareType'){
+                      console.log("k*****y",key)
+                      return row['softwareType'] === filterState['softwareType']
+                  }
+                  if(key==='billingCycle'){
+                    console.log("key",row)
+                    return row['billingCycle'] === filterState['billingCycle']
+                }
+                    return row
+          }
+        }
+      }
+            else{
+              return row[key] === filterState[key] && row.status !== 'deleted'
+            }
+           
+          }
+        }
+    
         );
-        result = [...filteredData];
+        result = [...filteredDataResult];
         return result;
       }, data);
       setFilteredData(addSerialNo(finalFilteredData));
@@ -533,9 +615,7 @@ function CompleteTable({ data }) {
         </p>
 
         <div className='row'>
-          <FilterDropdown
-            filterSelect={(selectedState) => onFilterSelect(selectedState)}
-          />
+          <FilterDropdown filterSelect={(selectedState) => onFilterSelect(selectedState)}/>
           <GlobalFilter
             setFilter={(value) => {
               setGlobalFilter(value);
@@ -615,11 +695,11 @@ function CompleteTable({ data }) {
               <div className='d-flex justify-content-between px-1'>
                 <div>{rowData.softwareName}</div>
                 <div className='prev-next'>
-                  <button onClick={() => {}} disabled={!canPreviousPage}>
+                  <button  disabled={!canPreviousPage}>
                     <img src={leftIcon} alt='prev' />
                   </button>{' '}
                   {moment(rowData.createdAt).format('YYYY')}{' '}
-                  <button onClick={() => {}} disabled={!canNextPage}>
+                  <button disabled={!canNextPage}>
                     <img src={rightIcon} alt='next' />
                   </button>{' '}
                 </div>
@@ -660,7 +740,7 @@ function CompleteTable({ data }) {
                 <span>
                   {'Total Amount:  ₹'}
                   {rowData.billingDetails?.reduce(
-                    (result, item) => (result += Number(item.pricingInRupee)),
+                    (result, item) => ( Number(item.pricingInRupee)),
                     0
                   )}
                 </span>
@@ -702,10 +782,10 @@ function CompleteTable({ data }) {
             ))}
           </thead>
           <tbody {...getTableBodyProps()}>
-            {page.map((row, index) => {
+            {!noRecords ? page.map((row, keyValue) => {
               prepareRow(row);
               return (
-                <React.Fragment key={index}>
+                <React.Fragment key={keyValue}>
                   <tr className='text-capital' {...row.getRowProps()}>
                     {row.cells.map((cell, index) => {
                       let style = {};
@@ -736,14 +816,14 @@ function CompleteTable({ data }) {
                   ) : null}
                 </React.Fragment>
               );
-            })}
+            }) : <tr style={{textAlign: 'center'}}><span>No Records</span></tr>}
           </tbody>
         </table>
         {page.length > 0 && (
           <div className='table-pagination'>
-            <span className='paginate'>
+            { !noRecords && <span className='paginate'>
               <b>{start}</b> to <b>{end}</b> of <b>{filteredData.length}</b>
-            </span>
+            </span>}
             {/* <label>Rows per page:</label>
         <select
           value={pageSize}
@@ -756,13 +836,13 @@ function CompleteTable({ data }) {
             </option>
           ))}
         </select> */}
-            <span>
+            {!noRecords && <span>
               Page{' '}
               <strong>
                 {pageIndex + 1} of {pageOptions.length}
               </strong>{' '}
-            </span>
-            <div className='prev-next'>
+            </span>}
+            {!noRecords && <div className='prev-next'>
               <button
                 onClick={() => previousPage()}
                 disabled={!canPreviousPage}
@@ -772,7 +852,23 @@ function CompleteTable({ data }) {
               <button onClick={() => nextPage()} disabled={!canNextPage}>
                 <img src={rightIcon} alt='next' />
               </button>{' '}
-            </div>
+            </div>}
+            <input className='pagination-search'
+          type= 'number'
+           onChange={(e) => {
+            const value= e.target.value-1;
+            const enteredValue = e.target.value.match(/^([1-9]\d*)?$/) && e.target.value.match(/^([1-9]\d*)?$/)['input'] ? e.target.value : ''; 
+            if(pageOptions.length > value){
+              gotoPage(value);
+              setEnteredValue(enteredValue);
+              setNoRecords(false);
+            }else{
+              setEnteredValue(e.target.value);
+              setNoRecords(true);
+            }
+          } }
+          value={enteredValue}
+          />
           </div>
         )}
       </div>
