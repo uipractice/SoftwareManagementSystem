@@ -36,7 +36,7 @@ function CompleteTable({ data,sortByDateCreated }) {
 
   const setDefaultFilterData = useCallback((data) => {
     if (data?.length) {
-      let filterResult = data.filter((row) => row.status !== 'deleted');
+      let filterResult = data.filter((row) => row.status !== 'deleted' );
       setFilteredData(addSerialNo(filterResult));
     }
   }, []);
@@ -82,18 +82,40 @@ function CompleteTable({ data,sortByDateCreated }) {
       })
       .catch((err) => console.log(err.response));
   };
-  const customSorting = (c1, c2) => {
+  const customSorting = (c1, c2,header) => {
+
+    if(header==='TIMELINE')
+    {
+      if(c1===c2){
+        return 0
+      }
+      else if(c1 <0){
+        return 1
+      }
+      else if (c2 <0){
+        return -1
+      }
+      else if (c1<c2){
+        return -1
+      }
+      
+      
+    }else{
+      if(c1 !== undefined && c2 !==undefined)
+     return c1.localeCompare(c2, undefined, { numeric: true });
+    }
+    
     // console.log(c1, typeof c1,c2, typeof c2)
-    return c1.localeCompare(c2, undefined, { numeric: true });
     //  c1  > c2?  1: c<c2?-1:0
   };
   const columns = React.useMemo(
     () => [
-      // {
-      //   Header: 'SL.NO',
-      //   accessor: 'serial',
-      //   width: 75,
-      // },
+      {
+        Header: 'Date Created',
+        accessor: 'createdAt',
+        width: 10,
+        isVisible:"false"
+      },
       {
         Header: 'SOFTWARE',
         accessor: 'softwareName',
@@ -277,15 +299,18 @@ function CompleteTable({ data,sortByDateCreated }) {
             moment(todaysDate),
             'days'
           );
-          return days;
+         
+          return days ;
         },
         width: 100,
         sortType: (a, b) => {
           return customSorting(
-            a.values.TIMELINE.toString(),
-            b.values.TIMELINE.toString()
+            a.values.TIMELINE,
+            b.values.TIMELINE,
+            'TIMELINE'
           );
         },
+        
         Cell: ({
           row: {
             original: { nextBilling },
@@ -301,7 +326,7 @@ function CompleteTable({ data,sortByDateCreated }) {
               className={`timeline ${
                 days >= 10
                   ? `timelineGreen`
-                  : days >= 7
+                  : days >= 7 
                   ? `timelineYellow`
                   : `timelineRed`
               }`}
@@ -430,9 +455,7 @@ function CompleteTable({ data,sortByDateCreated }) {
     ),
     [downloadInvoice]
   );
-const orderColumns =React.useMemo((a)=>{
-console.log("a",a)
-})
+
   const {
     getTableProps,
     getTableBodyProps,
@@ -456,14 +479,15 @@ console.log("a",a)
         pageSize: 5,
         autoResetSortBy:false,
         manualSortBy:true,
+        hiddenColumns: ['createdAt'],
         sortBy: [
           {
-            id: !sortByDateCreated?'billingCycle':'',
-            desc:false
+            id:sortByDateCreated===false ?'billingCycle':'createdAt',
+            desc:sortByDateCreated===false?false:true
           },
           {
-            id: !sortByDateCreated?'TIMELINE':'',
-            desc:false
+            id:sortByDateCreated===false?'TIMELINE':'createdAt',
+            desc:sortByDateCreated===false?false:true
           },
         ],
       },
@@ -496,14 +520,84 @@ console.log("a",a)
 
   const onFilterSelect = (filterState) => {
     const filterKeys = Object.keys(filterState);
+   
     if (filterKeys?.length) {
       const finalFilteredData = filterKeys.reduce((result, key) => {
-        const filteredData = result.filter((row) =>
-          key === 'all'
-            ? row.status !== 'deleted'
-            : filterKeys.includes('status')
-            ? row[key] === filterState[key]
-            : row[key] === filterState[key] && row.status !== 'deleted'
+        const filteredData = result.filter((row) =>{
+          if(filterKeys.includes(key)){
+            console.log(filterState[key])
+            if(filterState[key] === 'all'){
+              return row.status !== 'deleted'
+            }else if (filterState['status'] === 'deleted') {
+                if(filterState['softwareType'] && row.status === 'deleted'){
+                return row[key] === filterState[key]
+            }
+            if(filterState['billingCycle'] && row.status === 'deleted'){
+              return row[key] === filterState[key]
+          }
+              return  row.status === 'deleted'
+            }
+            else if (filterState['status'] === 'expired') {
+               if(row.status !=="deleted"){
+              const todaysDate = moment().format('YYYY-MM-DD');
+              const days = moment(row.nextBilling, 'YYYY-MM-DD').diff(
+                moment(todaysDate),
+                'days'
+              );
+              if(days<0){
+                    if(key === 'softwareType'){
+                      console.log("k*****y",key)
+                      return row['softwareType'] === filterState['softwareType']
+                  }
+                  if(key==='billingCycle'){
+                    console.log("key",row)
+                    return row['billingCycle'] === filterState['billingCycle']
+                }
+                    return row
+          }
+        }
+      }
+            else{
+              return row[key] === filterState[key] && row.status !== 'deleted'
+            }
+           
+          }
+          // if(filterState.status === 'all'){
+          //   return row.status !== 'deleted'
+          // }
+          // if(filterState.status === 'deleted'){
+          //   if(filterState.softwareType && row.status === 'deleted'){
+          //       return row.softwareType === filterState.softwareType
+          //   }
+          //   return row.status === 'deleted'
+          // }
+          // if(filterState.status === 'expired'){
+          //   if(row.status !=="deleted"){
+          //     const todaysDate = moment().format('YYYY-MM-DD');
+          //     const days = moment(row.nextBilling, 'YYYY-MM-DD').diff(
+          //       moment(todaysDate),
+          //       'days'
+          //     );
+             
+          //   if(days<0){
+          //     if(filterState.softwareType){
+          //       return row.softwareType === filterState.softwareType
+          //   }
+          //     return row
+          //   }
+             
+          //   }
+           
+          // }
+
+        }
+    
+        // console.log("row",row)
+          // key === 'all'
+          //   ? row.status !== 'deleted'
+          //   : filterKeys.includes('status')
+          //   ? row[key] === filterState[key]
+          //   : row[key] === filterState[key] && row.status !== 'deleted'
         );
         result = [...filteredData];
         return result;
@@ -540,9 +634,7 @@ console.log("a",a)
         </p>
 
         <div className='row'>
-          <FilterDropdown
-            filterSelect={(selectedState) => onFilterSelect(selectedState)}
-          />
+          <FilterDropdown filterSelect={(selectedState) => onFilterSelect(selectedState)}/>
           <GlobalFilter
             setFilter={(value) => {
               setGlobalFilter(value);
