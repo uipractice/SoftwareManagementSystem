@@ -64,6 +64,31 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
     setState(stateData);
   }, [isEdit, rowData]);
 
+  const setTargetName = (value, e) => {
+    if (value.match(/[a-zA-Z0-9]+([\s]+)*$/)) {
+      setState({
+        ...state,
+        [e.target.name]: value,
+      });
+    } else {
+      setState({
+        ...state,
+        [e.target.name]: '',
+      });
+    }
+  }
+
+  const getBillingDetails = (data) => {
+    return data.match(/[a-zA-Z0-9]+([\s]+)*$/)
+    ? data.replace(/[^a-zA-Z0-9 ]/g, '')
+    : '';
+  }
+  const settingBillingDetails = (priceSection, value) => {
+    return  !priceSection ? value : '';
+  }
+  const billingCycle = (e) => {
+    return e.target.value === 'monthly' ? 'month' : 'year'
+  }
   /**
    * Setting billing details.
    *
@@ -80,13 +105,11 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
       }
       const value = priceSection
         ? e.target.value.replace(/[^0-9.]/g, '')
-        : data.match(/[a-zA-Z0-9]+([\s]+)*$/)
-        ? data.replace(/[^a-zA-Z0-9 ]/g, '')
-        : '';
+        : getBillingDetails(data);
       setBillingDetails({
         ...billingDetails,
         [e.target.name]:
-          priceSection && value > 0 ? value : !priceSection ? value : '',
+          priceSection && value > 0 ? value : settingBillingDetails(priceSection, value),
       });
     } else if (e.target.name === 'billingCycle') {
       setState({
@@ -94,7 +117,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
         [e.target.name]: e.target.value,
         ...(e.target.name === 'billingCycle' && {
           nextBilling: moment()
-            .add(1, `${e.target.value === 'monthly' ? 'month' : 'year'}`)
+            .add(1, `${billingCycle(e)}`)
             .format('YYYY-MM-DD'),
         }),
       });
@@ -111,17 +134,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
       });
     } else {
       const value = e.target.value.replace(/[^a-zA-Z0-9 ]/g, '');
-      if (value.match(/[a-zA-Z0-9]+([\s]+)*$/)) {
-        setState({
-          ...state,
-          [e.target.name]: value,
-        });
-      } else {
-        setState({
-          ...state,
-          [e.target.name]: '',
-        });
-      }
+      setTargetName(value, e);
     }
   };
 
@@ -147,9 +160,9 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
   }
 
   function ValidateEmail(inputText) {
-    const mailformat =
+    const mailTextformat =
       /^([a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@evoketechnologies.com(\s*,\s*|\s*$))*$/;
-    if (inputText.match(mailformat)) {
+    if (inputText.match(mailTextformat)) {
       return true;
     } else {
       toast.error('Invalid email ID !', {
@@ -239,12 +252,13 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
     state.billingDetails.push(newBillingRecord);
     console.log('state', state);
     if (ValidateEmail(state.email)) {
+      const renewUrl = `softwareInfo/renew/${rowData?._id}`;
       axios
         .post(
           `${
             isEdit
-              ? getApiUrl(`softwareInfo/renew/${rowData?._id}`)
-              : getApiUrl(`softwareInfo/create`)
+              ? getApiUrl(renewUrl)
+              : getApiUrl('softwareInfo/create')
           }`,
           isEdit ? newBillingRecord : state
         )
@@ -538,7 +552,6 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                         className="file-close-icon"
                         onClick={() => {
                           const fileState = [...invoiceFiles];
-                          // delete fileState[key];
                           fileState.splice(key, 1);
                           setInvoiceFiles(fileState);
                         }}
@@ -551,7 +564,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                 </div>
                 <div className='addFileBtn'>
                   <a
-                    onClick={(e) => handleAddFile(e)}
+                    onClick={(e) => handleAddFile()}
                     href='javascript:void(0)'
                   >
                     Add files here

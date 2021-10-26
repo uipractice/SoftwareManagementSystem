@@ -5,7 +5,7 @@ import '../../../index.css';
 
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import AuthServices from '../../../app/services/auth.service'
+import AuthServices from '../../services/AuthServices'
 
 toast.configure();
 

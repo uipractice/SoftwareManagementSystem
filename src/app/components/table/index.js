@@ -2,8 +2,6 @@ import React, { useEffect, useState, useCallback } from 'react';
 import DeleteImg from '../../assets/images/delete-icon.svg';
 import EditImg from '../../assets/images/edit-icon.svg';
 import UpDownImg from '../../assets/images/sorting.svg';
-import Renew from '../../assets/images/Renew.png';
-// import AttachIcon from '../../assets/images/amount-attachment.png';
 import axios from 'axios';
 import { Modal } from 'react-bootstrap';
 import {
@@ -14,7 +12,7 @@ import {
   useExpanded,
 } from 'react-table';
 import './table.css';
-import GlobalFilter from './search';
+import GlobalFilter from './GlobalFilter';
 import rightIcon from '../../assets/images/right-icon.svg';
 import leftIcon from '../../assets/images/left-icon.svg';
 import { toast } from 'react-toastify';
@@ -22,7 +20,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import moment from 'moment';
 import Form from '../admin/Form';
 import { getApiUrl } from '../utils/helper';
-import FilterDropdown from './filter';
+import FilterDropdown from './FilterDropdown';
 import Download from '../../assets/images/download.svg';
 import Note from '../../assets/images/note.svg';
 
@@ -39,9 +37,9 @@ function CompleteTable({ data }) {
   const [enteredValue, setEnteredValue] = useState('');
 
 
-  const setDefaultFilterData = useCallback((data) => {
-    if (data?.length) {
-      let filterResult = data.filter((row) => row.status !== 'deleted');
+  const setDefaultFilterData = useCallback((filterData) => {
+    if (filterData?.length) {
+      let filterResult = filterData.filter((row) => row.status !== 'deleted');
       setFilteredData(addSerialNo(filterResult));
     }
   }, []);
@@ -92,13 +90,23 @@ function CompleteTable({ data }) {
     return c1.localeCompare(c2, undefined, { numeric: true });
     //  c1  > c2?  1: c<c2?-1:0
   };
+  const getTimeLineClass = (days) => {
+    return days >= 7
+    ? 'timelineYellow'
+    : 'timelineRed'
+  }
+  const getExpiredDays = (days) => {
+    return days ===1
+    ? ''
+    : 's'
+  }
+  const getExpiredText = (days) => {
+    return  days < 0
+    ? `Expired`
+    : `${days} day${getExpiredDays(days)}`
+  }
   const columns = React.useMemo(
     () => [
-      // {
-      //   Header: 'SL.NO',
-      //   accessor: 'serial',
-      //   width: 75,
-      // },
       {
         Header: 'SOFTWARE',
         accessor: 'softwareName',
@@ -217,7 +225,7 @@ function CompleteTable({ data }) {
         Header: 'TOTAL IN ₹',
         accessor: (originalRow) => {
           return originalRow.billingDetails?.reduce(
-            (result, item) => (result += Number(item.pricingInRupee)),
+            (result, item) => (Number(item.pricingInRupee)),
             0
           );
         },
@@ -245,7 +253,7 @@ function CompleteTable({ data }) {
             >
               <div>
                 {billingDetails?.reduce(
-                  (result, item) => (result += Number(item.pricingInRupee)),
+                  (result, item) => (Number(item.pricingInRupee)),
                   0
                 )}
                 &nbsp;&nbsp;
@@ -278,11 +286,11 @@ function CompleteTable({ data }) {
         Header: 'TIMELINE',
         accessor: (originalRow) => {
           const todaysDate = moment().format('YYYY-MM-DD');
-          const days = moment(originalRow.nextBilling, 'YYYY-MM-DD').diff(
+          return moment(originalRow.nextBilling, 'YYYY-MM-DD').diff(
             moment(todaysDate),
             'days'
           );
-          return days;
+           
         },
         width: 100,
         sortType: (a, b) => {
@@ -305,18 +313,14 @@ function CompleteTable({ data }) {
             <div
               className={`timeline ${
                 days >= 10
-                  ? `timelineGreen`
-                  : days >= 7
-                  ? `timelineYellow`
-                  : `timelineRed`
+                  ? 'timelineGreen'
+                  : getTimeLineClass(days)
               }`}
             >
               <p>
                 {days === 0
                   ? `Today`
-                  : days < 0
-                  ? `Expired`
-                  : `${days} day${days === 1 ? '' : 's'}`}
+                  : getExpiredText(days)}
               </p>
             </div>
           );
@@ -496,14 +500,14 @@ function CompleteTable({ data }) {
     const filterKeys = Object.keys(filterState);
     if (filterKeys?.length) {
       const finalFilteredData = filterKeys.reduce((result, key) => {
-        const filteredData = result.filter((row) =>
+        const filteredDataResult = result.filter((row) =>
           key === 'all'
             ? row.status !== 'deleted'
             : filterKeys.includes('status')
             ? row[key] === filterState[key]
             : row[key] === filterState[key] && row.status !== 'deleted'
         );
-        result = [...filteredData];
+        result = [...filteredDataResult];
         return result;
       }, data);
       setFilteredData(addSerialNo(finalFilteredData));
@@ -620,11 +624,11 @@ function CompleteTable({ data }) {
               <div className='d-flex justify-content-between px-1'>
                 <div>{rowData.softwareName}</div>
                 <div className='prev-next'>
-                  <button onClick={() => {}} disabled={!canPreviousPage}>
+                  <button  disabled={!canPreviousPage}>
                     <img src={leftIcon} alt='prev' />
                   </button>{' '}
                   {moment(rowData.createdAt).format('YYYY')}{' '}
-                  <button onClick={() => {}} disabled={!canNextPage}>
+                  <button disabled={!canNextPage}>
                     <img src={rightIcon} alt='next' />
                   </button>{' '}
                 </div>
@@ -665,7 +669,7 @@ function CompleteTable({ data }) {
                 <span>
                   {'Total Amount:  ₹'}
                   {rowData.billingDetails?.reduce(
-                    (result, item) => (result += Number(item.pricingInRupee)),
+                    (result, item) => ( Number(item.pricingInRupee)),
                     0
                   )}
                 </span>
@@ -710,7 +714,7 @@ function CompleteTable({ data }) {
             {!noRecords ? page.map((row, index) => {
               prepareRow(row);
               return (
-                <React.Fragment key={index}>
+                <React.Fragment key={keyValue}>
                   <tr className='text-capital' {...row.getRowProps()}>
                     {row.cells.map((cell, index) => {
                       let style = {};
