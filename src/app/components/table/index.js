@@ -32,6 +32,10 @@ function CompleteTable({ data,sortByDateCreated }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditFormOpen, toggleEditForm] = useState(false);
   const [show, setShow] = useState(false);
+  const [noRecords, setNoRecords] = useState(false);
+
+  const [enteredValue, setEnteredValue] = useState('');
+
 
   const setDefaultFilterData = useCallback((filterData) => {
     if (filterData?.length) {
@@ -111,10 +115,15 @@ function CompleteTable({ data,sortByDateCreated }) {
     ? 'timelineYellow'
     : 'timelineRed'
   }
+  const getExpiredDays = (days) => {
+    return days ===1
+    ? ''
+    : 's'
+  }
   const getExpiredText = (days) => {
     return  days < 0
     ? `Expired`
-    : `${days} day${days === 1 ? '' : 's'}`
+    : `${days} day${getExpiredDays(days)}`
   }
   const columns = React.useMemo(
     () => [
@@ -242,7 +251,7 @@ function CompleteTable({ data,sortByDateCreated }) {
         Header: 'TOTAL IN ₹',
         accessor: (originalRow) => {
           return originalRow.billingDetails?.reduce(
-            (result, item) => (result = result + Number(item.pricingInRupee)),
+            (result, item) => (Number(item.pricingInRupee)),
             0
           );
         },
@@ -270,7 +279,7 @@ function CompleteTable({ data,sortByDateCreated }) {
             >
               <div>
                 {billingDetails?.reduce(
-                  (result, item) => (result = result + Number(item.pricingInRupee)),
+                  (result, item) => (Number(item.pricingInRupee)),
                   0
                 )}
                 &nbsp;&nbsp;
@@ -355,8 +364,9 @@ function CompleteTable({ data,sortByDateCreated }) {
               className={`p-2 pointer ${
                 row.original.status === 'deleted' ? 'disableEditBtn' : ''
               }`}
-              src={EditImg}
+              src={Renew}
               alt='Evoke Technologies'
+              height='31px'
               onClick={() => {
                 setRowData(row.original);
                 toggleEditForm(true);
@@ -465,6 +475,7 @@ function CompleteTable({ data,sortByDateCreated }) {
     getTableBodyProps,
     headerGroups,
     page,
+    gotoPage,
     nextPage,
     previousPage,
     canNextPage,
@@ -569,7 +580,7 @@ function CompleteTable({ data,sortByDateCreated }) {
         }
     
         );
-        result = [...filteredData];
+        result = [...filteredDataResult];
         return result;
       }, data);
       setFilteredData(addSerialNo(finalFilteredData));
@@ -729,7 +740,7 @@ function CompleteTable({ data,sortByDateCreated }) {
                 <span>
                   {'Total Amount:  ₹'}
                   {rowData.billingDetails?.reduce(
-                    (result, item) => (result = result + Number(item.pricingInRupee)),
+                    (result, item) => ( Number(item.pricingInRupee)),
                     0
                   )}
                 </span>
@@ -771,7 +782,7 @@ function CompleteTable({ data,sortByDateCreated }) {
             ))}
           </thead>
           <tbody {...getTableBodyProps()}>
-            {page.map((row, keyValue) => {
+            {!noRecords ? page.map((row, index) => {
               prepareRow(row);
               return (
                 <React.Fragment key={keyValue}>
@@ -805,14 +816,14 @@ function CompleteTable({ data,sortByDateCreated }) {
                   ) : null}
                 </React.Fragment>
               );
-            })}
+            }) : <tr style={{textAlign: 'center'}}><span>No Records</span></tr>}
           </tbody>
         </table>
         {page.length > 0 && (
           <div className='table-pagination'>
-            <span className='paginate'>
+            { !noRecords && <span className='paginate'>
               <b>{start}</b> to <b>{end}</b> of <b>{filteredData.length}</b>
-            </span>
+            </span>}
             {/* <label>Rows per page:</label>
         <select
           value={pageSize}
@@ -825,13 +836,13 @@ function CompleteTable({ data,sortByDateCreated }) {
             </option>
           ))}
         </select> */}
-            <span>
+            {!noRecords && <span>
               Page{' '}
               <strong>
                 {pageIndex + 1} of {pageOptions.length}
               </strong>{' '}
-            </span>
-            <div className='prev-next'>
+            </span>}
+            {!noRecords && <div className='prev-next'>
               <button
                 onClick={() => previousPage()}
                 disabled={!canPreviousPage}
@@ -841,7 +852,23 @@ function CompleteTable({ data,sortByDateCreated }) {
               <button onClick={() => nextPage()} disabled={!canNextPage}>
                 <img src={rightIcon} alt='next' />
               </button>{' '}
-            </div>
+            </div>}
+            <input className='pagination-search'
+          type= 'number'
+           onChange={(e) => {
+            const value= e.target.value-1;
+            const enteredValue = e.target.value.match(/^([1-9]\d*)?$/) && e.target.value.match(/^([1-9]\d*)?$/)['input'] ? e.target.value : ''; 
+            if(pageOptions.length > value){
+              gotoPage(value);
+              setEnteredValue(enteredValue);
+              setNoRecords(false);
+            }else{
+              setEnteredValue(e.target.value);
+              setNoRecords(true);
+            }
+          } }
+          value={enteredValue}
+          />
           </div>
         )}
       </div>

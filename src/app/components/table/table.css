@@ -478,3 +478,18 @@ tfoot td {
 .filter-row .row .dropdown {
   margin-right: 22px;
 }
+.pagination-search{
+  font-size: 14px;
+  line-height: 18px;
+  letter-spacing: .1px;
+  color: #757575;
+  box-shadow: 0 0 2px rgb(0 0 0 / 35%);
+  border-radius: 2px;
+  border: 2px solid transparent;
+  width: 45px;
+  outline: none;
+  }
+  .pagination-search input:active {
+    border-color: #209ec5;
+    /* background-color: rgba(32, 158, 197, 0.05) !important; */
+  }
