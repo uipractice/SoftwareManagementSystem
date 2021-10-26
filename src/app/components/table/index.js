@@ -32,6 +32,10 @@ function CompleteTable({ data }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditFormOpen, toggleEditForm] = useState(false);
   const [show, setShow] = useState(false);
+  const [noRecords, setNoRecords] = useState(false);
+
+  const [enteredValue, setEnteredValue] = useState('');
+
 
   const setDefaultFilterData = useCallback((filterData) => {
     if (filterData?.length) {
@@ -331,8 +335,9 @@ function CompleteTable({ data }) {
               className={`p-2 pointer ${
                 row.original.status === 'deleted' ? 'disableEditBtn' : ''
               }`}
-              src={EditImg}
+              src={Renew}
               alt='Evoke Technologies'
+              height='31px'
               onClick={() => {
                 setRowData(row.original);
                 toggleEditForm(true);
@@ -441,6 +446,7 @@ function CompleteTable({ data }) {
     getTableBodyProps,
     headerGroups,
     page,
+    gotoPage,
     nextPage,
     previousPage,
     canNextPage,
@@ -705,7 +711,7 @@ function CompleteTable({ data }) {
             ))}
           </thead>
           <tbody {...getTableBodyProps()}>
-            {page.map((row, keyValue) => {
+            {!noRecords ? page.map((row, index) => {
               prepareRow(row);
               return (
                 <React.Fragment key={keyValue}>
@@ -739,14 +745,14 @@ function CompleteTable({ data }) {
                   ) : null}
                 </React.Fragment>
               );
-            })}
+            }) : <tr style={{textAlign: 'center'}}><span>No Records</span></tr>}
           </tbody>
         </table>
         {page.length > 0 && (
           <div className='table-pagination'>
-            <span className='paginate'>
+            { !noRecords && <span className='paginate'>
               <b>{start}</b> to <b>{end}</b> of <b>{filteredData.length}</b>
-            </span>
+            </span>}
             {/* <label>Rows per page:</label>
         <select
           value={pageSize}
@@ -759,13 +765,13 @@ function CompleteTable({ data }) {
             </option>
           ))}
         </select> */}
-            <span>
+            {!noRecords && <span>
               Page{' '}
               <strong>
                 {pageIndex + 1} of {pageOptions.length}
               </strong>{' '}
-            </span>
-            <div className='prev-next'>
+            </span>}
+            {!noRecords && <div className='prev-next'>
               <button
                 onClick={() => previousPage()}
                 disabled={!canPreviousPage}
@@ -775,7 +781,23 @@ function CompleteTable({ data }) {
               <button onClick={() => nextPage()} disabled={!canNextPage}>
                 <img src={rightIcon} alt='next' />
               </button>{' '}
-            </div>
+            </div>}
+            <input className='pagination-search'
+          type= 'number'
+           onChange={(e) => {
+            const value= e.target.value-1;
+            const enteredValue = e.target.value.match(/^([1-9]\d*)?$/) && e.target.value.match(/^([1-9]\d*)?$/)['input'] ? e.target.value : ''; 
+            if(pageOptions.length > value){
+              gotoPage(value);
+              setEnteredValue(enteredValue);
+              setNoRecords(false);
+            }else{
+              setEnteredValue(e.target.value);
+              setNoRecords(true);
+            }
+          } }
+          value={enteredValue}
+          />
           </div>
         )}
       </div>
