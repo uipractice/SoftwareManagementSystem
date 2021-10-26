@@ -2,7 +2,6 @@ import React, { useEffect, useState, useCallback } from 'react';
 import DeleteImg from '../../assets/images/delete-icon.svg';
 import EditImg from '../../assets/images/edit-icon.svg';
 import UpDownImg from '../../assets/images/sorting.svg';
-// import AttachIcon from '../../assets/images/amount-attachment.png';
 import axios from 'axios';
 import { Modal } from 'react-bootstrap';
 import {
@@ -13,7 +12,7 @@ import {
   useExpanded
 } from 'react-table';
 import './table.css';
-import GlobalFilter from './search';
+import GlobalFilter from './GlobalFilter';
 import rightIcon from '../../assets/images/right-icon.svg';
 import leftIcon from '../../assets/images/left-icon.svg';
 import { toast } from 'react-toastify';
@@ -21,7 +20,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import moment from 'moment';
 import Form from '../admin/Form';
 import { getApiUrl } from '../utils/helper';
-import FilterDropdown from './filter';
+import FilterDropdown from './FilterDropdown';
 import Download from '../../assets/images/download.svg';
 import Note from '../../assets/images/note.svg';
 
@@ -34,9 +33,9 @@ function CompleteTable({ data,sortByDateCreated }) {
   const [isEditFormOpen, toggleEditForm] = useState(false);
   const [show, setShow] = useState(false);
 
-  const setDefaultFilterData = useCallback((data) => {
-    if (data?.length) {
-      let filterResult = data.filter((row) => row.status !== 'deleted' );
+  const setDefaultFilterData = useCallback((filterData) => {
+    if (filterData?.length) {
+      let filterResult = filterData.filter((row) => row.status !== 'deleted');
       setFilteredData(addSerialNo(filterResult));
     }
   }, []);
@@ -107,6 +106,16 @@ function CompleteTable({ data,sortByDateCreated }) {
     
 
   };
+  const getTimeLineClass = (days) => {
+    return days >= 7
+    ? 'timelineYellow'
+    : 'timelineRed'
+  }
+  const getExpiredText = (days) => {
+    return  days < 0
+    ? `Expired`
+    : `${days} day${days === 1 ? '' : 's'}`
+  }
   const columns = React.useMemo(
     () => [
       {
@@ -233,7 +242,7 @@ function CompleteTable({ data,sortByDateCreated }) {
         Header: 'TOTAL IN ₹',
         accessor: (originalRow) => {
           return originalRow.billingDetails?.reduce(
-            (result, item) => (result += Number(item.pricingInRupee)),
+            (result, item) => (result = result + Number(item.pricingInRupee)),
             0
           );
         },
@@ -261,7 +270,7 @@ function CompleteTable({ data,sortByDateCreated }) {
             >
               <div>
                 {billingDetails?.reduce(
-                  (result, item) => (result += Number(item.pricingInRupee)),
+                  (result, item) => (result = result + Number(item.pricingInRupee)),
                   0
                 )}
                 &nbsp;&nbsp;
@@ -294,12 +303,12 @@ function CompleteTable({ data,sortByDateCreated }) {
         Header: 'TIMELINE',
         accessor: (originalRow) => {
           const todaysDate = moment().format('YYYY-MM-DD');
-          const days = moment(originalRow.nextBilling, 'YYYY-MM-DD').diff(
+          return moment(originalRow.nextBilling, 'YYYY-MM-DD').diff(
             moment(todaysDate),
             'days'
           );
          
-          return days ;
+          // return days ;
         },
         width: 100,
         sortType: (a, b) => {
@@ -324,18 +333,14 @@ function CompleteTable({ data,sortByDateCreated }) {
             <div
               className={`timeline ${
                 days >= 10
-                  ? `timelineGreen`
-                  : days >= 7 
-                  ? `timelineYellow`
-                  : `timelineRed`
+                  ? 'timelineGreen'
+                  : getTimeLineClass(days)
               }`}
             >
               <p>
                 {days === 0
                   ? `Today`
-                  : days < 0
-                  ? `Expired`
-                  : `${days} day${days === 1 ? '' : 's'}`}
+                  : getExpiredText(days)}
               </p>
             </div>
           );
@@ -679,11 +684,11 @@ function CompleteTable({ data,sortByDateCreated }) {
               <div className='d-flex justify-content-between px-1'>
                 <div>{rowData.softwareName}</div>
                 <div className='prev-next'>
-                  <button onClick={() => {}} disabled={!canPreviousPage}>
+                  <button  disabled={!canPreviousPage}>
                     <img src={leftIcon} alt='prev' />
                   </button>{' '}
                   {moment(rowData.createdAt).format('YYYY')}{' '}
-                  <button onClick={() => {}} disabled={!canNextPage}>
+                  <button disabled={!canNextPage}>
                     <img src={rightIcon} alt='next' />
                   </button>{' '}
                 </div>
@@ -724,7 +729,7 @@ function CompleteTable({ data,sortByDateCreated }) {
                 <span>
                   {'Total Amount:  ₹'}
                   {rowData.billingDetails?.reduce(
-                    (result, item) => (result += Number(item.pricingInRupee)),
+                    (result, item) => (result = result + Number(item.pricingInRupee)),
                     0
                   )}
                 </span>
@@ -766,10 +771,10 @@ function CompleteTable({ data,sortByDateCreated }) {
             ))}
           </thead>
           <tbody {...getTableBodyProps()}>
-            {page.map((row, index) => {
+            {page.map((row, keyValue) => {
               prepareRow(row);
               return (
-                <React.Fragment key={index}>
+                <React.Fragment key={keyValue}>
                   <tr className='text-capital' {...row.getRowProps()}>
                     {row.cells.map((cell, index) => {
                       let style = {};

@@ -6,7 +6,6 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 // assets
 import Logo from '../../assets/images/eoke_logo.svg';
-// import NotificationIcon from '../../assets/images/bell.svg';
 import ProfileIcon from '../../assets/images/user-icon.svg';
 import FeedbackIcon from '../../assets/images/feedback.svg';
 import LogoutIcon from '../../assets/images/Logout_icon.svg';
@@ -54,11 +53,11 @@ const Header = ({ validate }) => {
   const handleSubmit = (e, closeClick) => {
     setFeedback(false);
     if (!closeClick) {
-      const feedback = {
+      const feedbackInfo = {
         feedbackText,
       };
       axios
-        .post(getApiUrl(`softwareInfo/feedbackMail`), feedback)
+        .post(getApiUrl(`softwareInfo/feedbackMail`), feedbackInfo)
         .then((res) => {
           console.log(res.data);
           toast.success('A Reminder mail has been triggered !', {
