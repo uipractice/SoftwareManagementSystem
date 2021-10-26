@@ -105,8 +105,7 @@ function CompleteTable({ data,sortByDateCreated }) {
      return c1.localeCompare(c2, undefined, { numeric: true });
     }
     
-    // console.log(c1, typeof c1,c2, typeof c2)
-    //  c1  > c2?  1: c<c2?-1:0
+
   };
   const columns = React.useMemo(
     () => [
@@ -562,42 +561,8 @@ function CompleteTable({ data,sortByDateCreated }) {
             }
            
           }
-          // if(filterState.status === 'all'){
-          //   return row.status !== 'deleted'
-          // }
-          // if(filterState.status === 'deleted'){
-          //   if(filterState.softwareType && row.status === 'deleted'){
-          //       return row.softwareType === filterState.softwareType
-          //   }
-          //   return row.status === 'deleted'
-          // }
-          // if(filterState.status === 'expired'){
-          //   if(row.status !=="deleted"){
-          //     const todaysDate = moment().format('YYYY-MM-DD');
-          //     const days = moment(row.nextBilling, 'YYYY-MM-DD').diff(
-          //       moment(todaysDate),
-          //       'days'
-          //     );
-             
-          //   if(days<0){
-          //     if(filterState.softwareType){
-          //       return row.softwareType === filterState.softwareType
-          //   }
-          //     return row
-          //   }
-             
-          //   }
-           
-          // }
-
         }
     
-        // console.log("row",row)
-          // key === 'all'
-          //   ? row.status !== 'deleted'
-          //   : filterKeys.includes('status')
-          //   ? row[key] === filterState[key]
-          //   : row[key] === filterState[key] && row.status !== 'deleted'
         );
         result = [...filteredData];
         return result;
