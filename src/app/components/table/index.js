@@ -529,7 +529,10 @@ function CompleteTable({ data,sortByDateCreated }) {
   useEffect(() => {
     if (filteredTableData?.length && globalFilter && searchValue)
       setFilteredData(addSerialNo(filteredTableData, true));
-    else if (searchValue === '') setFilteredData(addSerialNo(data));
+    else if (searchValue === ''){
+      setFilteredData(addSerialNo(data));
+      onFilterSelect({status:'all'})
+    } 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchValue]);
 
