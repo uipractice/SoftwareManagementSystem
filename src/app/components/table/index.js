@@ -91,10 +91,15 @@ function CompleteTable({ data }) {
     ? 'timelineYellow'
     : 'timelineRed'
   }
+  const getExpiredDays = (days) => {
+    return days ===1
+    ? ''
+    : 's'
+  }
   const getExpiredText = (days) => {
     return  days < 0
     ? `Expired`
-    : `${days} day${days === 1 ? '' : 's'}`
+    : `${days} day${getExpiredDays(days)}`
   }
   const columns = React.useMemo(
     () => [
@@ -216,7 +221,7 @@ function CompleteTable({ data }) {
         Header: 'TOTAL IN ₹',
         accessor: (originalRow) => {
           return originalRow.billingDetails?.reduce(
-            (result, item) => (result = result + Number(item.pricingInRupee)),
+            (result, item) => (Number(item.pricingInRupee)),
             0
           );
         },
@@ -244,7 +249,7 @@ function CompleteTable({ data }) {
             >
               <div>
                 {billingDetails?.reduce(
-                  (result, item) => (result = result + Number(item.pricingInRupee)),
+                  (result, item) => (Number(item.pricingInRupee)),
                   0
                 )}
                 &nbsp;&nbsp;
@@ -489,14 +494,14 @@ function CompleteTable({ data }) {
     const filterKeys = Object.keys(filterState);
     if (filterKeys?.length) {
       const finalFilteredData = filterKeys.reduce((result, key) => {
-        const filteredData = result.filter((row) =>
+        const filteredDataResult = result.filter((row) =>
           key === 'all'
             ? row.status !== 'deleted'
             : filterKeys.includes('status')
             ? row[key] === filterState[key]
             : row[key] === filterState[key] && row.status !== 'deleted'
         );
-        result = [...filteredData];
+        result = [...filteredDataResult];
         return result;
       }, data);
       setFilteredData(addSerialNo(finalFilteredData));
@@ -658,7 +663,7 @@ function CompleteTable({ data }) {
                 <span>
                   {'Total Amount:  ₹'}
                   {rowData.billingDetails?.reduce(
-                    (result, item) => (result = result + Number(item.pricingInRupee)),
+                    (result, item) => ( Number(item.pricingInRupee)),
                     0
                   )}
                 </span>
