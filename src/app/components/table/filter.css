@@ -50,12 +50,12 @@
   align-items: center;
 }
 .dropdown-menu li:first-child,
-.dropdown-menu li:nth-child(3),
-.dropdown-menu li:nth-child(6) {
+.dropdown-menu li:nth-child(4),
+.dropdown-menu li:nth-child(7) {
   padding-top: 13px !important;
 }
-.dropdown-menu li:nth-child(2),
-.dropdown-menu li:nth-child(5) {
+.dropdown-menu li:nth-child(3),
+.dropdown-menu li:nth-child(6) {
   border-bottom: 1px solid #d8d8d8;
 }
 input[type='radio']:after {
