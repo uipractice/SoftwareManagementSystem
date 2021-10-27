@@ -251,7 +251,7 @@ function CompleteTable({ data,sortByDateCreated }) {
         Header: 'TOTAL IN ₹',
         accessor: (originalRow) => {
           return originalRow.billingDetails?.reduce(
-            (result, item) => (Number(item.pricingInRupee)),
+            (result, item) => (Number(item.pricingInRupee) + result),
             0
           );
         },
@@ -279,7 +279,7 @@ function CompleteTable({ data,sortByDateCreated }) {
             >
               <div>
                 {billingDetails?.reduce(
-                  (result, item) => (Number(item.pricingInRupee)),
+                  (result, item) => (Number(item.pricingInRupee) + result),
                   0
                 )}
                 &nbsp;&nbsp;
@@ -529,7 +529,10 @@ function CompleteTable({ data,sortByDateCreated }) {
   useEffect(() => {
     if (filteredTableData?.length && globalFilter && searchValue)
       setFilteredData(addSerialNo(filteredTableData, true));
-    else if (searchValue === '') setFilteredData(addSerialNo(data));
+    else if (searchValue === ''){
+      setFilteredData(addSerialNo(data));
+      onFilterSelect({status:'all'})
+    } 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchValue]);
 
@@ -740,7 +743,7 @@ function CompleteTable({ data,sortByDateCreated }) {
                 <span>
                   {'Total Amount:  ₹'}
                   {rowData.billingDetails?.reduce(
-                    (result, item) => ( Number(item.pricingInRupee)),
+                    (result, item) => ( Number(item.pricingInRupee)+ result),
                     0
                   )}
                 </span>
