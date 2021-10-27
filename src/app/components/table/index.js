@@ -251,7 +251,7 @@ function CompleteTable({ data,sortByDateCreated }) {
         Header: 'TOTAL IN ₹',
         accessor: (originalRow) => {
           return originalRow.billingDetails?.reduce(
-            (result, item) => (Number(item.pricingInRupee)),
+            (result, item) => (Number(item.pricingInRupee) + result),
             0
           );
         },
@@ -279,7 +279,7 @@ function CompleteTable({ data,sortByDateCreated }) {
             >
               <div>
                 {billingDetails?.reduce(
-                  (result, item) => (Number(item.pricingInRupee)),
+                  (result, item) => (Number(item.pricingInRupee) + result),
                   0
                 )}
                 &nbsp;&nbsp;
@@ -743,7 +743,7 @@ function CompleteTable({ data,sortByDateCreated }) {
                 <span>
                   {'Total Amount:  ₹'}
                   {rowData.billingDetails?.reduce(
-                    (result, item) => ( Number(item.pricingInRupee)),
+                    (result, item) => ( Number(item.pricingInRupee)+ result),
                     0
                   )}
                 </span>
