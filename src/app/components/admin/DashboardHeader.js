@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './Container.css';
 import Form from './Form';
 
-export function DashboardHeader() {
+export function DashboardHeader({getAddToolStatus}) {
   const [isShown, setIsShown] = useState(false);
   const showModal = () => {
     setIsShown(true);
@@ -10,6 +10,10 @@ export function DashboardHeader() {
   const closeModal = () => {
     setIsShown(false);
   };
+  const updateSatus=(value)=>{
+    getAddToolStatus(value)
+    
+  }
 
   return (
     <div className='d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3'>
@@ -21,10 +25,10 @@ export function DashboardHeader() {
           className='btn work_btn work_btn_blue center modal-button'
           onClick={showModal}
         >
-          ADD SOFTWARE/TOOL
+          ADD TOOL/SOFTWARE
         </button>
 
-        {isShown && <Form isOpen={isShown} closeModal={closeModal} />}
+        {isShown && <Form isOpen={isShown} closeModal={closeModal}  updateToolStatus={updateSatus}/>}
       </div>
     </div>
   );

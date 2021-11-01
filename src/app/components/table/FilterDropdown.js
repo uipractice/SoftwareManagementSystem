@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import './filter.css';
 
 const options = [
-  { label: 'All', value: 'all', group: 'all' },
+  { label: 'Active', value: 'all', group: 'status' },
   { label: 'Deleted', value: 'deleted', group: 'status' },
+  { label: 'Expired', value: 'expired', group: 'status' },
   { label: 'Certificate', value: 'certificate', group: 'softwareType' },
   { label: 'Domain', value: 'domain', group: 'softwareType' },
   { label: 'Software', value: 'software', group: 'softwareType' },
@@ -14,7 +15,7 @@ const options = [
 ];
 
 const FilterDropdown = ({ filterSelect }) => {
-  const [checkInfo, setCheckInfo] = useState({});
+  const [checkInfo, setCheckInfo] = useState({status: 'all'});
 
   useEffect(() => {
     if (checkInfo) {
@@ -27,11 +28,13 @@ const FilterDropdown = ({ filterSelect }) => {
     let state = { [name]: value };
     if (!['all'].includes(value)) {
       state = { ...checkInfo, ...state };
-      delete state.all;
+      if(state.status ==='all'){
+        delete state.status;
+      }
     }
     setCheckInfo(state);
   }
-
+  
   return (
     <>
       <div className='dropdown'>
@@ -55,8 +58,9 @@ const FilterDropdown = ({ filterSelect }) => {
                 checked={checkInfo[option.group] === option.value}
                 type='radio'
                 onChange={handleSelectedStatus}
+                id={option.value}
               />
-              {option.label}
+              <label for={option.value}>{option.label}</label>
             </li>
           ))}
         </ul>

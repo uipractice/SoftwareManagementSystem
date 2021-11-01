@@ -26,10 +26,10 @@ const defaultFormData = {
 
 const nonMandatoryFields = ['websiteUrl', 'invoiceFiles'];
 
-function Form({ isOpen, closeModal, rowData, isEdit = false }) {
+function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) {
   const inputRef = useRef(null);
   const [state, setState] = useState({});
-  const [invoiceFiles, setInvoiceFiles] = useState(null);
+  const [invoiceFiles, setInvoiceFiles] = useState([]);
   const [billingDetails, setBillingDetails] = useState({
     pricingInDollar: '',
     pricingInRupee: '',
@@ -55,6 +55,8 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
             .toLowerCase(),
         }),
         invoiceFiles: [],
+        pricingInDollar: '',
+        pricingInRupee: '',
       };
       delete prevBillingDetails._id;
       setBillingDetails(prevBillingDetails);
@@ -62,6 +64,31 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
     setState(stateData);
   }, [isEdit, rowData]);
 
+  const setTargetName = (value, e) => {
+    if (value.match(/[a-zA-Z0-9]+([\s]+)*$/)) {
+      setState({
+        ...state,
+        [e.target.name]: value,
+      });
+    } else {
+      setState({
+        ...state,
+        [e.target.name]: '',
+      });
+    }
+  }
+
+  const getBillingDetails = (data) => {
+    return data.match(/[a-zA-Z0-9]+([\s]+)*$/)
+    ? data.replace(/[^a-zA-Z0-9 ]/g, '')
+    : '';
+  }
+  const settingBillingDetails = (priceSection, value) => {
+    return  !priceSection ? value : '';
+  }
+  const billingCycle = (e) => {
+    return e.target.value === 'monthly' ? 'month' : 'year'
+  }
   /**
    * Setting billing details.
    *
@@ -78,11 +105,11 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
       }
       const value = priceSection
         ? e.target.value.replace(/[^0-9.]/g, '')
-        : data.match(/[a-zA-Z0-9]+([\s]+)*$/) ? data.replace(/[^a-zA-Z0-9 ]/g, '') : '';
+        : getBillingDetails(data);
       setBillingDetails({
         ...billingDetails,
         [e.target.name]:
-          priceSection && value > 0 ? value : !priceSection ? value : '',
+          priceSection && value > 0 ? value : settingBillingDetails(priceSection, value),
       });
     } else if (e.target.name === 'billingCycle') {
       setState({
@@ -90,7 +117,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
         [e.target.name]: e.target.value,
         ...(e.target.name === 'billingCycle' && {
           nextBilling: moment()
-            .add(1, `${e.target.value === 'monthly' ? 'month' : 'year'}`)
+            .add(1, `${billingCycle(e)}`)
             .format('YYYY-MM-DD'),
         }),
       });
@@ -107,17 +134,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
       });
     } else {
       const value = e.target.value.replace(/[^a-zA-Z0-9 ]/g, '');
-      if (value.match(/[a-zA-Z0-9]+([\s]+)*$/)) {
-        setState({
-          ...state,
-          [e.target.name]: value,
-        });
-      } else {
-        setState({
-          ...state,
-          [e.target.name]: '',
-        });
-      }
+      setTargetName(value, e);
     }
   };
 
@@ -143,9 +160,9 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
   }
 
   function ValidateEmail(inputText) {
-    const mailformat =
+    const mailTextformat =
       /^([a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@evoketechnologies.com(\s*,\s*|\s*$))*$/;
-    if (inputText.match(mailformat)) {
+    if (inputText.match(mailTextformat)) {
       return true;
     } else {
       toast.error('Invalid email ID !', {
@@ -162,14 +179,26 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
    * @return null.
    */
   const handleReset = (e) => {
-    let resetData = defaultFormData;
+    e.preventDefault();
+    let resetData = { ...defaultFormData };
     resetData.team = state.team;
     resetData.owner = state.owner;
     resetData.websiteUrl = state.websiteUrl;
     resetData.softwareName = state.softwareName;
-    e.preventDefault();
-    setState(resetData);
-    setInvoiceFiles(null);
+    resetData.email = state.email;
+    isEdit
+      ? setState(resetData)
+      : setState({
+          ...state,
+          softwareName: '',
+          owner: '',
+          team: '',
+          websiteUrl: '',
+          email: '',
+          softwareType: 'software',
+          billingCycle: 'monthly',
+        });
+    setInvoiceFiles([]);
     setBillingDetails({
       pricingInDollar: '',
       pricingInRupee: '',
@@ -179,7 +208,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
   };
 
   const uploadInvoiceFiles = ({ _id: id, ...rest }, billing) => {
-    if (invoiceFiles && Object.keys(invoiceFiles).length) {
+    if (invoiceFiles && invoiceFiles.length > 0) {
       const formData = new FormData();
       for (let file in invoiceFiles) {
         formData.append('fileName', invoiceFiles[file]);
@@ -193,6 +222,18 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
           console.log('Error in Upload : ', err);
         });
     }
+  };
+  const handleAddFile = () => {
+    document.getElementById('invoiceFiles').click();
+  };
+
+  const addAttachment = (fileInput) => {
+    const files = [...invoiceFiles];
+    for (const file of fileInput.target.files) {
+      files.push(file);
+    }
+    console.log('files', files);
+    setInvoiceFiles(files);
   };
 
   /**
@@ -211,12 +252,13 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
     state.billingDetails.push(newBillingRecord);
     console.log('state', state);
     if (ValidateEmail(state.email)) {
+      const renewUrl = `softwareInfo/renew/${rowData?._id}`;
       axios
         .post(
           `${
             isEdit
-              ? getApiUrl(`softwareInfo/renew/${rowData?._id}`)
-              : getApiUrl(`softwareInfo/create`)
+              ? getApiUrl(renewUrl)
+              : getApiUrl('softwareInfo/create')
           }`,
           isEdit ? newBillingRecord : state
         )
@@ -226,20 +268,22 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
             closeModal();
             toast.success('Data Saved Successfully !', {
               autoClose: 1000,
+              onClose:updateToolStatus(true)
             });
-            setTimeout(() => {
-              window.location.reload();
-            }, 1000);
+            
+            // setTimeout(() => {
+            //   window.location.reload();
+            // }, 1000);
           } else {
             toast.error('Data Saved FAILED !', {
-              autoClose: 1000,
+              autoClose: 2000,
             });
           }
         });
     }
   };
   const mailformat =
-  /^([a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@evoketechnologies.com(\s*,\s*|\s*$))*$/;
+    /^([a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@evoketechnologies.com(\s*,\s*|\s*$))*$/;
   return (
     <Modal
       centered
@@ -303,7 +347,8 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
               />
             </div>
             <div className='form-group col-md-4'>
-              <label htmlFor='websiteUrl'>URL ( Ex: https:// )</label>
+              <label htmlFor='websiteUrl'>URL </label>
+              <span class='help-text'>( Ex: https:// )</span>
               <input
                 type='text'
                 className='form-control'
@@ -339,13 +384,23 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
             </div>
             <div className='form-group col-md-4'>
               <label htmlFor='email'>Email Id * </label>
+              <span className='email-help-text'>
+                {' '}
+                (Add multiple emails with (,) separation)
+              </span>
+
               <textarea
                 type='textarea'
                 className='form-control'
                 onChange={(e) => handleEmailChange(e, true)}
                 onKeyDown={(e) => handleEmailChange(e, true)}
+                disabled={isEdit}
                 name='email'
-                value={state.email && state.email.match(mailformat) && state.email.toLowerCase()}
+                value={
+                  state.email &&
+                  state.email.match(mailformat) &&
+                  state.email.toLowerCase()
+                }
                 rows='3'
                 cols='50'
               />
@@ -460,7 +515,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
           </div>
           <div className='row'>
             <div className='form-group col-md-6'>
-              <label htmlFor='description'>Description</label>
+              <label htmlFor='description'>Pricing Description *</label>
               <textarea
                 type='text'
                 className='form-control long'
@@ -471,56 +526,62 @@ function Form({ isOpen, closeModal, rowData, isEdit = false }) {
                 style={{ resize: 'none' }}
               />
             </div>
-            <div className='form-group col-md-6'>
-              <label htmlFor='invoiceFiles'>Upload Invoice</label>
-              <span className='help-text'>(*Select all files at a time)</span>
+            <div className="form-group col-md-6">
+              <label htmlFor="invoiceFiles">Upload Invoice</label>
               <div
-                className={`form-control long dashed-box ${
-                  (invoiceFiles === null ||
-                    Object.keys(invoiceFiles).length <= 0) &&
+                className={`form-control long dashed-box  ${
+                  (invoiceFiles === null || invoiceFiles.length <= 0) &&
                   'pointer'
+                } ${
+                  (invoiceFiles === null || invoiceFiles.length > 0) &&
+                  'files-container'
                 }`}
-                {...((invoiceFiles === null ||
-                  Object.keys(invoiceFiles).length <= 0) && {
-                  onClick: (e) => document.getElementById('file')?.click(),
-                })}
+                // {...((invoiceFiles === null ||
+                //   Object.keys(invoiceFiles).length <= 0) && {
+                //   onClick: (e) => document.getElementById("invoiceFiles")?.click(),
+                // })}
               >
-                <div className='d-flex justify-content-center align-items-center h-100'>
-                  {invoiceFiles && Object.keys(invoiceFiles).length ? (
-                    <div className='selected-items'>
-                      {invoiceFiles &&
-                        Object.keys(invoiceFiles)?.map((key) => (
-                          <div>
-                            <span
-                              key={invoiceFiles[key].name}
-                              className='file-close-icon'
-                              onClick={() => {
-                                const fileState = { ...invoiceFiles };
-                                delete fileState[key];
-                                setInvoiceFiles(fileState);
-                              }}
-                            >
-                              {invoiceFiles[key].name}
-                              &nbsp;&nbsp;
-                            </span>
-                          </div>
-                        ))}
+                {/* <div className="d-flex justify-content-center align-items-center h-100"> */}
+
+                <div
+                  className={`${invoiceFiles.length <= 0 && 'no-selected-items'}
+                  ${invoiceFiles.length > 0 && 'selected-items'}`}
+                >
+                  {invoiceFiles.map((item, key) => (
+                    <div>
+                      <span
+                        key={key}
+                        className="file-close-icon"
+                        onClick={() => {
+                          const fileState = [...invoiceFiles];
+                          fileState.splice(key, 1);
+                          setInvoiceFiles(fileState);
+                        }}
+                      >
+                        {invoiceFiles[key].name}
+                        &nbsp;&nbsp;
+                      </span>
                     </div>
-                  ) : (
-                    <span>
-                      Click here to upload
-                      <img className='px-2' src={Upload} alt='download' />
-                    </span>
-                  )}
+                  ))}
+                </div>
+                <div className='addFileBtn'>
+                  <a
+                    onClick={(e) => handleAddFile()}
+                    href='javascript:void(0)'
+                  >
+                    Add files here
+                    <img className='px-2' src={Upload} alt='download' />
+                  </a>
                 </div>
               </div>
               <input
-                id='file'
+                id='invoiceFiles'
                 type='file'
                 name='invoiceFiles'
-                multiple={true} // single file upload
-                className='form-control '
-                onChange={(e) => setInvoiceFiles(e.target.files)}
+                multiple // single file upload
+                className='form-control'
+                onChange={(e) => addAttachment(e)}
+                onClick={(e) => (e.target.value = null)}
                 style={{ display: 'none' }}
               />
             </div>

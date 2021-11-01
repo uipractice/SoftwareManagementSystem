@@ -17,7 +17,7 @@
   border: none;
   background: #fff url('../../assets/images/filter.svg') no-repeat 13px;
   padding-left: 0;
-  height: calc(1.5em + 0.75rem + 7px);
+  /* height: calc(1.5em + 0.75rem + 7px); */
   position: relative;
   width: 122px;
   box-shadow: 0px 0px 2px rgb(0 0 0 / 35%) !important;
@@ -40,7 +40,7 @@
   padding: 0;
 }
 .dropdown-menu li {
-  font-family: Lato;
+  font-family: 'Lato', sans-serif;
   font-weight: normal;
   font-size: 14px;
   line-height: 14px;
@@ -50,12 +50,12 @@
   align-items: center;
 }
 .dropdown-menu li:first-child,
-.dropdown-menu li:nth-child(3),
-.dropdown-menu li:nth-child(6) {
+.dropdown-menu li:nth-child(4),
+.dropdown-menu li:nth-child(7) {
   padding-top: 13px !important;
 }
-.dropdown-menu li:nth-child(2),
-.dropdown-menu li:nth-child(5) {
+.dropdown-menu li:nth-child(3),
+.dropdown-menu li:nth-child(6) {
   border-bottom: 1px solid #d8d8d8;
 }
 input[type='radio']:after {
@@ -84,4 +84,11 @@ input[type='radio']:checked:after {
   display: inline-block;
   visibility: visible;
   border: 2px solid #03ae78;
+}
+.filter-row .dropdown-menu li label {
+  margin-bottom: 0;
+  cursor: pointer;
+}
+.filter-row .dropdown-menu li {
+  cursor: pointer;
 }

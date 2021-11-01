@@ -22,7 +22,7 @@
   -webkit-overflow-scrolling: touch;
 }
 .modal-area h3 {
-  font-family: Lato;
+  font-family: 'Lato', sans-serif;
   font-weight: bold;
   font-size: 18px;
   line-height: 22px;
@@ -139,7 +139,7 @@ input[type='date'] {
 }
 .form-group label,
 .form-group select {
-  font-family: Lato;
+  font-family: 'Lato', sans-serif;
   font-weight: normal;
   font-size: 14px;
   line-height: 20px;
@@ -147,9 +147,9 @@ input[type='date'] {
   color: #929292;
 }
 .form-group .help-text {
-  font-family: Lato;
+  font-family: 'Lato', sans-serif;
   font-weight: normal;
-  font-size: 14px;
+  font-size: 10px;
   line-height: 20px;
   letter-spacing: 0.01em;
   color: #929292;
@@ -169,18 +169,28 @@ input:-internal-autofill-selected {
 }
 .form-group .long {
   height: 70px;
+  overflow: auto;
 }
 .form-group .dashed-box {
   border: 1px dashed #bdbdbd !important;
   background: #f8f8f8;
   text-align: center;
   color: #929292;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
 }
 .form-group select {
   appearance: none;
   position: relative;
   color: #626364 !important;
   background: url('../../assets/images/down-arrow.svg') no-repeat 90%;
+}
+.form-group .files-container {
+  display: inline-flex;
+  justify-content: left;
+  /* align-items: baseline; */
+  position: relative;
 }
 .btn-group-toggle label {
   height: 44px;
@@ -272,9 +282,33 @@ input[type='date']::-webkit-calendar-picker-indicator {
   opacity: 0.7;
 }
 .selected-items {
-  display: inline-flex;
+  /* display: inline-flex; */
   flex-wrap: wrap;
+  flex: 1;
+  display: block;
+  text-align: left;
+  margin: auto;
+}
+.no-selected-item {
+  flex: none;
 }
 .selected-items div {
   margin-right: 10px;
+}
+.email-help-text {
+  font-family: 'Lato', sans-serif;
+  font-weight: normal;
+  font-size: 10px;
+  line-height: 20px;
+  letter-spacing: 0.01em;
+  color: #929292;
+}
+
+a:hover {
+  text-decoration: none !important;
+}
+.addFileBtn {
+  position: sticky;
+  right: 0;
+  top: 15px;
 }

@@ -9,19 +9,45 @@ import { getApiUrl } from '../utils/helper';
 export default function AdminDashboard() {
   const [data, setData] = useState([]);
   const [loading, setIsLoading] = useState(true);
+  const [sortType,setSortType]=useState(false)
+
+  const getSoftwareInfo =(sortType)=>{
+    axios(getApiUrl(`softwareInfo`))
+    .then((res) => {
+      setData(res.data);
+      setIsLoading(false);
+      setSortType(sortType)
+    })
+    .catch((err) => {
+      setIsLoading(false);
+      console.log(err);
+    });
+  }
 
   useEffect(() => {
-    axios(getApiUrl(`softwareInfo`))
-      .then((res) => {
-        setData(res.data);
-        setIsLoading(false);
-        // console.log("respose data", res.data)
-      })
-      .catch((err) => {
-        setIsLoading(false);
-        console.log(err);
-      });
+    getSoftwareInfo(sortType);
   }, []);
+  // useEffect(() => {
+ 
+  //   if(data.length>0){
+  //     console.log("data",data)
+  //     setIsLoading(false);
+  //   }
+   
+  // }, [data]);
+  // useEffect(() => {
+   
+  //   if(!loading){
+  //     console.log("loading",loading)
+  //     setSortType(sortType)
+  //   }
+   
+  // }, [loading]);
+  const addToolstatus=(value)=>{
+    if(value){
+      getSoftwareInfo(value);
+    }
+  }
 
   return (
     <div>
@@ -34,8 +60,9 @@ export default function AdminDashboard() {
         ) : (
           <div className='row'>
             <div className='col-md-12 ms-sm-auto col-lg-12'>
-              <DashboardHeader />
-              <CompleteTable data={data} />
+              <DashboardHeader  getAddToolStatus={addToolstatus}/>
+              <CompleteTable data={data} sortByDateCreated={sortType}/>
+              
             </div>
           </div>
         )}

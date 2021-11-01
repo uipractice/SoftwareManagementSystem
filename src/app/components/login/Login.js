@@ -5,6 +5,7 @@ import '../../../index.css';
 
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import AuthServices from '../../services/AuthServices'
 
 toast.configure();
 
@@ -15,45 +16,54 @@ function Login() {
     inputRef.current.focus();
   }, []);
 
-  const [state, setState] = React.useState({
-    adminUserName: 'admin',
-    adminPassowrd: '123',
-
-    enteredUserName: '',
-    enteredPassword: '',
+  const [user, setUser] = React.useState({
+    userName: "",
+    password: "",
   });
 
   const history = useHistory();
 
   function handleCredentials(evt) {
-    setState({
-      ...state,
+    setUser({
+      ...user,
       [evt.target.name]: evt.target.value,
     });
   }
 
+ 
   function handleLogin(e) {
     e.preventDefault();
-    if (
-      state.adminUserName === state.enteredUserName &&
-      state.adminPassowrd === state.enteredPassword
-    ) {
-      const token = '123456abcdef';
-      sessionStorage.setItem('auth-token', token);
-      history.push('/admin');
-    } else {
-      setState({
-        ...state,
-        enteredPassword: '',
+    AuthServices.login(user)
+      .then((res) => {
+        if (res.data.accessToken) {
+          const token = "123456abcdef";
+          sessionStorage.setItem("auth-token", token);
+          history.push("/admin");
+        } else {
+          toast.error(res.data.message + ` ${"!!"}`, {
+            autoClose: 2000,
+            onClose: () => {
+              setUser({
+                ...user,
+                userName: "",
+                password: "",
+              });
+            },
+          });
+        }
+      })
+      .catch((error) => {
+        console.log("login", error);
+        setUser({
+          ...user,
+          userName: "",
+          password: "",
+        });
       });
-      toast.error('Wrong user or password !', {
-        autoClose: 2000,
-      });
-    }
   }
 
   function SubmitButton() {
-    if (state.enteredUserName && state.enteredPassword) {
+    if (user.userName && user.password) {
       return (
         <button className='btn btn-primary btn_blue w-100p' type='submit'>
           SIGN IN
@@ -91,8 +101,8 @@ function Login() {
                   type='text'
                   className='form-control'
                   onChange={handleCredentials}
-                  name='enteredUserName'
-                  value={state.enteredUserName}
+                  name='userName'
+                  value={user.userName}
                 />
               </div>
 
@@ -102,8 +112,8 @@ function Login() {
                   type='password'
                   className='form-control'
                   onChange={handleCredentials}
-                  name='enteredPassword'
-                  value={state.enteredPassword}
+                  name='password'
+                  value={user.password}
                 />
               </div>
 
