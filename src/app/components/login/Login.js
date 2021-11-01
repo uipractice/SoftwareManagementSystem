@@ -72,7 +72,7 @@ function Login() {
     } else {
       return (
         <button className='btn btn-primary btn_blue w-100p' disabled>
-          SIGN IN
+          SIGN IN Check
         </button>
       );
     }
