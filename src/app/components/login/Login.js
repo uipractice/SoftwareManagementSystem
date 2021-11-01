@@ -33,6 +33,11 @@ function Login() {
  
   function handleLogin(e) {
     e.preventDefault();
+    setUser({
+      ...user,
+      userName: "",
+      password: "",
+    });
     AuthServices.login(user)
       .then((res) => {
         if (res.data.accessToken) {
@@ -42,13 +47,6 @@ function Login() {
         } else {
           toast.error(res.data.message + ` ${"!!"}`, {
             autoClose: 2000,
-            onClose: () => {
-              setUser({
-                ...user,
-                userName: "",
-                password: "",
-              });
-            },
           });
         }
       })
