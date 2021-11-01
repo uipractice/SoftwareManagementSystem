@@ -284,338 +284,125 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
   };
   const mailformat =
     /^([a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@evoketechnologies.com(\s*,\s*|\s*$))*$/;
-  return (
-    <Modal
-      centered
-      size='lg'
-      style={{ borderRadius: '0 !important' }}
-      show={isOpen}
-      backdrop='static'
-      onHide={closeModal}
-      className='software-modal'
-    >
-      <Modal.Header closeButton className='modal-area'>
-        <h3>Add Tool/Software</h3>
-      </Modal.Header>
-      <Modal.Body>
-        <form>
-          <div className='row'>
-            <div className='form-group col-md-4'>
-              <label htmlFor='softwareType'>Select Type *</label>
-              <ToggleButtonGroup
-                type='radio'
-                name='softwareType'
-                value={state?.softwareType}
-                disabled={isEdit}
-                onChange={(val) => setState({ ...state, softwareType: val })}
-              >
-                <ToggleButton
+  
+    return (
+      <Modal
+        centered
+        size='lg'
+        style={{ borderRadius: '0 !important' }}
+        show={isOpen}
+        backdrop='static'
+        onHide={closeModal}
+        className='software-modal'
+      >
+        <Modal.Header closeButton className='modal-area'>
+          <h3>Add Tool/Software</h3>
+        </Modal.Header>
+        <Modal.Body>
+          <form>
+            <div className='row'>
+              <div className='form-group col-md-4'>
+                <label htmlFor='softwareName'>Tool/Software *</label>
+                <input
+                  type='text'
+                  className='form-control'
+                  //onChange={handleOnChange}
+                  name='softwareName'
                   disabled={isEdit}
-                  checked={state?.softwareType === 'certificate'}
-                  value={'certificate'}
-                  className='certificate'
-                >
-                  Certificate
-                </ToggleButton>
-                <ToggleButton
-                  disabled={isEdit}
-                  checked={state?.softwareType === 'domain'}
-                  value={'domain'}
-                  className='domian'
-                >
-                  Domain
-                </ToggleButton>
-                <ToggleButton
-                  disabled={isEdit}
-                  checked={state?.softwareType === 'software'}
-                  value={'software'}
-                  className='software'
-                >
-                  Software
-                </ToggleButton>
-              </ToggleButtonGroup>
-            </div>
-            <div className='form-group col-md-4'>
-              <label htmlFor='softwareName'>Tool/Software *</label>
-              <input
-                type='text'
-                className='form-control'
-                onChange={handleOnChange}
-                name='softwareName'
-                disabled={isEdit}
-                value={state?.softwareName}
-              />
-            </div>
-            <div className='form-group col-md-4'>
-              <label htmlFor='websiteUrl'>URL </label>
-              <span class='help-text'>( Ex: https:// )</span>
-              <input
-                type='text'
-                className='form-control'
-                onChange={(e) => handleOnChange(e, '', false, true)}
-                name='websiteUrl'
-                disabled={isEdit}
-                value={state?.websiteUrl}
-              />
-            </div>
-          </div>
-          <div className='row'>
-            <div className='form-group col-md-4'>
-              <label htmlFor='team'>Team/Project/Business Unit *</label>
-              <input
-                type='text'
-                className='form-control'
-                onChange={handleOnChange}
-                name='team'
-                disabled={isEdit}
-                value={state?.team}
-              />
-            </div>
-            <div className='form-group col-md-4'>
-              <label htmlFor='owner'>User/Owner *</label>
-              <input
-                type='text'
-                className='form-control'
-                onChange={handleOnChange}
-                name='owner'
-                disabled={isEdit}
-                value={state?.owner}
-              />
-            </div>
-            <div className='form-group col-md-4'>
-              <label htmlFor='email'>Email Id * </label>
-              <span className='email-help-text'>
-                {' '}
-                (Add multiple emails with (,) separation)
-              </span>
-
-              <textarea
-                type='textarea'
-                className='form-control'
-                onChange={(e) => handleEmailChange(e, true)}
-                onKeyDown={(e) => handleEmailChange(e, true)}
-                disabled={isEdit}
-                name='email'
-                value={
-                  state.email &&
-                  state.email.match(mailformat) &&
-                  state.email.toLowerCase()
-                }
-                rows='3'
-                cols='50'
-              />
-            </div>
-          </div>
-
-          <div className='row'></div>
-          <div className='row'>
-            <div className='form-group col-md-4'>
-              <label htmlFor='billingCycle'>Billing Cycle *</label>
-              <ToggleButtonGroup
-                type='radio'
-                name='billingCycle'
-                value={state?.billingCycle}
-                disabled={isEdit}
-                onChange={(val) =>
-                  handleOnChange({
-                    target: { name: 'billingCycle', value: val },
-                  })
-                }
-              >
-                <ToggleButton
-                  disabled={isEdit}
-                  checked={state?.billingCycle === 'monthly'}
-                  value={'monthly'}
-                >
-                  Monthly
-                </ToggleButton>
-                <ToggleButton
-                  disabled={isEdit}
-                  checked={state?.billingCycle === 'yearly'}
-                  value={'yearly'}
-                  className='yearly'
-                >
-                  Yearly
-                </ToggleButton>
-              </ToggleButtonGroup>
-            </div>
-
-            <div className='form-group col-md-2'>
-              <label htmlFor='billingMonth'>For the month of *</label>
-              <select
-                className='form-control'
-                onChange={(e) => handleOnChange(e, 'billingDetails')}
-                name='billingMonth'
-                value={billingDetails?.billingMonth}
-                disabled={state?.billingCycle === 'yearly'}
-              >
-                <option value='january'>January</option>
-                <option value='february'>February</option>
-                <option value='march'>March</option>
-                <option value='april'>April</option>
-                <option value='may'>May</option>
-                <option value='june'>June</option>
-                <option value='july'>July</option>
-                <option value='august'>August</option>
-                <option value='september'>September</option>
-                <option value='october'>October</option>
-                <option value='november'>November</option>
-                <option value='december'>December</option>
-              </select>
-            </div>
-
-            <div className='form-group col-md-2'>
-              <label htmlFor='nextBilling'>Next Billing Date *</label>
-              <input
-                type='date'
-                className='form-control'
-                onChange={handleOnChange}
-                name='nextBilling'
-                value={state?.nextBilling}
-                // min={moment().subtract(1, 'month').format('YYYY-MM-DD')}
-                // max={
-                //   state.billingCycle === 'yearly'
-                //     ? ''
-                //     : moment().add(1, 'month').format('YYYY-MM-DD')
-                // }
-              />
-            </div>
-            <div className='form-group col-md-2'>
-              <label htmlFor='pricingInDollar'>Pricing in $ *</label>
-              <NumberFormat
-                thousandsGroupStyle='thousand'
-                prefix='$ '
-                decimalSeparator='.'
-                displayType='input'
-                type='text'
-                className='form-control'
-                onChange={(e) => handleOnChange(e, 'billingDetails', true)}
-                name='pricingInDollar'
-                value={billingDetails?.pricingInDollar}
-                thousandSeparator={true}
-                allowNegative={true}
-              />
-            </div>
-            <div className='form-group col-md-2'>
-              <label htmlFor='pricingInRupee'>Pricing in ₹ *</label>
-              <NumberFormat
-                thousandsGroupStyle='thousand'
-                value={billingDetails?.pricingInRupee}
-                prefix='₹ '
-                decimalSeparator='.'
-                displayType='input'
-                type='text'
-                name='pricingInRupee'
-                className='form-control'
-                onChange={(e) => handleOnChange(e, 'billingDetails', true)}
-                thousandSeparator={true}
-                allowNegative={true}
-              />
-            </div>
-          </div>
-          <div className='row'>
-            <div className='form-group col-md-6'>
-              <label htmlFor='description'>Pricing Description *</label>
-              <textarea
-                type='text'
-                className='form-control long'
-                onChange={(e) => handleOnChange(e, 'billingDetails')}
-                name='description'
-                maxLength='250'
-                value={billingDetails?.description}
-                style={{ resize: 'none' }}
-              />
-            </div>
-            <div className="form-group col-md-6">
-              <label htmlFor="invoiceFiles">Upload Invoice</label>
-              <div
-                className={`form-control long dashed-box  ${
-                  (invoiceFiles === null || invoiceFiles.length <= 0) &&
-                  'pointer'
-                } ${
-                  (invoiceFiles === null || invoiceFiles.length > 0) &&
-                  'files-container'
-                }`}
-                // {...((invoiceFiles === null ||
-                //   Object.keys(invoiceFiles).length <= 0) && {
-                //   onClick: (e) => document.getElementById("invoiceFiles")?.click(),
-                // })}
-              >
-                {/* <div className="d-flex justify-content-center align-items-center h-100"> */}
-
-                <div
-                  className={`${invoiceFiles.length <= 0 && 'no-selected-items'}
-                  ${invoiceFiles.length > 0 && 'selected-items'}`}
-                >
-                  {invoiceFiles.map((item, key) => (
-                    <div>
-                      <span
-                        key={key}
-                        className="file-close-icon"
-                        onClick={() => {
-                          const fileState = [...invoiceFiles];
-                          fileState.splice(key, 1);
-                          setInvoiceFiles(fileState);
-                        }}
-                      >
-                        {invoiceFiles[key].name}
-                        &nbsp;&nbsp;
-                      </span>
-                    </div>
-                  ))}
-                </div>
-                <div className='addFileBtn'>
-                  <a
-                    onClick={(e) => handleAddFile()}
-                    href='javascript:void(0)'
-                  >
-                    Add files here
-                    <img className='px-2' src={Upload} alt='download' />
-                  </a>
-                </div>
+                  //value={state?.softwareName}
+                />
               </div>
-              <input
-                id='invoiceFiles'
-                type='file'
-                name='invoiceFiles'
-                multiple // single file upload
-                className='form-control'
-                onChange={(e) => addAttachment(e)}
-                onClick={(e) => (e.target.value = null)}
-                style={{ display: 'none' }}
-              />
+              <div className='form-group col-md-4'>
+                <label htmlFor='websiteUrl'>URL </label>
+                <span class='help-text'>( Ex: https:// )</span>
+                <input
+                  type='text'
+                  className='form-control'
+                 // onChange={(e) => handleOnChange(e, '', false, true)}
+                  name='websiteUrl'
+                  disabled={isEdit}
+                 // value={state?.websiteUrl}
+                />
+              </div>
             </div>
-          </div>
-
-          <div className='form-group row share '>
-            <div className='col-md-12 text-center'>
-              <button
-                className='form-control btn btn-primary'
-                onClick={handleReset}
-              >
-                Reset
-              </button>
-              <button
-                className='form-control btn btn-primary share-btn'
-                onClick={handleSubmit}
-                disabled={
-                  Object.keys(state).some((key) =>
-                    nonMandatoryFields.includes(key) ? false : state[key] === ''
-                  ) ||
-                  Object.keys(billingDetails).some((key) =>
-                    nonMandatoryFields.includes(key)
-                      ? false
-                      : billingDetails[key] === ''
-                  )
-                }
-              >
-                {isEdit ? 'Renew' : 'Save'}
-              </button>
+            <div className='row'>
+              <div className='form-group col-md-4'>
+                <label htmlFor='team'>Team/Project/Business Unit *</label>
+                <input
+                  type='text'
+                  className='form-control'
+                 // onChange={handleOnChange}
+                  name='team'
+                  disabled={isEdit}
+                 // value={state?.team}
+                />
+              </div>
+              <div className='form-group col-md-4'>
+                <label htmlFor='owner'>User/Owner *</label>
+                <input
+                  type='text'
+                  className='form-control'
+                //  onChange={handleOnChange}
+                  name='owner'
+                  disabled={isEdit}
+                 // value={state?.owner}
+                />
+              </div>
+              <div className='form-group col-md-4'>
+                <label htmlFor='email'>Email Id * </label>
+                <span className='email-help-text'>
+                  {' '}
+                  (Add multiple emails with (,) separation)
+                </span>
+  
+                <textarea
+                  type='textarea'
+                  className='form-control'
+                 // onChange={(e) => handleEmailChange(e, true)}
+                 // onKeyDown={(e) => handleEmailChange(e, true)}
+                  disabled={isEdit}
+                  name='email'
+                  // value={
+                  //   state.email &&
+                  //   state.email.match(mailformat) &&
+                  //   state.email.toLowerCase()
+                  // }
+                  rows='3'
+                  cols='50'
+                />
+              </div>
             </div>
-          </div>
-        </form>
-      </Modal.Body>
-    </Modal>
-  );
+  
+           
+            <div className='form-group row share '>
+              <div className='col-md-12 text-center'>
+                <button
+                  className='form-control btn btn-primary'
+                 // onClick={handleReset}
+                >
+                  Reset
+                </button>
+                <button
+                  className='form-control btn btn-primary share-btn'
+                 // onClick={handleSubmit}
+                  // disabled={
+                  //   Object.keys(state).some((key) =>
+                  //     nonMandatoryFields.includes(key) ? false : state[key] === ''
+                  //   ) ||
+                  //   Object.keys(billingDetails).some((key) =>
+                  //     nonMandatoryFields.includes(key)
+                  //       ? false
+                  //       : billingDetails[key] === ''
+                  //   )
+                  // }
+                >
+                  {isEdit ? 'Renew' : 'Save'}
+                </button>
+              </div>
+            </div>
+          </form>
+        </Modal.Body>
+      </Modal>
+    );
 }
 export default Form;
