@@ -222,7 +222,7 @@ function CompleteTable({ data,sortByDateCreated }) {
         }) =>
           `${
             billingDetails?.length
-              ? billingDetails[billingDetails.length - 1]?.pricingInDollar
+              ? parseFloat(billingDetails[billingDetails.length - 1]?.pricingInDollar).toFixed(2)
               : ''
           }`,
       },
@@ -243,7 +243,7 @@ function CompleteTable({ data,sortByDateCreated }) {
         }) =>
           `${
             billingDetails?.length
-              ? billingDetails[billingDetails.length - 1]?.pricingInRupee
+              ? parseFloat(billingDetails[billingDetails.length - 1]?.pricingInRupee).toFixed(2)
               : ''
           }`,
       },
@@ -281,7 +281,7 @@ function CompleteTable({ data,sortByDateCreated }) {
                 {billingDetails?.reduce(
                   (result, item) => (Number(item.pricingInRupee) + result),
                   0
-                )}
+                ).toFixed(2)}
                 &nbsp;&nbsp;
               </div>
               {isMonthly && (
