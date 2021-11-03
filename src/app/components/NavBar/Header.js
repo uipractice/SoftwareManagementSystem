@@ -9,6 +9,7 @@ import Logo from '../../assets/images/eoke_logo.svg';
 import ProfileIcon from '../../assets/images/user-icon.svg';
 import FeedbackIcon from '../../assets/images/feedback.svg';
 import LogoutIcon from '../../assets/images/Logout_icon.svg';
+import { clearTokens } from '../utils/authToken';
 // components
 import Feedback from '../admin/Feedback';
 // css
@@ -18,8 +19,9 @@ import { getApiUrl } from '../utils/helper';
 
 const Header = ({ validate }) => {
   function handleLogout() {
-    sessionStorage.removeItem('auth-token');
-    checkAuth();
+  
+    clearTokens();
+    history.push('/');
   }
 
   const history = useHistory();
