@@ -577,7 +577,7 @@ function CompleteTable({ data,sortByDateCreated }) {
       }
             else{
               return row[key] === filterState[key] && row.status !== 'deleted'
-            }
+              }
            
           }
         }
@@ -586,6 +586,11 @@ function CompleteTable({ data,sortByDateCreated }) {
         result = [...filteredDataResult];
         return result;
       }, data);
+      if(finalFilteredData.length > 0){
+        setNoRecords(false);
+      }else{
+        setNoRecords(true);
+      }
       setFilteredData(addSerialNo(finalFilteredData));
     }
   };
