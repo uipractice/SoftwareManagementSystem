@@ -613,11 +613,11 @@ function CompleteTable({ data,sortByDateCreated }) {
       <div className='filter-row'>
         <p>
           {
-            'One tool for all licenses! eSoft helps to maintain Certificates, Domains or Software with ease.'
+            "Here's one tool for all Evoke's licenses! eSoft helps maintain Certificates, Domains & Software licenses with ease."
           }
           <br />
           {
-            'It helps reduce repetitive documentation efforts, optimize usage, & control the cost.'
+            'It helps reduce reparative documentation efforts, optimize usage, & control costs.'
           }
           <br />
         </p>
@@ -697,7 +697,7 @@ function CompleteTable({ data,sortByDateCreated }) {
             onHide={() => setShow(false)}
           >
             <Modal.Header closeButton className='modal-area'>
-              <h3>Subscription Detail</h3>
+              <h3>Subscription Details</h3>
             </Modal.Header>
             <Modal.Body className='rowexpandfont'>
               <div className='d-flex justify-content-between px-1'>
