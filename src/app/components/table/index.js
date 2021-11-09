@@ -441,7 +441,7 @@ function CompleteTable({ data,sortByDateCreated }) {
                   )}{' '}
                 </label>
                 <div className='amount'>
-                  {`₹${item.pricingInRupee} `}
+                  {`₹${parseFloat(item.pricingInRupee).toFixed(2)} `}
                   {item.invoiceFiles.length > 0 && (
                     <img
                       className='pl-3 pr-2 pointer'
