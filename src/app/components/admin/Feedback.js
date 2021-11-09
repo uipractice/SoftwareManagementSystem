@@ -17,8 +17,8 @@ function Feedback({ isOpen, closeModal, handleInputChange,  feedbackText }) {
       </Modal.Header>
       <Modal.Body>
         <div className='py-2'>
-          <h3>Hello Friends</h3>
-          <p>Your review will help us to provide you better experience</p>
+          <h3>Hello Friends,</h3>
+          <p>Your review will help us to provide you better experience.</p>
           <textarea
             type='text'
             autoFocus={true}
@@ -27,6 +27,9 @@ function Feedback({ isOpen, closeModal, handleInputChange,  feedbackText }) {
             name='deleteReason'
             value={feedbackText}
           />
+          <span style={{ fontSize: '10px', color: 'grey' }}>
+            Note: *Please use alphabet and numbers
+          </span>
           <Button
             onClick={(e) => closeModal(e, false)}
             autoFocus

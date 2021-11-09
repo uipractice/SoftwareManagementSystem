@@ -35,7 +35,8 @@ function CompleteTable({ data,sortByDateCreated }) {
   const [noRecords, setNoRecords] = useState(false);
 
   const [enteredValue, setEnteredValue] = useState('');
-
+  const [emptySearch,setSearchText]=useState('');
+  const [selectedFilter,setSelectedFilter]=useState({})
 
   const setDefaultFilterData = useCallback((filterData) => {
     if (filterData?.length) {
@@ -440,7 +441,7 @@ function CompleteTable({ data,sortByDateCreated }) {
                   )}{' '}
                 </label>
                 <div className='amount'>
-                  {`₹${item.pricingInRupee} `}
+                  {`₹${parseFloat(item.pricingInRupee).toFixed(2)} `}
                   {item.invoiceFiles.length > 0 && (
                     <img
                       className='pl-3 pr-2 pointer'
@@ -527,16 +528,29 @@ function CompleteTable({ data,sortByDateCreated }) {
   }
 
   useEffect(() => {
-    if (filteredTableData?.length && globalFilter && searchValue)
+    if (filteredTableData?.length && globalFilter && searchValue){
       setFilteredData(addSerialNo(filteredTableData, true));
+      setEnteredValue('');
+      setNoRecords(false);
+    }
     else if (searchValue === ''){
       setFilteredData(addSerialNo(data));
-      onFilterSelect({status:'all'})
+      onFilterSelect(selectedFilter);
+      setEnteredValue('')
+      setNoRecords(false);
     } 
+    if(filteredTableData.length === 0 && searchValue) {
+      setNoRecords(true);
+    }else{
+      setNoRecords(false);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchValue]);
 
   const onFilterSelect = (filterState) => {
+    console.log("filter state",filterState)
+    setSelectedFilter(filterState)
+    setSearchText('empty')
     const filterKeys = Object.keys(filterState);
    
     if (filterKeys?.length) {
@@ -628,7 +642,9 @@ function CompleteTable({ data,sortByDateCreated }) {
             setFilter={(value) => {
               setGlobalFilter(value);
               setSearchValue(value);
+              setSearchText('')
             }}
+            removeSearchValue={emptySearch}
           />
         </div>
       </div>
@@ -824,7 +840,7 @@ function CompleteTable({ data,sortByDateCreated }) {
                   ) : null}
                 </React.Fragment>
               );
-            }) : <tr style={{textAlign: 'center'}}><span>No Records</span></tr>}
+            }) : <tr style={{textAlign: 'center'}}><span>No data found</span></tr>}
           </tbody>
         </table>
         {page.length > 0 && (
