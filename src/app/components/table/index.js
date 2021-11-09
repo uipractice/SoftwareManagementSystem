@@ -840,7 +840,7 @@ function CompleteTable({ data,sortByDateCreated }) {
                   ) : null}
                 </React.Fragment>
               );
-            }) : <tr style={{textAlign: 'center'}}><span>No Records</span></tr>}
+            }) : <tr style={{textAlign: 'center'}}><span>No data found</span></tr>}
           </tbody>
         </table>
         {page.length > 0 && (
