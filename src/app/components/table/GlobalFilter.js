@@ -1,8 +1,15 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState } from 'react';
 import { useAsyncDebounce } from 'react-table';
 
-function GlobalFilter({ setFilter }) {
+function GlobalFilter({ setFilter,removeSearchValue }) {
+
   const [searchText, setSearchText] = useState();
+  useEffect(()=>{
+    if(removeSearchValue ==='empty'){
+      setSearchText('');
+      onChange('');
+    }
+  },[removeSearchValue])
   const onChange = useAsyncDebounce((value) => {
     setFilter(value);
   }, 1000);
