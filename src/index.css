@@ -743,6 +743,7 @@ textarea:focus-visible {
   width: 170px;
   height: 44px;
   margin: auto;
+  margin-top: 25px;
 }
 .feedback-modal button.feedback-submit:hover {
   background: #209ec5 !important;
