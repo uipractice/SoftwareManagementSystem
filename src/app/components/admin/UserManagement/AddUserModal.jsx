@@ -5,8 +5,8 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './sample.css';
 import { getApiUrl } from '../../utils/helper';
-// import Autocomplete from '@material-ui/lab/Autocomplete';
-// import TextField from '@material-ui/core/TextField';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import TextField from '@material-ui/core/TextField';
 
 toast.configure();
 
@@ -228,7 +228,7 @@ function handleUpdate() {
           <div className='row'>
           <div className='form-group col-md-4'>
           <label>Team * </label>
-          {/* <Autocomplete
+          <Autocomplete
             options={[
               { label: 'BI Team', value: 1 },
               { label: 'Big Data Team', value: 2 },
@@ -259,11 +259,11 @@ function handleUpdate() {
             renderInput={(params) => 
               <TextField {...params} variant='outlined' name="team"/>
             }
-          /> */}
+          />
         </div>
             <div className='form-group col-md-4'>
           <label>Status * </label>
-          {/* <Autocomplete
+          <Autocomplete
             options={[
               { label: 'Active', value: 1 },
               { label: 'InActive', value: 2 },
@@ -276,7 +276,7 @@ function handleUpdate() {
             renderInput={(params) => (
               <TextField {...params} variant='outlined' name="status"/>
             )}
-          /> */}
+          />
         </div>
             <div className='form-group col-md-4'>
               <label htmlFor='contactNumber'>Contact Number *</label>
@@ -295,7 +295,7 @@ function handleUpdate() {
           <div className='row'>
             <div className='form-group col-md-4'>
           <label>Role * </label>
-          {/* <Autocomplete
+          <Autocomplete
             options={[
               { label: 'Admin', value: 1 },
               { label: 'SuperAdmin', value: 2 },
@@ -309,7 +309,7 @@ function handleUpdate() {
             renderInput={(params) => (
               <TextField {...params} variant='outlined' name="role"/>
             )}
-          /> */}
+          />
         </div>
             </div>
           <div className='form-group row share '>

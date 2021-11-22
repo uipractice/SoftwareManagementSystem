@@ -13,8 +13,8 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import NavBar from '../../admin/NavBar';
 import { getApiUrl } from '../../utils/helper';
-// import Autocomplete from '@material-ui/lab/Autocomplete';
-// import TextField from '@material-ui/core/TextField'
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import TextField from '@material-ui/core/TextField'
 
 toast.configure();
 
@@ -225,7 +225,7 @@ function EditViewForm({ isOpen, closeModal, data }) {
 
                   <Form.Group style={{ marginBottom: '40px' }}>
                     <Form.Label>Team * </Form.Label>
-          {/* <Autocomplete
+          <Autocomplete
             options={[
               { label: 'BI Team', value: 1 },
               { label: 'Big Data Team', value: 2 },
@@ -256,11 +256,11 @@ function EditViewForm({ isOpen, closeModal, data }) {
             renderInput={(params) => 
               <TextField {...params} variant='outlined' name="team"/>
             }
-          /> */}
+          />
         </Form.Group>
         <Form.Group style={{ marginBottom: '40px' }}>
           <Form.Label>Status * </Form.Label>
-          {/* <Autocomplete
+          <Autocomplete
             options={[
               { label: 'Active', value: 1 },
               { label: 'InActive', value: 2 },
@@ -273,11 +273,11 @@ function EditViewForm({ isOpen, closeModal, data }) {
             renderInput={(params) => (
               <TextField {...params} variant='outlined' name="status"/>
             )}
-          /> */}
+          />
            </Form.Group>
           <Form.Group style={{ marginBottom: '40px' }}>
           <Form.Label>Role * </Form.Label>
-          {/* <Autocomplete
+          <Autocomplete
             options={[
                 { label: 'Admin', value: 1 },
                 { label: 'SuperAdmin', value: 2 },
@@ -291,7 +291,7 @@ function EditViewForm({ isOpen, closeModal, data }) {
             renderInput={(params) => (
               <TextField {...params} variant='outlined' name="role"/>
             )}
-          /> */}
+          />
          </Form.Group>
                   
                   <Button
