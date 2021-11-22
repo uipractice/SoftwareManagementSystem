@@ -9,6 +9,8 @@ import Logo from '../../assets/images/eoke_logo.svg';
 import ProfileIcon from '../../assets/images/user-icon.svg';
 import FeedbackIcon from '../../assets/images/feedback.svg';
 import LogoutIcon from '../../assets/images/Logout_icon.svg';
+import dashboardicon from '../../assets/images/dashboardicon.svg';
+import usermanagementicon from '../../assets/images/usermanagementicon.svg';
 import { clearTokens } from '../utils/authToken';
 // components
 import Feedback from '../admin/Feedback';
@@ -22,6 +24,14 @@ const Header = ({ validate }) => {
   
     clearTokens();
     history.push('/');
+  }
+
+  function handleDashboard(){
+    return history.push('/admin');
+  }
+
+  function handleUserDetails(){
+    return history.push('/user-details');
   }
 
   const history = useHistory();
@@ -107,6 +117,14 @@ const Header = ({ validate }) => {
                 <Popover id={`popover-positioned-${'bottom'}`}>
                   <Popover.Content>
                     <div className='menu-list'>
+                    <div className='menu-list-item' onClick={handleDashboard}>
+                        <img src={dashboardicon} alt='logout' />{' '}
+                        <span>Dashboard</span>
+                      </div>
+                      <div className='menu-list-item' onClick={handleUserDetails}>
+                        <img src={usermanagementicon} alt='logout' />{' '}
+                        <span>User Management</span>
+                      </div>
                       <div
                         className='menu-list-item'
                         onClick={() => setFeedback(true)}
