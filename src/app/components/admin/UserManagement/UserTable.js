@@ -25,7 +25,7 @@ import Download from '../../../assets/images/download.svg';
 import Note from '../../../assets/images/note.svg';
 
 toast.configure();
-function UserTable({ data,sortByDateCreated }) {
+function UserTable({ data,sortByDateCreated, getEditForm }) {
   const [filteredData, setFilteredData] = useState([]);
   const [searchValue, setSearchValue] = useState();
   const [rowData, setRowData] = useState({});
@@ -73,7 +73,7 @@ function UserTable({ data,sortByDateCreated }) {
     rowData.status = 'deleted';
     const id = rowData._id;
     axios
-      .post(getApiUrl(`softwareInfo/update/${id}`), rowData)
+    .delete(getApiUrl(`users/deleteUser/${id}`))
       .then((res) => {
         toast.success('Data deleted successfully!', {
           autoClose: 1000,
@@ -129,236 +129,74 @@ function UserTable({ data,sortByDateCreated }) {
   const columns = React.useMemo(
     () => [
       {
-        Header: 'Date Created',
-        accessor: 'createdAt',
-        width: 10,
-        isVisible:"false"
-      },
-      {
-        Header: 'SOFTWARE',
-        accessor: 'softwareName',
+        Header: 'NAME',
+        accessor: 'userName',
         sticky: 'left',
-        width: 170,
+        width: 250,
         sortType: (a, b) => {
           return customSorting(
-            a.original.softwareName,
-            b.original.softwareName
+            a.original.userName,
+            b.original.userName
           );
         },
-        Cell: ({
-          row: {
-            original: { websiteUrl, softwareName },
-          },
-        }) => (
-          <div className='ellipse-css' title={softwareName}>
-            {websiteUrl ? (
-              <a
-                href={websiteUrl}
-                target='_blank'
-                rel='noreferrer'
-                title={softwareName}
-              >
-                {softwareName}
-              </a>
-            ) : (
-              softwareName
-            )}
-          </div>
-        ),
       },
       {
-        Header: 'TYPE',
-        accessor: 'softwareType',
+        Header: 'USER ID/EMAIL ADDRESS',
+        accessor: 'emailId',
         sticky: 'left',
-        width: 120,
+        width: 300,
         sortType: (a, b) => {
-          return customSorting(
-            a.original.softwareType,
-            b.original.softwareType
-          );
+          return customSorting(a.original.emailId, b.original.emailId);
+        },
+      },
+      {
+        Header: 'ROLE',
+        accessor: 'role',
+        width: 150,
+        sortType: (a, b) => {
+          return customSorting(a.original.role, b.original.role);
         },
       },
       {
         Header: 'TEAM',
         accessor: 'team',
+        width: 200,
+        sortType: (a, b) => {
+          return customSorting(
+            a.original.team,
+            b.original.team
+          );
+        },
+      },
+      // {
+      //   Header: 'Date Created',
+      //   accessor: 'createdAt',
+      //   width: 10,
+      //   isVisible:"false"
+      // },
+      {
+        Header: 'CONTACT NO',
+        accessor: 'contactNumber',
         sticky: 'left',
-        width: 120,
-        sortType: (a, b) => {
-          return customSorting(a.original.team, b.original.team);
-        },
-      },
-      {
-        Header: 'USER/OWNER',
-        accessor: 'owner',
         width: 150,
-        sortType: (a, b) => {
-          return customSorting(a.original.owner, b.original.owner);
-        },
       },
       {
-        Header: 'BILLING CYCLE',
-        accessor: 'billingCycle',
-        width: 130,
+        Header: 'STATUS',
+        accessor: 'status',
+        width: 200,
         sortType: (a, b) => {
-          return customSorting(
-            a.original.billingCycle,
-            b.original.billingCycle
-          );
-        },
-      },
-      {
-        Header: 'PRICING IN $',
-        accessor: 'pricingInDollar',
-        width: 125,
-        sortType: (a, b) => {
-          return customSorting(
-            a.original.billingDetails[0].pricingInDollar.toString(),
-            b.original.billingDetails[0].pricingInDollar.toString()
-          );
-        },
-        Cell: ({
-          row: {
-            original: { billingDetails },
-          },
-        }) =>
-          `${
-            billingDetails?.length
-              ? parseFloat(billingDetails[billingDetails.length - 1]?.pricingInDollar).toFixed(2)
-              : ''
-          }`,
-      },
-      {
-        Header: 'PRICING IN ₹',
-        accessor: 'pricingInRupee',
-        width: 125,
-        sortType: (a, b) => {
-          return customSorting(
-            a.original.billingDetails[0].pricingInRupee.toString(),
-            b.original.billingDetails[0].pricingInRupee.toString()
-          );
-        },
-        Cell: ({
-          row: {
-            original: { billingDetails },
-          },
-        }) =>
-          `${
-            billingDetails?.length
-              ? parseFloat(billingDetails[billingDetails.length - 1]?.pricingInRupee).toFixed(2)
-              : ''
-          }`,
-      },
-      {
-        Header: 'TOTAL IN ₹',
-        accessor: (originalRow) => {
-          return originalRow.billingDetails?.reduce(
-            (result, item) => (Number(item.pricingInRupee) + result),
-            0
-          );
-        },
-        width: 130,
-        sortType: (a, b) => {
-          return customSorting(
-            a.values['TOTAL IN ₹'].toString(),
-            b.values['TOTAL IN ₹'].toString()
-          );
-        },
-        // id: "expander",
-        Cell: ({
-          row: {
-            original: { billingDetails, billingCycle },
-            getToggleRowExpandedProps,
-            isExpanded,
-          },
-        }) => {
-          const isMonthly = billingCycle === 'monthly';
-          return (
-            <div
-              className='d-flex justify-content-end align-items-center'
-              {...(isMonthly &&
-                getToggleRowExpandedProps({ title: undefined }))}
-            >
-              <div>
-                {billingDetails?.reduce(
-                  (result, item) => (Number(item.pricingInRupee) + result),
-                  0
-                ).toFixed(2)}
-                &nbsp;&nbsp;
-              </div>
-              {isMonthly && (
-                <div
-                  className={`arrow ${
-                    isExpanded ? 'arrow-bottom' : 'arrow-right'
-                  }`}
-                />
-              )}
-            </div>
-          );
-        },
-      },
-      {
-        Header: 'NEXT BILLING',
-        accessor: 'nextBilling',
-        width: 130,
-        sortType: (a, b) => {
-          return customSorting(a.original.nextBilling, b.original.nextBilling);
-        },
-        Cell: ({
-          row: {
-            original: { nextBilling },
-          },
-        }) => moment(nextBilling).format('DD-MM-YYYY'),
-      },
-      {
-        Header: 'TIMELINE',
-        accessor: (originalRow) => {
-          const todaysDate = moment().format('YYYY-MM-DD');
-          return moment(originalRow.nextBilling, 'YYYY-MM-DD').diff(
-            moment(todaysDate),
-            'days'
-          );
-         
-          // return days ;
-        },
-        width: 100,
-        sortType: (a, b) => {
-          return customSorting(
-            a.values.TIMELINE,
-            b.values.TIMELINE,
-            'TIMELINE'
-          );
-        },
-        
-        Cell: ({
-          row: {
-            original: { nextBilling },
-          },
-        }) => {
-          const todaysDate = moment().format('YYYY-MM-DD');
-          const days = moment(nextBilling, 'YYYY-MM-DD').diff(
-            moment(todaysDate),
-            'days'
-          );
-          return (
-            <div
-              className={`timeline ${
-                days >= 10
-                  ? 'timelineGreen'
-                  : getTimeLineClass(days)
-              }`}
-            >
-              <p>
-                {days === 0
-                  ? `Today`
-                  : getExpiredText(days)}
-              </p>
-            </div>
-          );
+          if (a.original.status === undefined) {
+            a.original['status'] = '';
+          }
+          if (b.original.status === undefined) {
+            b.original['status'] = '';
+          }
+          return customSorting(a.original.status, b.original.status);
         },
       },
       {
         Header: 'ACTION',
-        width: 100,
+        width: 150,
         Cell: ({ row }) => (
           <div>
             <img
@@ -369,8 +207,7 @@ function UserTable({ data,sortByDateCreated }) {
               alt='Evoke Technologies'
               height='31px'
               onClick={() => {
-                setRowData(row.original);
-                toggleEditForm(true);
+                getEditForm(row);
               }}
             />
             <img
@@ -407,17 +244,7 @@ function UserTable({ data,sortByDateCreated }) {
     }
   };
 
-  // Get S3 signed urls of the attachments for a Billing Month.
-  const downloadInvoice = useCallback((rowItemData, billingItem) => {
-    axios
-      .get(
-        getApiUrl(`softwareInfo/download/${rowItemData._id}/${billingItem._id}`)
-      )
-      .then((res) => {
-        const files = res.data;
-        downloadFiles(files, billingItem.invoiceFiles);
-      });
-  }, []);
+  
 
   const renderRowSubComponent = useCallback(
     ({ row }) => (
@@ -440,17 +267,6 @@ function UserTable({ data,sortByDateCreated }) {
                     />
                   )}{' '}
                 </label>
-                <div className='amount'>
-                  {`₹${parseFloat(item.pricingInRupee).toFixed(2)} `}
-                  {item.invoiceFiles.length > 0 && (
-                    <img
-                      className='pl-3 pr-2 pointer'
-                      src={Download}
-                      onClick={() => downloadInvoice(row.original, item)}
-                      alt='download'
-                    />
-                  )}
-                </div>
               </div>
             ))}
           {row.original.billingDetails?.length > 6 && (
@@ -468,7 +284,6 @@ function UserTable({ data,sortByDateCreated }) {
         </div>
       </td>
     ),
-    [downloadInvoice]
   );
 
   const {
@@ -608,20 +423,7 @@ function UserTable({ data,sortByDateCreated }) {
       setFilteredData(addSerialNo(finalFilteredData));
     }
   };
-  const months = [
-    'january',
-    'february',
-    'march',
-    'april',
-    'may',
-    'june',
-    'july',
-    'august',
-    'september',
-    'october',
-    'november',
-    'december',
-  ];
+  
   return (
     <>
       <div className='filter-row'>
@@ -635,9 +437,7 @@ function UserTable({ data,sortByDateCreated }) {
           }
           <br />
         </p>
-
         <div className='row'>
-          <FilterDropdown filterSelect={(selectedState) => onFilterSelect(selectedState)}/>
           <GlobalFilter
             setFilter={(value) => {
               setGlobalFilter(value);
@@ -702,77 +502,7 @@ function UserTable({ data,sortByDateCreated }) {
           </Modal>
         </div>
       )}
-      {show && (
-        <div>
-          <Modal
-            centered
-            size='lg'
-            show={show}
-            backdrop='static'
-            className='subscriptionModal'
-            onHide={() => setShow(false)}
-          >
-            <Modal.Header closeButton className='modal-area'>
-              <h3>Subscription Details</h3>
-            </Modal.Header>
-            <Modal.Body className='rowexpandfont'>
-              <div className='d-flex justify-content-between px-1'>
-                <div>{rowData.softwareName}</div>
-                <div className='prev-next'>
-                  <button  disabled={!canPreviousPage}>
-                    <img src={leftIcon} alt='prev' />
-                  </button>{' '}
-                  {moment(rowData.createdAt).format('YYYY')}{' '}
-                  <button disabled={!canNextPage}>
-                    <img src={rightIcon} alt='next' />
-                  </button>{' '}
-                </div>
-              </div>
-              <div className='calenderGrid'>
-                {months.map((month) => {
-                  const billingItem =
-                    rowData.billingDetails?.filter(
-                      (item) => item.billingMonth === month
-                    ) || [];
-                  return (
-                    <div
-                      key={month}
-                      className='calenderGridItem text-capitalize'
-                    >
-                      {month}
-                      {billingItem?.length !== 0 && (
-                        <div className='amount'>
-                          <span>{`₹${billingItem[0]?.pricingInRupee}`}</span>
-                          {billingItem[0].invoiceFiles.length > 0 && (
-                            <img
-                              src={Download}
-                              // src={AttachIcon}
-                              onClick={() =>
-                                downloadInvoice(rowData, billingItem[0])
-                              }
-                              alt='download'
-                              className='pointer px-1'
-                            />
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-              <div>
-                <span>
-                  {'Total Amount:  ₹'}
-                  {rowData.billingDetails?.reduce(
-                    (result, item) => ( Number(item.pricingInRupee)+ result),
-                    0
-                  )}
-                </span>
-              </div>
-            </Modal.Body>
-          </Modal>
-        </div>
-      )}
+     
       <div className='table-responsive grid tableFixHead'>
         <table {...getTableProps()} className='table table-striped '>
           <thead>
@@ -832,12 +562,7 @@ function UserTable({ data,sortByDateCreated }) {
                       );
                     })}
                   </tr>
-                  {row.isExpanded ? (
-                    <tr>
-                      {/* <td colSpan={visibleColumns.length}></td> */}
-                      {renderRowSubComponent({ row })}
-                    </tr>
-                  ) : null}
+                
                 </React.Fragment>
               );
             }) : <tr style={{textAlign: 'center'}}><span>No data found</span></tr>}
