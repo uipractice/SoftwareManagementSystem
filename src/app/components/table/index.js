@@ -24,6 +24,9 @@ import FilterDropdown from './FilterDropdown';
 import Download from '../../assets/images/download.svg';
 import Note from '../../assets/images/note.svg';
 
+import {guest, superAdmin} from '../constants/constants';
+import {getUser} from '../utils/userDetails';
+
 toast.configure();
 function CompleteTable({ data,sortByDateCreated }) {
   const [filteredData, setFilteredData] = useState([]);
@@ -150,7 +153,8 @@ function CompleteTable({ data,sortByDateCreated }) {
             original: { websiteUrl, softwareName },
           },
         }) => (
-          <div className='ellipse-css' title={softwareName}>
+          <div className='ellipse-css' title={softwareName}
+           style={{'pointerEvents':JSON.parse(getUser()).role === guest?'none':'cursor'}}>
             {websiteUrl ? (
               <a
                 href={websiteUrl}
@@ -358,6 +362,7 @@ function CompleteTable({ data,sortByDateCreated }) {
       },
       {
         Header: 'ACTION',
+        accessor: 'action',
         width: 100,
         Cell: ({ row }) => (
           <div>
@@ -495,7 +500,7 @@ function CompleteTable({ data,sortByDateCreated }) {
         pageSize: 5,
         autoResetSortBy:false,
         manualSortBy:true,
-        hiddenColumns: ['createdAt'],
+        hiddenColumns: ['createdAt', JSON.parse(getUser()).role === guest? ['action']:['']],
         sortBy: [
           {
             id:sortByDateCreated===false ?'billingCycle':'createdAt',
@@ -548,7 +553,6 @@ function CompleteTable({ data,sortByDateCreated }) {
   }, [searchValue]);
 
   const onFilterSelect = (filterState) => {
-    console.log("filter state",filterState)
     setSelectedFilter(filterState)
     setSearchText('empty')
     const filterKeys = Object.keys(filterState);

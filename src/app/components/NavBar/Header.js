@@ -18,6 +18,8 @@ import Feedback from '../admin/Feedback';
 import './NavBar.css';
 // helpers
 import { getApiUrl } from '../utils/helper';
+import { superAdmin } from '../constants/constants';
+import { getUser } from "../utils/userDetails";
 
 const Header = ({ validate }) => {
   function handleLogout() {
@@ -36,22 +38,6 @@ const Header = ({ validate }) => {
 
   const history = useHistory();
 
-  const checkAuth = () => {
-    if (!sessionStorage.getItem('auth-token')) {
-      history.push('/');
-    } else {
-      const authToken = '123456abcdef';
-      if (sessionStorage.getItem('auth-token') === authToken) {
-        return <Redirect to='/admin_dashboard' />;
-      } else {
-        history.push('/');
-      }
-    }
-  };
-
-  if (validate) {
-    checkAuth();
-  }
   const [feedback, setFeedback] = useState(false);
   const [feedbackText, setFeedbackText] = React.useState('');
 
@@ -121,10 +107,11 @@ const Header = ({ validate }) => {
                         <img src={dashboardicon} alt='logout' />{' '}
                         <span>Dashboard</span>
                       </div>
+                      {JSON.parse(getUser()).role === superAdmin && 
                       <div className='menu-list-item' onClick={handleUserDetails}>
                         <img src={usermanagementicon} alt='logout' />{' '}
                         <span>User Management</span>
-                      </div>
+                      </div>}
                       <div
                         className='menu-list-item'
                         onClick={() => setFeedback(true)}

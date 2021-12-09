@@ -73,7 +73,7 @@ function UserTable({ data,sortByDateCreated, getEditForm }) {
     rowData.status = 'deleted';
     const id = rowData._id;
     axios
-    .delete(getApiUrl(`users/deleteUser/${id}`))
+      .delete(getApiUrl(`users/deleteUser/${id}`),rowData)
       .then((res) => {
         toast.success('Data deleted successfully!', {
           autoClose: 1000,
@@ -437,7 +437,8 @@ function UserTable({ data,sortByDateCreated, getEditForm }) {
           }
           <br />
         </p>
-        <div className='row'>
+ <div className='row'>
+          {/* <FilterDropdown filterSelect={(selectedState) => onFilterSelect(selectedState)}/> */}
           <GlobalFilter
             setFilter={(value) => {
               setGlobalFilter(value);

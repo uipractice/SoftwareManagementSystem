@@ -5,6 +5,8 @@ import CompleteTable from '../table';
 import axios from 'axios';
 import Header from '../NavBar/Header';
 import { getApiUrl } from '../utils/helper';
+import { superAdmin } from '../constants/constants';
+import { getUser } from "../utils/userDetails";
 
 export default function AdminDashboard() {
   const [data, setData] = useState([]);
@@ -60,7 +62,8 @@ export default function AdminDashboard() {
         ) : (
           <div className='row'>
             <div className='col-md-12 ms-sm-auto col-lg-12'>
-              <DashboardHeader  getAddToolStatus={addToolstatus}/>
+            {JSON.parse(getUser()).role=== superAdmin && 
+              <DashboardHeader  getAddToolStatus={addToolstatus}/>}
               <CompleteTable data={data} sortByDateCreated={sortType}/>
               
             </div>
