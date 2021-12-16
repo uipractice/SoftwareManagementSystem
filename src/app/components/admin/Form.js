@@ -24,7 +24,7 @@ const defaultFormData = {
   billingDetails: [], // pricingInDollar pricingInRupee billingMonth nextBilling, desc, invoiceFiles
 };
 
-const nonMandatoryFields = ['websiteUrl', 'invoiceFiles'];
+const nonMandatoryFields = ['websiteUrl', 'invoiceFiles','pricingInDollar', 'pricingInRupee'];
 
 function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) {
   const inputRef = useRef(null);
@@ -250,7 +250,6 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
       createdAt: moment().format('YYYY-MM-DD'),
     };
     state.billingDetails.push(newBillingRecord);
-    console.log('state', state);
     if (ValidateEmail(state.email)) {
       const renewUrl = `softwareInfo/renew/${rowData?._id}`;
       axios

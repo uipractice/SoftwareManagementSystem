@@ -223,7 +223,7 @@ function CompleteTable({ data,sortByDateCreated }) {
         }) =>
           `${
             billingDetails?.length
-              ? parseFloat(billingDetails[billingDetails.length - 1]?.pricingInDollar).toFixed(2)
+              ?billingDetails[billingDetails.length - 1]?.pricingInDollar === '' ?Number(0).toFixed(2):parseFloat(billingDetails[billingDetails.length - 1]?.pricingInDollar).toFixed(2)
               : ''
           }`,
       },
@@ -244,7 +244,7 @@ function CompleteTable({ data,sortByDateCreated }) {
         }) =>
           `${
             billingDetails?.length
-              ? parseFloat(billingDetails[billingDetails.length - 1]?.pricingInRupee).toFixed(2)
+              ?billingDetails[billingDetails.length - 1]?.pricingInRupee === '' ?Number(0).toFixed(2):parseFloat(billingDetails[billingDetails.length - 1]?.pricingInRupee).toFixed(2) 
               : ''
           }`,
       },
@@ -421,6 +421,7 @@ function CompleteTable({ data,sortByDateCreated }) {
 
   const renderRowSubComponent = useCallback(
     ({ row }) => (
+      console.log("row",row),
       <td colSpan='12' className='rowexpandable'>
         <div className='subscrit'>
           <h3 className='rowexpandfont'>Subscription for:</h3>
@@ -430,7 +431,7 @@ function CompleteTable({ data,sortByDateCreated }) {
             .map((item, i) => (
               <div key={i} className='label text-capitalize'>
                 <label>
-                  {item.billingMonth}{' '}
+                  {item.billingMonth}{'-'}{new Date(item.createdAt).getFullYear()}
                   {item.description && (
                     <img
                       className='px-2 pointer'
@@ -441,7 +442,7 @@ function CompleteTable({ data,sortByDateCreated }) {
                   )}{' '}
                 </label>
                 <div className='amount'>
-                  {`₹${item.pricingInRupee} `}
+                  {`₹${item.pricingInRupee === ''?0:item.pricingInRupee}`}
                   {item.invoiceFiles.length > 0 && (
                     <img
                       className='pl-3 pr-2 pointer'
@@ -557,7 +558,6 @@ function CompleteTable({ data,sortByDateCreated }) {
       const finalFilteredData = filterKeys.reduce((result, key) => {
         const filteredDataResult = result.filter((row) =>{
           if(filterKeys.includes(key)){
-            console.log(filterState[key])
             if(filterState[key] === 'all'){
               return row.status !== 'deleted'
             }else if (filterState['status'] === 'deleted') {
