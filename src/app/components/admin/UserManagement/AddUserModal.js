@@ -129,8 +129,7 @@ function handleUpdate() {
     if (ValidateEmail(state.emailId)) {
       delete state.autoFill;
       console.log(state,'state');
-          axios
-        .post(getApiUrl(`users/addUser`), state)
+          axios.post(getApiUrl(`users/addUser`), state)
         .then((res) => {
           if (res && res.data.status === 'success') {
             // closeModal();

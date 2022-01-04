@@ -17,7 +17,7 @@ import rightIcon from '../../assets/images/right-icon.svg';
 import leftIcon from '../../assets/images/left-icon.svg';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import moment from 'moment';
+import moment, { monthsShort } from 'moment';
 import Form from '../admin/Form';
 import { getApiUrl } from '../utils/helper';
 import FilterDropdown from './FilterDropdown';
@@ -423,7 +423,20 @@ function CompleteTable({ data,sortByDateCreated }) {
         downloadFiles(files, billingItem.invoiceFiles);
       });
   }, []);
-
+  const months = [
+    'january',
+    'february',
+    'march',
+    'april',
+    'may',
+    'june',
+    'july',
+    'august',
+    'september',
+    'october',
+    'november',
+    'december',
+  ];
   const renderRowSubComponent = useCallback(
     ({ row }) => (
       <td colSpan='12' className='rowexpandable'>
@@ -431,7 +444,7 @@ function CompleteTable({ data,sortByDateCreated }) {
           <h3 className='rowexpandfont'>Subscription for:</h3>
           {row.original.billingDetails
             .slice(-6)
-            // .reverse()
+            .sort((a, b) =>   months.indexOf(a.billingMonth) > months.indexOf(b.billingMonth)?1:a.billingMonth === b.billingMonth?0:-1)
             .map((item, i) => (
               <div key={i} className='label text-capitalize'>
                 <label>
@@ -612,20 +625,7 @@ function CompleteTable({ data,sortByDateCreated }) {
       setFilteredData(addSerialNo(finalFilteredData));
     }
   };
-  const months = [
-    'january',
-    'february',
-    'march',
-    'april',
-    'may',
-    'june',
-    'july',
-    'august',
-    'september',
-    'october',
-    'november',
-    'december',
-  ];
+  
   return (
     <>
       <div className='filter-row'>
