@@ -214,51 +214,63 @@ function CompleteTable({ data,sortByDateCreated }) {
         Header: 'PRICING IN $',
         accessor: 'pricingInDollar',
         width: 125,
-        sortType: (a, b) => {
-          return customSorting(
-            a.original.billingDetails[0].pricingInDollar.toString(),
-            b.original.billingDetails[0].pricingInDollar.toString()
-          );
-        },
+        // sortType: (a, b) => {
+        //   return customSorting(
+        //     a.original.billingDetails[0].pricingInDollar.toString(),
+        //     b.original.billingDetails[0].pricingInDollar.toString()
+        //   );
+        // }
+        //,
         Cell: ({
           row: {
-            original: { billingDetails },
+            original: { billingDetails},
           },
         }) =>
           `${
-            billingDetails?.length
-              ? parseFloat(billingDetails[billingDetails.length - 1]?.pricingInDollar).toFixed(2)
-              : ''
+            Object.keys(billingDetails)
+            .slice(0,1)
+            .map((item,ind)=>{
+              return billingDetails[item][0].pricingInDollar?parseFloat(billingDetails[item][0].pricingInDollar).toFixed(2):Number(0).toFixed(2)
+            })
+
           }`,
       },
       {
         Header: 'PRICING IN ₹',
         accessor: 'pricingInRupee',
         width: 125,
-        sortType: (a, b) => {
-          return customSorting(
-            a.original.billingDetails[0].pricingInRupee.toString(),
-            b.original.billingDetails[0].pricingInRupee.toString()
-          );
-        },
+        // sortType: (a, b) => {
+        //   return customSorting(
+        //     a.original.billingDetails[0].pricingInRupee.toString(),
+        //     b.original.billingDetails[0].pricingInRupee.toString()
+        //   );
+        // },
         Cell: ({
           row: {
             original: { billingDetails },
           },
         }) =>
           `${
-            billingDetails?.length
-              ? parseFloat(billingDetails[billingDetails.length - 1]?.pricingInRupee).toFixed(2)
-              : ''
+            Object.keys(billingDetails)
+            .slice(0,1)
+            .map((item,ind)=>{
+              return billingDetails[item][0].pricingInRupee?parseFloat(billingDetails[item][0].pricingInRupee).toFixed(2):Number(0).toFixed(2)
+            })
           }`,
       },
       {
         Header: 'TOTAL IN ₹',
         accessor: (originalRow) => {
-          return originalRow.billingDetails?.reduce(
-            (result, item) => (Number(item.pricingInRupee) + result),
-            0
-          );
+          // return originalRow.billingDetails?.reduce(
+          //   (result, item) => (Number(item.pricingInRupee) + result),
+          //   0
+          // );
+          let amount  = Object.keys(originalRow.billingDetails).map((item,index)=>{
+            return originalRow.billingDetails[item].reduce((previousVal,currentVal)=>{
+              return Number(previousVal)+Number(currentVal.pricingInRupee)
+            },0)
+            })
+            return amount.reduce((previousVal,price)=>{return previousVal+price},0)
         },
         width: 130,
         sortType: (a, b) => {
@@ -276,6 +288,12 @@ function CompleteTable({ data,sortByDateCreated }) {
           },
         }) => {
           const isMonthly = billingCycle === 'monthly';
+          let subscriptionPrice  = Object.keys(billingDetails).map((item,index)=>{
+            return billingDetails[item].reduce((previousVal,currentVal)=>{
+              return Number(previousVal)+Number(currentVal.pricingInRupee)
+            },0)
+            })
+            let totalSubsricptionPrice= subscriptionPrice.reduce((previousVal,price)=>{return previousVal+price},0)
           return (
             <div
               className='d-flex justify-content-end align-items-center'
@@ -283,10 +301,7 @@ function CompleteTable({ data,sortByDateCreated }) {
                 getToggleRowExpandedProps({ title: undefined }))}
             >
               <div>
-                {billingDetails?.reduce(
-                  (result, item) => (Number(item.pricingInRupee) + result),
-                  0
-                ).toFixed(2)}
+                {totalSubsricptionPrice}
                 &nbsp;&nbsp;
               </div>
               {isMonthly && (

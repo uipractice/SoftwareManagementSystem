@@ -21,10 +21,10 @@ const defaultFormData = {
   websiteUrl: '',
   billingCycle: 'monthly',
   nextBilling: moment().add(1, 'month').format('YYYY-MM-DD'),
-  billingDetails: [], // pricingInDollar pricingInRupee billingMonth nextBilling, desc, invoiceFiles
+  billingDetails: {}, // pricingInDollar pricingInRupee billingMonth nextBilling, desc, invoiceFiles
 };
 
-const nonMandatoryFields = ['websiteUrl', 'invoiceFiles'];
+const nonMandatoryFields = ['websiteUrl', 'invoiceFiles','pricingInDollar','pricingInRupee'];
 
 function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) {
   const inputRef = useRef(null);
@@ -244,13 +244,14 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
    */
   const handleSubmit = (e) => {
     e.preventDefault();
+    let subscriptionYear =  state.nextBilling.substring(0,4)
     const newBillingRecord = {
       ...billingDetails,
       nextBilling: state.nextBilling,
       createdAt: moment().format('YYYY-MM-DD'),
     };
-    state.billingDetails.push(newBillingRecord);
-    console.log('state', state);
+  
+   state.billingDetails[subscriptionYear]=[newBillingRecord];
     if (ValidateEmail(state.email)) {
       const renewUrl = `softwareInfo/renew/${rowData?._id}`;
       axios
