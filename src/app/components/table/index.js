@@ -9,7 +9,7 @@ import {
   useSortBy,
   useGlobalFilter,
   usePagination,
-  useExpanded
+  useExpanded,
 } from 'react-table';
 import './table.css';
 import GlobalFilter from './GlobalFilter';
@@ -24,11 +24,11 @@ import FilterDropdown from './FilterDropdown';
 import Download from '../../assets/images/download.svg';
 import Note from '../../assets/images/note.svg';
 
-import {guest, superAdmin} from '../constants/constants';
-import {getUser} from '../utils/userDetails';
+import { guest, superAdmin } from '../constants/constants';
+import { getUser } from '../utils/userDetails';
 
 toast.configure();
-function CompleteTable({ data,sortByDateCreated }) {
+function CompleteTable({ data, sortByDateCreated }) {
   const [filteredData, setFilteredData] = useState([]);
   const [searchValue, setSearchValue] = useState();
   const [rowData, setRowData] = useState({});
@@ -38,8 +38,8 @@ function CompleteTable({ data,sortByDateCreated }) {
   const [noRecords, setNoRecords] = useState(false);
 
   const [enteredValue, setEnteredValue] = useState('');
-  const [emptySearch,setSearchText]=useState('');
-  const [selectedFilter,setSelectedFilter]=useState({})
+  const [emptySearch, setSearchText] = useState('');
+  const [selectedFilter, setSelectedFilter] = useState({});
 
   const setDefaultFilterData = useCallback((filterData) => {
     if (filterData?.length) {
@@ -55,7 +55,7 @@ function CompleteTable({ data,sortByDateCreated }) {
   };
   useEffect(() => {
     setDefaultFilterData(data);
-  }, [setDefaultFilterData, data,sortByDateCreated]);
+  }, [setDefaultFilterData, data, sortByDateCreated]);
 
   function handleInputChange(evt) {
     const value = evt.target.value.replace(/[^a-zA-Z0-9 ]/g, '');
@@ -89,53 +89,38 @@ function CompleteTable({ data,sortByDateCreated }) {
       })
       .catch((err) => console.log(err.response));
   };
-  const customSorting = (c1, c2,header) => {
-
-    if(header==='TIMELINE')
-    {
-      if(c1===c2){
-        return 0
+  const customSorting = (c1, c2, header) => {
+    if (header === 'TIMELINE') {
+      if (c1 === c2) {
+        return 0;
+      } else if (c1 < 0) {
+        return 1;
+      } else if (c2 < 0) {
+        return -1;
+      } else if (c1 < c2) {
+        return -1;
       }
-      else if(c1 <0){
-        return 1
-      }
-      else if (c2 <0){
-        return -1
-      }
-      else if (c1<c2){
-        return -1
-      }
-      
-      
-    }else{
-      if(c1 !== undefined && c2 !==undefined)
-     return c1.localeCompare(c2, undefined, { numeric: true });
+    } else {
+      if (c1 !== undefined && c2 !== undefined)
+        return c1.localeCompare(c2, undefined, { numeric: true });
     }
-    
-
   };
   const getTimeLineClass = (days) => {
-    return days >= 7
-    ? 'timelineYellow'
-    : 'timelineRed'
-  }
+    return days >= 7 ? 'timelineYellow' : 'timelineRed';
+  };
   const getExpiredDays = (days) => {
-    return days ===1
-    ? ''
-    : 's'
-  }
+    return days === 1 ? '' : 's';
+  };
   const getExpiredText = (days) => {
-    return  days < 0
-    ? `Expired`
-    : `${days} day${getExpiredDays(days)}`
-  }
+    return days < 0 ? `Expired` : `${days} day${getExpiredDays(days)}`;
+  };
   const columns = React.useMemo(
     () => [
       {
         Header: 'Date Created',
         accessor: 'createdAt',
         width: 10,
-        isVisible:"false"
+        isVisible: 'false',
       },
       {
         Header: 'SOFTWARE',
@@ -153,8 +138,14 @@ function CompleteTable({ data,sortByDateCreated }) {
             original: { websiteUrl, softwareName },
           },
         }) => (
-          <div className='ellipse-css' title={softwareName}
-           style={{'pointerEvents':JSON.parse(getUser()).role === guest?'none':'cursor'}}>
+          <div
+            className='ellipse-css'
+            title={softwareName}
+            style={{
+              pointerEvents:
+                JSON.parse(getUser()).role === guest ? 'none' : 'cursor',
+            }}
+          >
             {websiteUrl ? (
               <a
                 href={websiteUrl}
@@ -223,17 +214,16 @@ function CompleteTable({ data,sortByDateCreated }) {
         //,
         Cell: ({
           row: {
-            original: { billingDetails},
+            original: { billingDetails },
           },
         }) =>
-          `${
-            Object.keys(billingDetails)
-            .slice(0,1)
-            .map((item,ind)=>{
-              return billingDetails[item][0].pricingInDollar?parseFloat(billingDetails[item][0].pricingInDollar).toFixed(2):Number(0).toFixed(2)
-            })
-
-          }`,
+          `${Object.keys(billingDetails)
+            .slice(0, 1)
+            .map((item, ind) => {
+              return billingDetails[item][0].pricingInDollar
+                ? parseFloat(billingDetails[item][0].pricingInDollar).toFixed(2)
+                : Number(0).toFixed(2);
+            })}`,
       },
       {
         Header: 'PRICING IN ₹',
@@ -250,13 +240,13 @@ function CompleteTable({ data,sortByDateCreated }) {
             original: { billingDetails },
           },
         }) =>
-          `${
-            Object.keys(billingDetails)
-            .slice(0,1)
-            .map((item,ind)=>{
-              return billingDetails[item][0].pricingInRupee?parseFloat(billingDetails[item][0].pricingInRupee).toFixed(2):Number(0).toFixed(2)
-            })
-          }`,
+          `${Object.keys(billingDetails)
+            .slice(0, 1)
+            .map((item, ind) => {
+              return billingDetails[item][0].pricingInRupee
+                ? parseFloat(billingDetails[item][0].pricingInRupee).toFixed(2)
+                : Number(0).toFixed(2);
+            })}`,
       },
       {
         Header: 'TOTAL IN ₹',
@@ -265,12 +255,21 @@ function CompleteTable({ data,sortByDateCreated }) {
           //   (result, item) => (Number(item.pricingInRupee) + result),
           //   0
           // );
-          let amount  = Object.keys(originalRow.billingDetails).map((item,index)=>{
-            return originalRow.billingDetails[item].reduce((previousVal,currentVal)=>{
-              return Number(previousVal)+Number(currentVal.pricingInRupee)
-            },0)
-            })
-            return amount.reduce((previousVal,price)=>{return previousVal+price},0)
+          let amount = Object.keys(originalRow.billingDetails).map(
+            (item, index) => {
+              return originalRow.billingDetails[item].reduce(
+                (previousVal, currentVal) => {
+                  return (
+                    Number(previousVal) + Number(currentVal.pricingInRupee)
+                  );
+                },
+                0
+              );
+            }
+          );
+          return amount.reduce((previousVal, price) => {
+            return previousVal + price;
+          }, 0);
         },
         width: 130,
         sortType: (a, b) => {
@@ -288,12 +287,19 @@ function CompleteTable({ data,sortByDateCreated }) {
           },
         }) => {
           const isMonthly = billingCycle === 'monthly';
-          let subscriptionPrice  = Object.keys(billingDetails).map((item,index)=>{
-            return billingDetails[item].reduce((previousVal,currentVal)=>{
-              return Number(previousVal)+Number(currentVal.pricingInRupee)
-            },0)
-            })
-            let totalSubsricptionPrice= subscriptionPrice.reduce((previousVal,price)=>{return previousVal+price},0)
+          let subscriptionPrice = Object.keys(billingDetails).map(
+            (item, index) => {
+              return billingDetails[item].reduce((previousVal, currentVal) => {
+                return Number(previousVal) + Number(currentVal.pricingInRupee);
+              }, 0);
+            }
+          );
+          let totalSubsricptionPrice = subscriptionPrice.reduce(
+            (previousVal, price) => {
+              return previousVal + price;
+            },
+            0
+          );
           return (
             <div
               className='d-flex justify-content-end align-items-center'
@@ -336,7 +342,7 @@ function CompleteTable({ data,sortByDateCreated }) {
             moment(todaysDate),
             'days'
           );
-         
+
           // return days ;
         },
         width: 100,
@@ -347,7 +353,7 @@ function CompleteTable({ data,sortByDateCreated }) {
             'TIMELINE'
           );
         },
-        
+
         Cell: ({
           row: {
             original: { nextBilling },
@@ -361,16 +367,10 @@ function CompleteTable({ data,sortByDateCreated }) {
           return (
             <div
               className={`timeline ${
-                days >= 10
-                  ? 'timelineGreen'
-                  : getTimeLineClass(days)
+                days >= 10 ? 'timelineGreen' : getTimeLineClass(days)
               }`}
             >
-              <p>
-                {days === 0
-                  ? `Today`
-                  : getExpiredText(days)}
-              </p>
+              <p>{days === 0 ? `Today` : getExpiredText(days)}</p>
             </div>
           );
         },
@@ -457,36 +457,68 @@ function CompleteTable({ data,sortByDateCreated }) {
       <td colSpan='12' className='rowexpandable'>
         <div className='subscrit'>
           <h3 className='rowexpandfont'>Subscription for:</h3>
-          {row.original.billingDetails
-            .slice(-6)
-            .sort((a, b) =>   months.indexOf(a.billingMonth) > months.indexOf(b.billingMonth)?1:a.billingMonth === b.billingMonth?0:-1)
-            .map((item, i) => (
-              <div key={i} className='label text-capitalize'>
-                <label>
-                  {item.billingMonth}{' '}
-                  {item.description && (
-                    <img
-                      className='px-2 pointer'
-                      src={Note}
-                      title={item.description}
-                      alt='description'
-                    />
-                  )}{' '}
-                </label>
-                <div className='amount'>
-                  {`₹${parseFloat(item.pricingInRupee).toFixed(2)} `}
-                  {item.invoiceFiles.length > 0 && (
-                    <img
-                      className='pl-3 pr-2 pointer'
-                      src={Download}
-                      onClick={() => downloadInvoice(row.original, item)}
-                      alt='download'
-                    />
-                  )}
+      
+          {
+             Object.keys(row.original.billingDetails).map((item, index) => {
+              return row.original.billingDetails[item].map((month, ind) => (
+                 <div key={ind} className='label text-capitalize'>
+                  <label>
+                    {month.billingMonth}{'-'}{item.substring(2,4)}{' '}
+                    {month.description && (
+                      <img
+                        className='px-2 pointer'
+                        src={Note}
+                        title={month.description}
+                        alt='description'
+                      />
+                    )}{' '}
+                  </label>
+                  <div className='amount'>
+                    {`₹${parseFloat(month.pricingInRupee).toFixed(2)} `}
+                    {month.invoiceFiles?.length > 0 && (
+                      <img
+                        className='pl-3 pr-2 pointer'
+                        src={Download}
+                        onClick={() => downloadInvoice(row.original, item)}
+                        alt='download'
+                      />
+                   )}
+                  </div>
                 </div>
-              </div>
-            ))}
-          {row.original.billingDetails?.length > 6 && (
+               )
+              );
+            })
+            // row.original.billingDetails
+            //   .slice(-6)
+            //   .sort((a, b) =>   months.indexOf(a.billingMonth) > months.indexOf(b.billingMonth)?1:a.billingMonth === b.billingMonth?0:-1)
+            //   .map((item, i) => (
+            //     <div key={i} className='label text-capitalize'>
+            //       <label>
+            //         {item.billingMonth}{' '}
+            //         {item.description && (
+            //           <img
+            //             className='px-2 pointer'
+            //             src={Note}
+            //             title={item.description}
+            //             alt='description'
+            //           />
+            //         )}{' '}
+            //       </label>
+            //       <div className='amount'>
+            //         {`₹${parseFloat(item.pricingInRupee).toFixed(2)} `}
+            //         {item.invoiceFiles.length > 0 && (
+            //           <img
+            //             className='pl-3 pr-2 pointer'
+            //             src={Download}
+            //             onClick={() => downloadInvoice(row.original, item)}
+            //             alt='download'
+            //           />
+            //         )}
+            //       </div>
+            //     </div>
+            //   ))
+          }
+          {/* {row.original.billingDetails?.length > 6 && (
             <div style={{ alignSelf: 'flex-end', margin: '18px 0' }}>
               <button
                 onClick={() => {
@@ -497,7 +529,7 @@ function CompleteTable({ data,sortByDateCreated }) {
                 Show All
               </button>
             </div>
-          )}
+          )} */}
         </div>
       </td>
     ),
@@ -526,17 +558,20 @@ function CompleteTable({ data,sortByDateCreated }) {
       data: filteredData,
       initialState: {
         pageSize: 5,
-        autoResetSortBy:false,
-        manualSortBy:true,
-        hiddenColumns: ['createdAt', JSON.parse(getUser()).role === guest? ['action']:['']],
+        autoResetSortBy: false,
+        manualSortBy: true,
+        hiddenColumns: [
+          'createdAt',
+          JSON.parse(getUser()).role === guest ? ['action'] : [''],
+        ],
         sortBy: [
           {
-            id:sortByDateCreated===false ?'billingCycle':'createdAt',
-            desc:sortByDateCreated===false?false:true
+            id: sortByDateCreated === false ? 'billingCycle' : 'createdAt',
+            desc: sortByDateCreated === false ? false : true,
           },
           {
-            id:sortByDateCreated===false?'TIMELINE':'createdAt',
-            desc:sortByDateCreated===false?false:true
+            id: sortByDateCreated === false ? 'TIMELINE' : 'createdAt',
+            desc: sortByDateCreated === false ? false : true,
           },
         ],
       },
@@ -561,86 +596,80 @@ function CompleteTable({ data,sortByDateCreated }) {
   }
 
   useEffect(() => {
-    if (filteredTableData?.length && globalFilter && searchValue){
+    if (filteredTableData?.length && globalFilter && searchValue) {
       setFilteredData(addSerialNo(filteredTableData, true));
       setEnteredValue('');
       setNoRecords(false);
-    }
-    else if (searchValue === ''){
+    } else if (searchValue === '') {
       setFilteredData(addSerialNo(data));
       onFilterSelect(selectedFilter);
-      setEnteredValue('')
+      setEnteredValue('');
       setNoRecords(false);
-    } 
-    if(filteredTableData.length === 0 && searchValue) {
+    }
+    if (filteredTableData.length === 0 && searchValue) {
       setNoRecords(true);
-    }else{
+    } else {
       setNoRecords(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchValue]);
 
   const onFilterSelect = (filterState) => {
-    setSelectedFilter(filterState)
-    setSearchText('empty')
+    setSelectedFilter(filterState);
+    setSearchText('empty');
     const filterKeys = Object.keys(filterState);
-   
+
     if (filterKeys?.length) {
       const finalFilteredData = filterKeys.reduce((result, key) => {
-        const filteredDataResult = result.filter((row) =>{
-          if(filterKeys.includes(key)){
-            console.log(filterState[key])
-            if(filterState[key] === 'all'){
-              return row.status !== 'deleted'
-            }else if (filterState['status'] === 'deleted') {
-                if(filterState['softwareType'] && row.status === 'deleted'){
-                return row[key] === filterState[key]
-            }
-            if(filterState['billingCycle'] && row.status === 'deleted'){
-              return row[key] === filterState[key]
-          }
-              return  row.status === 'deleted'
-            }
-            else if (filterState['status'] === 'expired') {
-               if(row.status !=="deleted"){
-              const todaysDate = moment().format('YYYY-MM-DD');
-              const days = moment(row.nextBilling, 'YYYY-MM-DD').diff(
-                moment(todaysDate),
-                'days'
-              );
-              if(days<0){
-                    if(key === 'softwareType'){
-                      console.log("k*****y",key)
-                      return row['softwareType'] === filterState['softwareType']
-                  }
-                  if(key==='billingCycle'){
-                    console.log("key",row)
-                    return row['billingCycle'] === filterState['billingCycle']
-                }
-                    return row
-          }
-        }
-      }
-            else{
-              return row[key] === filterState[key] && row.status !== 'deleted'
+        const filteredDataResult = result.filter((row) => {
+          if (filterKeys.includes(key)) {
+            console.log(filterState[key]);
+            if (filterState[key] === 'all') {
+              return row.status !== 'deleted';
+            } else if (filterState['status'] === 'deleted') {
+              if (filterState['softwareType'] && row.status === 'deleted') {
+                return row[key] === filterState[key];
               }
-           
+              if (filterState['billingCycle'] && row.status === 'deleted') {
+                return row[key] === filterState[key];
+              }
+              return row.status === 'deleted';
+            } else if (filterState['status'] === 'expired') {
+              if (row.status !== 'deleted') {
+                const todaysDate = moment().format('YYYY-MM-DD');
+                const days = moment(row.nextBilling, 'YYYY-MM-DD').diff(
+                  moment(todaysDate),
+                  'days'
+                );
+                if (days < 0) {
+                  if (key === 'softwareType') {
+                    console.log('k*****y', key);
+                    return row['softwareType'] === filterState['softwareType'];
+                  }
+                  if (key === 'billingCycle') {
+                    console.log('key', row);
+                    return row['billingCycle'] === filterState['billingCycle'];
+                  }
+                  return row;
+                }
+              }
+            } else {
+              return row[key] === filterState[key] && row.status !== 'deleted';
+            }
           }
-        }
-    
-        );
+        });
         result = [...filteredDataResult];
         return result;
       }, data);
-      if(finalFilteredData.length > 0){
+      if (finalFilteredData.length > 0) {
         setNoRecords(false);
-      }else{
+      } else {
         setNoRecords(true);
       }
       setFilteredData(addSerialNo(finalFilteredData));
     }
   };
-  
+
   return (
     <>
       <div className='filter-row'>
@@ -656,12 +685,14 @@ function CompleteTable({ data,sortByDateCreated }) {
         </p>
 
         <div className='row'>
-          <FilterDropdown filterSelect={(selectedState) => onFilterSelect(selectedState)}/>
+          <FilterDropdown
+            filterSelect={(selectedState) => onFilterSelect(selectedState)}
+          />
           <GlobalFilter
             setFilter={(value) => {
               setGlobalFilter(value);
               setSearchValue(value);
-              setSearchText('')
+              setSearchText('');
             }}
             removeSearchValue={emptySearch}
           />
@@ -738,7 +769,7 @@ function CompleteTable({ data,sortByDateCreated }) {
               <div className='d-flex justify-content-between px-1'>
                 <div>{rowData.softwareName}</div>
                 <div className='prev-next'>
-                  <button  disabled={!canPreviousPage}>
+                  <button disabled={!canPreviousPage}>
                     <img src={leftIcon} alt='prev' />
                   </button>{' '}
                   {moment(rowData.createdAt).format('YYYY')}{' '}
@@ -783,7 +814,7 @@ function CompleteTable({ data,sortByDateCreated }) {
                 <span>
                   {'Total Amount:  ₹'}
                   {rowData.billingDetails?.reduce(
-                    (result, item) => ( Number(item.pricingInRupee)+ result),
+                    (result, item) => Number(item.pricingInRupee) + result,
                     0
                   )}
                 </span>
@@ -825,48 +856,56 @@ function CompleteTable({ data,sortByDateCreated }) {
             ))}
           </thead>
           <tbody {...getTableBodyProps()}>
-            {!noRecords ? page.map((row, keyValue) => {
-              prepareRow(row);
-              return (
-                <React.Fragment key={keyValue}>
-                  <tr className='text-capital' {...row.getRowProps()}>
-                    {row.cells.map((cell, index) => {
-                      let style = {};
-                      style = { textAlign: 'left' };
-                      if (cell.column.id === 'status') {
-                        if (cell.value === 'Pending') {
-                          style = { color: '#F16A21', textAlign: 'left' };
-                        } else if (cell.value === 'Submitted') {
-                          style = { color: '#0066FF', textAlign: 'left' };
-                        } else if (cell.value === 'Completed') {
-                          style = { color: '#13BC86', textAlign: 'left' };
-                        } else if (cell.value === 'Approved') {
-                          style = { color: 'green', textAlign: 'left' };
+            {!noRecords ? (
+              page.map((row, keyValue) => {
+                prepareRow(row);
+                return (
+                  <React.Fragment key={keyValue}>
+                    <tr className='text-capital' {...row.getRowProps()}>
+                      {row.cells.map((cell, index) => {
+                        let style = {};
+                        style = { textAlign: 'left' };
+                        if (cell.column.id === 'status') {
+                          if (cell.value === 'Pending') {
+                            style = { color: '#F16A21', textAlign: 'left' };
+                          } else if (cell.value === 'Submitted') {
+                            style = { color: '#0066FF', textAlign: 'left' };
+                          } else if (cell.value === 'Completed') {
+                            style = { color: '#13BC86', textAlign: 'left' };
+                          } else if (cell.value === 'Approved') {
+                            style = { color: 'green', textAlign: 'left' };
+                          }
                         }
-                      }
-                      return (
-                        <td key={index} {...cell.getCellProps({ style })}>
-                          {cell.render('Cell')}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                  {row.isExpanded ? (
-                    <tr>
-                      {/* <td colSpan={visibleColumns.length}></td> */}
-                      {renderRowSubComponent({ row })}
+                        return (
+                          <td key={index} {...cell.getCellProps({ style })}>
+                            {cell.render('Cell')}
+                          </td>
+                        );
+                      })}
                     </tr>
-                  ) : null}
-                </React.Fragment>
-              );
-            }) : <tr style={{textAlign: 'center'}}><span>No data found</span></tr>}
+                    {row.isExpanded ? (
+                      <tr>
+                        {/* <td colSpan={visibleColumns.length}></td> */}
+                        {renderRowSubComponent({ row })}
+                      </tr>
+                    ) : null}
+                  </React.Fragment>
+                );
+              })
+            ) : (
+              <tr style={{ textAlign: 'center' }}>
+                <span>No data found</span>
+              </tr>
+            )}
           </tbody>
         </table>
         {page.length > 0 && (
           <div className='table-pagination'>
-            { !noRecords && <span className='paginate'>
-              <b>{start}</b> to <b>{end}</b> of <b>{filteredData.length}</b>
-            </span>}
+            {!noRecords && (
+              <span className='paginate'>
+                <b>{start}</b> to <b>{end}</b> of <b>{filteredData.length}</b>
+              </span>
+            )}
             {/* <label>Rows per page:</label>
         <select
           value={pageSize}
@@ -879,39 +918,48 @@ function CompleteTable({ data,sortByDateCreated }) {
             </option>
           ))}
         </select> */}
-            {!noRecords && <span>
-              Page{' '}
-              <strong>
-                {pageIndex + 1} of {pageOptions.length}
-              </strong>{' '}
-            </span>}
-            {!noRecords && <div className='prev-next'>
-              <button
-                onClick={() => previousPage()}
-                disabled={!canPreviousPage}
-              >
-                <img src={leftIcon} alt='prev' />
-              </button>{' '}
-              <button onClick={() => nextPage()} disabled={!canNextPage}>
-                <img src={rightIcon} alt='next' />
-              </button>{' '}
-            </div>}
-            <input className='pagination-search'
-          type= 'number'
-           onChange={(e) => {
-            const value= e.target.value-1;
-            const enteredValue = e.target.value.match(/^([1-9]\d*)?$/) && e.target.value.match(/^([1-9]\d*)?$/)['input'] ? e.target.value : ''; 
-            if(pageOptions.length > value){
-              gotoPage(value);
-              setEnteredValue(enteredValue);
-              setNoRecords(false);
-            }else{
-              setEnteredValue(e.target.value);
-              setNoRecords(true);
-            }
-          } }
-          value={enteredValue}
-          />
+            {!noRecords && (
+              <span>
+                Page{' '}
+                <strong>
+                  {pageIndex + 1} of {pageOptions.length}
+                </strong>{' '}
+              </span>
+            )}
+            {!noRecords && (
+              <div className='prev-next'>
+                <button
+                  onClick={() => previousPage()}
+                  disabled={!canPreviousPage}
+                >
+                  <img src={leftIcon} alt='prev' />
+                </button>{' '}
+                <button onClick={() => nextPage()} disabled={!canNextPage}>
+                  <img src={rightIcon} alt='next' />
+                </button>{' '}
+              </div>
+            )}
+            <input
+              className='pagination-search'
+              type='number'
+              onChange={(e) => {
+                const value = e.target.value - 1;
+                const enteredValue =
+                  e.target.value.match(/^([1-9]\d*)?$/) &&
+                  e.target.value.match(/^([1-9]\d*)?$/)['input']
+                    ? e.target.value
+                    : '';
+                if (pageOptions.length > value) {
+                  gotoPage(value);
+                  setEnteredValue(enteredValue);
+                  setNoRecords(false);
+                } else {
+                  setEnteredValue(e.target.value);
+                  setNoRecords(true);
+                }
+              }}
+              value={enteredValue}
+            />
           </div>
         )}
       </div>
