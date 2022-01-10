@@ -48,7 +48,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
           .format('YYYY-MM-DD'),
       };
       const prevBillingDetails = {
-        ...rowData?.billingDetails?.[rowData.billingDetails.length - 1],
+        // ...rowData?.billingDetails?.[rowData.billingDetails.length - 1],
         ...(rowData?.billingCycle === 'monthly' && {
           billingMonth: moment(rowData.nextBilling)
             .format('MMMM')
@@ -250,8 +250,12 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
       nextBilling: state.nextBilling,
       createdAt: moment().format('YYYY-MM-DD'),
     };
-  
-   state.billingDetails[subscriptionYear]=[newBillingRecord];
+ if(Object.keys(state.billingDetails).includes(subscriptionYear)){
+  state.billingDetails[subscriptionYear].push(newBillingRecord);
+ }else{
+  state.billingDetails[subscriptionYear]=[newBillingRecord];
+ } 
+   
     if (ValidateEmail(state.email)) {
       const renewUrl = `softwareInfo/renew/${rowData?._id}`;
       axios

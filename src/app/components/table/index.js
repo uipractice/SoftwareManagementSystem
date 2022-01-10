@@ -488,35 +488,7 @@ function CompleteTable({ data, sortByDateCreated }) {
                )
               );
             })
-            // row.original.billingDetails
-            //   .slice(-6)
-            //   .sort((a, b) =>   months.indexOf(a.billingMonth) > months.indexOf(b.billingMonth)?1:a.billingMonth === b.billingMonth?0:-1)
-            //   .map((item, i) => (
-            //     <div key={i} className='label text-capitalize'>
-            //       <label>
-            //         {item.billingMonth}{' '}
-            //         {item.description && (
-            //           <img
-            //             className='px-2 pointer'
-            //             src={Note}
-            //             title={item.description}
-            //             alt='description'
-            //           />
-            //         )}{' '}
-            //       </label>
-            //       <div className='amount'>
-            //         {`₹${parseFloat(item.pricingInRupee).toFixed(2)} `}
-            //         {item.invoiceFiles.length > 0 && (
-            //           <img
-            //             className='pl-3 pr-2 pointer'
-            //             src={Download}
-            //             onClick={() => downloadInvoice(row.original, item)}
-            //             alt='download'
-            //           />
-            //         )}
-            //       </div>
-            //     </div>
-            //   ))
+
           }
           {/* {row.original.billingDetails?.length > 6 && (
             <div style={{ alignSelf: 'flex-end', margin: '18px 0' }}>
