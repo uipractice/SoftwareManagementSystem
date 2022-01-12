@@ -27,6 +27,7 @@ const defaultFormData = {
 const nonMandatoryFields = ['websiteUrl', 'invoiceFiles','pricingInDollar','pricingInRupee'];
 
 function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) {
+  
   const inputRef = useRef(null);
   const [state, setState] = useState({});
   const [invoiceFiles, setInvoiceFiles] = useState([]);
@@ -63,7 +64,6 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
     }
     setState(stateData);
   }, [isEdit, rowData]);
-
   const setTargetName = (value, e) => {
     if (value.match(/[a-zA-Z0-9]+([\s]+)*$/)) {
       setState({
@@ -98,6 +98,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
    * @return null.
    */
   const handleOnChange = (e, key, priceSection, url = false) => {
+    
     if (key === 'billingDetails') {
       let data = '';
       if (!priceSection) {
@@ -243,20 +244,26 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
    * @return null.
    */
   const handleSubmit = (e) => {
+    
     e.preventDefault();
-    let subscriptionYear =  state.nextBilling.substring(0,4)
+    
+    let subscriptionYear =  state.nextBilling.substring(0,4);
+
     const newBillingRecord = {
       ...billingDetails,
       nextBilling: state.nextBilling,
       createdAt: moment().format('YYYY-MM-DD'),
     };
- if(Object.keys(state.billingDetails).includes(subscriptionYear)){
-  state.billingDetails[subscriptionYear].push(newBillingRecord);
+    let subscriptionMonth=newBillingRecord.billingMonth;
+    let softwareToolDetails=JSON.parse(JSON.stringify(state))
+ if(Object.keys(softwareToolDetails.billingDetails).includes(subscriptionYear)){
+  softwareToolDetails.billingDetails[subscriptionYear].push(newBillingRecord);
  }else{
-  state.billingDetails[subscriptionYear]=[newBillingRecord];
+  softwareToolDetails.billingDetails[subscriptionYear]=[newBillingRecord];
  } 
-   
-    if (ValidateEmail(state.email)) {
+
+
+    if (ValidateEmail(softwareToolDetails.email)) {
       const renewUrl = `softwareInfo/renew/${rowData?._id}`;
       axios
         .post(
@@ -265,25 +272,34 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
               ? getApiUrl(renewUrl)
               : getApiUrl('softwareInfo/create')
           }`,
-          isEdit ? newBillingRecord : state
+          softwareToolDetails
         )
         .then((res) => {
-          if (res.data && Object.keys(res.data)?.length) {
+          
+
+          if(isEdit){
+            let subscribedYears=Object.keys(res.data.billingDetails)
+            if(subscribedYears.includes(subscriptionYear)){
+              let renewedSubscription =  res.data.billingDetails[subscriptionYear].filter((month,ind)=>{
+                if(month.billingMonth === subscriptionMonth){
+                  return month
+                }
+              })
+              uploadInvoiceFiles(renewedSubscription[0]);
+            }
+          }else{
             uploadInvoiceFiles(res.data);
-            closeModal();
-            toast.success('Data Saved Successfully !', {
-              autoClose: 1000,
-              onClose:updateToolStatus(true)
-            });
-            
-            // setTimeout(() => {
-            //   window.location.reload();
-            // }, 1000);
-          } else {
-            toast.error('Data Saved FAILED !', {
-              autoClose: 2000,
-            });
+            setState(defaultFormData)
+
           }
+
+          closeModal();
+          toast.success('Data Saved Successfully !', {
+            autoClose: 1000,
+            onClose:updateToolStatus(true)
+          });
+
+
         });
     }
   };
@@ -353,7 +369,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
             </div>
             <div className='form-group col-md-4'>
               <label htmlFor='websiteUrl'>URL </label>
-              <span class='help-text'>( Ex: https:// )</span>
+              <span className='help-text'>( Ex: https:// )</span>
               <input
                 type='text'
                 className='form-control'
@@ -478,11 +494,11 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
                 name='nextBilling'
                 value={state?.nextBilling}
                 // min={moment().subtract(1, 'month').format('YYYY-MM-DD')}
-                // max={
-                //   state.billingCycle === 'yearly'
-                //     ? ''
-                //     : moment().add(1, 'month').format('YYYY-MM-DD')
-                // }
+                max={
+                  state.billingCycle === 'yearly'
+                    ? ''
+                    : moment().add(1, 'month').format('YYYY-MM-DD')
+                }
               />
             </div>
             <div className='form-group col-md-2'>

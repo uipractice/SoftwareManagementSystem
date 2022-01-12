@@ -28,7 +28,7 @@ import { guest, superAdmin } from '../constants/constants';
 import { getUser } from '../utils/userDetails';
 
 toast.configure();
-function CompleteTable({ data, sortByDateCreated }) {
+function CompleteTable({ data, sortByDateCreated,getAddToolStatus }) {
   const [filteredData, setFilteredData] = useState([]);
   const [searchValue, setSearchValue] = useState();
   const [rowData, setRowData] = useState({});
@@ -40,7 +40,10 @@ function CompleteTable({ data, sortByDateCreated }) {
   const [enteredValue, setEnteredValue] = useState('');
   const [emptySearch, setSearchText] = useState('');
   const [selectedFilter, setSelectedFilter] = useState({});
-
+  const updateSatus=(value)=>{
+    getAddToolStatus(value)
+    
+  }
   const setDefaultFilterData = useCallback((filterData) => {
     if (filterData?.length) {
       let filterResult = filterData.filter((row) => row.status !== 'deleted');
@@ -251,10 +254,7 @@ function CompleteTable({ data, sortByDateCreated }) {
       {
         Header: 'TOTAL IN ₹',
         accessor: (originalRow) => {
-          // return originalRow.billingDetails?.reduce(
-          //   (result, item) => (Number(item.pricingInRupee) + result),
-          //   0
-          // );
+      
           let amount = Object.keys(originalRow.billingDetails).map(
             (item, index) => {
               return originalRow.billingDetails[item].reduce(
@@ -454,13 +454,18 @@ function CompleteTable({ data, sortByDateCreated }) {
   ];
   const renderRowSubComponent = useCallback(
     ({ row }) => (
+      
       <td colSpan='12' className='rowexpandable'>
         <div className='subscrit'>
           <h3 className='rowexpandfont'>Subscription for:</h3>
       
           {
              Object.keys(row.original.billingDetails).map((item, index) => {
-              return row.original.billingDetails[item].map((month, ind) => (
+              return row.original.billingDetails[item]
+              .sort((a,b)=>
+              months.indexOf(a.billingMonth) > months.indexOf(b.billingMonth)?1:a.billingMonth === b.billingMonth?0:-1
+              )
+              .map((month, ind) => (
                  <div key={ind} className='label text-capitalize'>
                   <label>
                     {month.billingMonth}{'-'}{item.substring(2,4)}{' '}
@@ -474,7 +479,7 @@ function CompleteTable({ data, sortByDateCreated }) {
                     )}{' '}
                   </label>
                   <div className='amount'>
-                    {`₹${parseFloat(month.pricingInRupee).toFixed(2)} `}
+                    {month.pricingInRupee!==''?`${'₹'}${parseFloat(month.pricingInRupee).toFixed(2)}`:`${'₹'}${Number(0).toFixed(2)}`}
                     {month.invoiceFiles?.length > 0 && (
                       <img
                         className='pl-3 pr-2 pointer'
@@ -490,18 +495,21 @@ function CompleteTable({ data, sortByDateCreated }) {
             })
 
           }
-          {/* {row.original.billingDetails?.length > 6 && (
-            <div style={{ alignSelf: 'flex-end', margin: '18px 0' }}>
-              <button
-                onClick={() => {
-                  setShow(true);
-                  setRowData(row.original);
-                }}
-              >
-                Show All
-              </button>
-            </div>
-          )} */}
+          {
+            //  let count = Object.values(row.original.billingDetails).reduce((previousVal,currentVal)=>Number(pre)+cur.length,0);
+          // row.original.billingDetails?.length > 6 && (
+          //   <div style={{ alignSelf: 'flex-end', margin: '18px 0' }}>
+          //     <button
+          //       onClick={() => {
+          //         setShow(true);
+          //         setRowData(row.original);
+          //       }}
+          //     >
+          //       Show All
+          //     </button>
+          //   </div>
+          // )
+          }
         </div>
       </td>
     ),
@@ -945,6 +953,7 @@ function CompleteTable({ data, sortByDateCreated }) {
           }}
           rowData={rowData}
           isEdit={true}
+          updateToolStatus={updateSatus}
         />
       )}
     </>

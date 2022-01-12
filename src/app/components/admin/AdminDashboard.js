@@ -64,7 +64,7 @@ export default function AdminDashboard() {
             <div className='col-md-12 ms-sm-auto col-lg-12'>
             {JSON.parse(getUser()).role=== superAdmin && 
               <DashboardHeader  getAddToolStatus={addToolstatus}/>}
-              <CompleteTable data={data} sortByDateCreated={sortType}/>
+              <CompleteTable data={data} sortByDateCreated={sortType} getAddToolStatus={addToolstatus}/>
               
             </div>
           </div>
