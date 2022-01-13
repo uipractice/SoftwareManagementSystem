@@ -34,6 +34,7 @@ function CompleteTable({ data, sortByDateCreated,getAddToolStatus }) {
   const [rowData, setRowData] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditFormOpen, toggleEditForm] = useState(false);
+  const [isEditSubscription, toggleSubscription] = useState(false);
   const [show, setShow] = useState(false);
   const [noRecords, setNoRecords] = useState(false);
 
@@ -393,6 +394,7 @@ function CompleteTable({ data, sortByDateCreated,getAddToolStatus }) {
               onClick={() => {
                 setRowData(row.original);
                 toggleEditForm(true);
+                toggleSubscription(false);
               }}
             />
             <img
@@ -469,7 +471,7 @@ function CompleteTable({ data, sortByDateCreated,getAddToolStatus }) {
               months.indexOf(a.billingMonth) > months.indexOf(b.billingMonth)?1:a.billingMonth === b.billingMonth?0:-1
               )
               .map((month, ind) => (
-                 <div key={ind} className='label text-capitalize'>
+                 <div key={ind} className='label text-capitalize' onClick={()=>{ setRowData(row.original);toggleEditForm(false); toggleSubscription(true)}}>
                   <label>
                     {month.billingMonth}{'-'}{item.substring(2,4)}{' '}
                     {month.description && (
@@ -652,7 +654,7 @@ function CompleteTable({ data, sortByDateCreated,getAddToolStatus }) {
       setFilteredData(addSerialNo(finalFilteredData));
     }
   };
-
+console.log(isEditSubscription, isEditFormOpen, rowData, 'test')
   return (
     <>
       <div className='filter-row'>
@@ -947,16 +949,18 @@ function CompleteTable({ data, sortByDateCreated,getAddToolStatus }) {
         )}
       </div>
 
-      {isEditFormOpen && (
+      {(isEditFormOpen || isEditSubscription) && (
         <Form
-          isOpen={isEditFormOpen}
+          isOpen={isEditFormOpen || isEditSubscription}
           closeModal={() => {
             toggleEditForm(false);
+            toggleSubscription(false)
             setRowData(null);
           }}
           rowData={rowData}
-          isEdit={true}
           updateToolStatus={updateSatus}
+          isEdit={isEditSubscription ? false : true}
+          isMontlyAction={isEditSubscription}
         />
       )}
     </>

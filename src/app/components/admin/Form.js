@@ -26,8 +26,7 @@ const defaultFormData = {
 
 const nonMandatoryFields = ['websiteUrl', 'invoiceFiles','pricingInDollar','pricingInRupee'];
 
-function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) {
-  
+function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus, isMontlyAction=false }) {
   const inputRef = useRef(null);
   const [state, setState] = useState({});
   const [invoiceFiles, setInvoiceFiles] = useState([]);
@@ -41,7 +40,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
   useEffect(() => {
     inputRef?.current?.focus();
     let stateData = defaultFormData;
-    if (isEdit) {
+    if (isEdit || isMontlyAction) {
       stateData = {
         ...rowData,
         nextBilling: moment(rowData?.nextBilling)
@@ -63,7 +62,8 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
       setBillingDetails(prevBillingDetails);
     }
     setState(stateData);
-  }, [isEdit, rowData]);
+  }, [isEdit, isMontlyAction, rowData]);
+
   const setTargetName = (value, e) => {
     if (value.match(/[a-zA-Z0-9]+([\s]+)*$/)) {
       setState({
@@ -246,29 +246,34 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
   const handleSubmit = (e) => {
     
     e.preventDefault();
-    
-    let subscriptionYear =  state.nextBilling.substring(0,4);
-
+    let softwareToolDetails=JSON.parse(JSON.stringify(state))
     const newBillingRecord = {
       ...billingDetails,
       nextBilling: state.nextBilling,
       createdAt: moment().format('YYYY-MM-DD'),
     };
+    let subscriptionYear =  state.nextBilling.substring(0,4);
     let subscriptionMonth=newBillingRecord.billingMonth;
-    let softwareToolDetails=JSON.parse(JSON.stringify(state))
- if(Object.keys(softwareToolDetails.billingDetails).includes(subscriptionYear)){
-  softwareToolDetails.billingDetails[subscriptionYear].push(newBillingRecord);
- }else{
-  softwareToolDetails.billingDetails[subscriptionYear]=[newBillingRecord];
- } 
 
+    
+    if(Object.keys(softwareToolDetails.billingDetails).includes(subscriptionYear)){
+      // if(Object.keys(softwareToolDetails.billingDetails).includes(billingMonth)){
+      //   softwareToolDetails.billingDetails[billingMonth].push(newBillingRecord);
+      // }
+      console.log(softwareToolDetails.billingDetails[subscriptionYear],newBillingRecord,'check');
+      softwareToolDetails.billingDetails[subscriptionYear].push(newBillingRecord);
+    }else{
+      softwareToolDetails.billingDetails[subscriptionYear]=[newBillingRecord];
+}
 
-    if (ValidateEmail(softwareToolDetails.email)) {
-      const renewUrl = `softwareInfo/renew/${rowData?._id}`;
+//console.log(softwareToolDetails,state, 'softwareToolDetails')
+    if (ValidateEmail(softwareToolDetails.email) ) {
+      const renewUrl = `softwareInfo/renew/${softwareToolDetails?._id}`;
+      return ;
       axios
         .post(
           `${
-            isEdit
+            (isEdit || isMontlyAction)
               ? getApiUrl(renewUrl)
               : getApiUrl('softwareInfo/create')
           }`,
@@ -287,17 +292,19 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
               })
               uploadInvoiceFiles(renewedSubscription[0]);
             }
+          }else if(isMontlyAction){
+            closeModal();
+            toast.success('Data Saved Successfully !', {
+              autoClose: 1000,
+              onClose:updateToolStatus(true)
+            });
           }else{
             uploadInvoiceFiles(res.data);
             setState(defaultFormData)
 
           }
 
-          closeModal();
-          toast.success('Data Saved Successfully !', {
-            autoClose: 1000,
-            onClose:updateToolStatus(true)
-          });
+          
 
 
         });
@@ -327,11 +334,11 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
                 type='radio'
                 name='softwareType'
                 value={state?.softwareType}
-                disabled={isEdit}
+                disabled={isEdit || isMontlyAction}
                 onChange={(val) => setState({ ...state, softwareType: val })}
               >
                 <ToggleButton
-                  disabled={isEdit}
+                  disabled={isEdit || isMontlyAction}
                   checked={state?.softwareType === 'certificate'}
                   value={'certificate'}
                   className='certificate'
@@ -339,7 +346,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
                   Certificate
                 </ToggleButton>
                 <ToggleButton
-                  disabled={isEdit}
+                  disabled={isEdit || isMontlyAction}
                   checked={state?.softwareType === 'domain'}
                   value={'domain'}
                   className='domian'
@@ -347,7 +354,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
                   Domain
                 </ToggleButton>
                 <ToggleButton
-                  disabled={isEdit}
+                  disabled={isEdit || isMontlyAction}
                   checked={state?.softwareType === 'software'}
                   value={'software'}
                   className='software'
@@ -363,7 +370,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
                 className='form-control'
                 onChange={handleOnChange}
                 name='softwareName'
-                disabled={isEdit}
+                disabled={isEdit || isMontlyAction}
                 value={state?.softwareName}
               />
             </div>
@@ -375,7 +382,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
                 className='form-control'
                 onChange={(e) => handleOnChange(e, '', false, true)}
                 name='websiteUrl'
-                disabled={isEdit}
+                disabled={isEdit || isMontlyAction}
                 value={state?.websiteUrl}
               />
             </div>
@@ -388,7 +395,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
                 className='form-control'
                 onChange={handleOnChange}
                 name='team'
-                disabled={isEdit}
+                disabled={isEdit || isMontlyAction}
                 value={state?.team}
               />
             </div>
@@ -399,7 +406,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
                 className='form-control'
                 onChange={handleOnChange}
                 name='owner'
-                disabled={isEdit}
+                disabled={isEdit || isMontlyAction}
                 value={state?.owner}
               />
             </div>
@@ -415,7 +422,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
                 className='form-control'
                 onChange={(e) => handleEmailChange(e, true)}
                 onKeyDown={(e) => handleEmailChange(e, true)}
-                disabled={isEdit}
+                disabled={isEdit || isMontlyAction}
                 name='email'
                 value={
                   state.email &&
@@ -436,7 +443,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
                 type='radio'
                 name='billingCycle'
                 value={state?.billingCycle}
-                disabled={isEdit}
+                disabled={isEdit || isMontlyAction}
                 onChange={(val) =>
                   handleOnChange({
                     target: { name: 'billingCycle', value: val },
@@ -444,14 +451,14 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
                 }
               >
                 <ToggleButton
-                  disabled={isEdit}
+                  disabled={isEdit || isMontlyAction}
                   checked={state?.billingCycle === 'monthly'}
                   value={'monthly'}
                 >
                   Monthly
                 </ToggleButton>
                 <ToggleButton
-                  disabled={isEdit}
+                  disabled={isEdit || isMontlyAction}
                   checked={state?.billingCycle === 'yearly'}
                   value={'yearly'}
                   className='yearly'
@@ -469,6 +476,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
                 name='billingMonth'
                 value={billingDetails?.billingMonth}
                 disabled={state?.billingCycle === 'yearly'}
+                disabled={isMontlyAction}
               >
                 <option value='january'>January</option>
                 <option value='february'>February</option>
@@ -499,6 +507,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
                     ? ''
                     : moment().add(1, 'month').format('YYYY-MM-DD')
                 }
+                disabled={isMontlyAction}
               />
             </div>
             <div className='form-group col-md-2'>
