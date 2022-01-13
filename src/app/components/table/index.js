@@ -208,48 +208,50 @@ function CompleteTable({ data, sortByDateCreated,getAddToolStatus }) {
         Header: 'PRICING IN $',
         accessor: 'pricingInDollar',
         width: 125,
-        // sortType: (a, b) => {
-        //   return customSorting(
-        //     a.original.billingDetails[0].pricingInDollar.toString(),
-        //     b.original.billingDetails[0].pricingInDollar.toString()
-        //   );
-        // }
-        //,
+        sortType: (a, b) => {
+          let previousSubscriptionYear= Object.keys(a.original.billingDetails)
+          let currentSubscriptionYear= Object.keys(b.original.billingDetails)
+          return customSorting(
+            a.original.billingDetails[previousSubscriptionYear.pop()][0].pricingInDollar.toString(),
+            b.original.billingDetails[currentSubscriptionYear.pop()][0].pricingInDollar.toString()
+          );
+        }
+        ,
         Cell: ({
           row: {
             original: { billingDetails },
           },
         }) =>
-          `${Object.keys(billingDetails)
-            .slice(0, 1)
-            .map((item, ind) => {
-              return billingDetails[item][0].pricingInDollar
-                ? parseFloat(billingDetails[item][0].pricingInDollar).toFixed(2)
-                : Number(0).toFixed(2);
-            })}`,
+        {
+          let subscriptionYear= Object.keys(billingDetails)
+          let latestSubscriptionYear=subscriptionYear.pop()
+         return billingDetails[latestSubscriptionYear][0].pricingInDollar?parseFloat(billingDetails[latestSubscriptionYear][0].pricingInDollar).toFixed(2)
+         :Number(0).toFixed(2)
+        }
       },
       {
         Header: 'PRICING IN ₹',
         accessor: 'pricingInRupee',
         width: 125,
-        // sortType: (a, b) => {
-        //   return customSorting(
-        //     a.original.billingDetails[0].pricingInRupee.toString(),
-        //     b.original.billingDetails[0].pricingInRupee.toString()
-        //   );
-        // },
+        sortType: (a, b) => {
+          let previousSubscriptionYear= Object.keys(a.original.billingDetails)
+          let currentSubscriptionYear= Object.keys(b.original.billingDetails)
+          return customSorting(
+            a.original.billingDetails[previousSubscriptionYear.pop()][0].pricingInRupee.toString(),
+            b.original.billingDetails[currentSubscriptionYear.pop()][0].pricingInRupee.toString()
+          );
+        },
         Cell: ({
           row: {
             original: { billingDetails },
           },
         }) =>
-          `${Object.keys(billingDetails)
-            .slice(0, 1)
-            .map((item, ind) => {
-              return billingDetails[item][0].pricingInRupee
-                ? parseFloat(billingDetails[item][0].pricingInRupee).toFixed(2)
-                : Number(0).toFixed(2);
-            })}`,
+        {
+            let subscriptionYear= Object.keys(billingDetails)
+            let latestSubscriptionYear=subscriptionYear.pop()
+           return billingDetails[latestSubscriptionYear][0].pricingInRupee?parseFloat(billingDetails[latestSubscriptionYear][0].pricingInRupee).toFixed(2)
+           :Number(0).toFixed(2)
+          }
       },
       {
         Header: 'TOTAL IN ₹',
@@ -460,9 +462,10 @@ function CompleteTable({ data, sortByDateCreated,getAddToolStatus }) {
           <h3 className='rowexpandfont'>Subscription for:</h3>
       
           {
-             Object.keys(row.original.billingDetails).map((item, index) => {
-              return row.original.billingDetails[item]
-              .sort((a,b)=>
+             Object.keys(row.original.billingDetails)
+             .reverse()
+             .map((item, index) => {
+              return row.original.billingDetails[item].sort((a,b)=>
               months.indexOf(a.billingMonth) > months.indexOf(b.billingMonth)?1:a.billingMonth === b.billingMonth?0:-1
               )
               .map((month, ind) => (
