@@ -40,6 +40,8 @@ function CompleteTable({ data, sortByDateCreated,getAddToolStatus }) {
   const [enteredValue, setEnteredValue] = useState('');
   const [emptySearch, setSearchText] = useState('');
   const [selectedFilter, setSelectedFilter] = useState({});
+  const [subscribedYears,setSubscribedYears]=useState([]);
+  const [currentYear,setCurrentYear]=useState([]);
   const updateSatus=(value)=>{
     getAddToolStatus(value)
     
@@ -212,8 +214,8 @@ function CompleteTable({ data, sortByDateCreated,getAddToolStatus }) {
           let previousSubscriptionYear= Object.keys(a.original.billingDetails)
           let currentSubscriptionYear= Object.keys(b.original.billingDetails)
           return customSorting(
-            a.original.billingDetails[previousSubscriptionYear.pop()][0].pricingInDollar.toString(),
-            b.original.billingDetails[currentSubscriptionYear.pop()][0].pricingInDollar.toString()
+            a.original.billingDetails[previousSubscriptionYear[previousSubscriptionYear.length-1]][0].pricingInDollar.toString(),
+            b.original.billingDetails[currentSubscriptionYear[currentSubscriptionYear.length-1]][0].pricingInDollar.toString()
           );
         }
         ,
@@ -224,7 +226,7 @@ function CompleteTable({ data, sortByDateCreated,getAddToolStatus }) {
         }) =>
         {
           let subscriptionYear= Object.keys(billingDetails)
-          let latestSubscriptionYear=subscriptionYear.pop()
+          let latestSubscriptionYear=subscriptionYear[subscriptionYear.length-1]
          return billingDetails[latestSubscriptionYear][0].pricingInDollar?parseFloat(billingDetails[latestSubscriptionYear][0].pricingInDollar).toFixed(2)
          :Number(0).toFixed(2)
         }
@@ -237,8 +239,8 @@ function CompleteTable({ data, sortByDateCreated,getAddToolStatus }) {
           let previousSubscriptionYear= Object.keys(a.original.billingDetails)
           let currentSubscriptionYear= Object.keys(b.original.billingDetails)
           return customSorting(
-            a.original.billingDetails[previousSubscriptionYear.pop()][0].pricingInRupee.toString(),
-            b.original.billingDetails[currentSubscriptionYear.pop()][0].pricingInRupee.toString()
+            a.original.billingDetails[previousSubscriptionYear[previousSubscriptionYear.length-1]][0].pricingInRupee.toString(),
+            b.original.billingDetails[currentSubscriptionYear[currentSubscriptionYear.length-1]][0].pricingInRupee.toString()
           );
         },
         Cell: ({
@@ -248,7 +250,7 @@ function CompleteTable({ data, sortByDateCreated,getAddToolStatus }) {
         }) =>
         {
             let subscriptionYear= Object.keys(billingDetails)
-            let latestSubscriptionYear=subscriptionYear.pop()
+            let latestSubscriptionYear=subscriptionYear[subscriptionYear.length-1]
            return billingDetails[latestSubscriptionYear][0].pricingInRupee?parseFloat(billingDetails[latestSubscriptionYear][0].pricingInRupee).toFixed(2)
            :Number(0).toFixed(2)
           }
@@ -465,9 +467,8 @@ function CompleteTable({ data, sortByDateCreated,getAddToolStatus }) {
              Object.keys(row.original.billingDetails)
              .reverse()
              .map((item, index) => {
-              return row.original.billingDetails[item].sort((a,b)=>
-              months.indexOf(a.billingMonth) > months.indexOf(b.billingMonth)?1:a.billingMonth === b.billingMonth?0:-1
-              )
+              return row.original.billingDetails[item]
+              .sort((a,b)=> months.indexOf(a.billingMonth) > months.indexOf(b.billingMonth)?1:a.billingMonth === b.billingMonth?0:-1)
               .map((month, ind) => (
                  <div key={ind} className='label text-capitalize'>
                   <label>
@@ -500,18 +501,22 @@ function CompleteTable({ data, sortByDateCreated,getAddToolStatus }) {
           }
           {
             //  let count = Object.values(row.original.billingDetails).reduce((previousVal,currentVal)=>Number(pre)+cur.length,0);
-          // row.original.billingDetails?.length > 6 && (
-          //   <div style={{ alignSelf: 'flex-end', margin: '18px 0' }}>
-          //     <button
-          //       onClick={() => {
-          //         setShow(true);
-          //         setRowData(row.original);
-          //       }}
-          //     >
-          //       Show All
-          //     </button>
-          //   </div>
-          // )
+          Object.values(row.original.billingDetails).reduce((previousVal,currentVal)=>Number(previousVal)+currentVal.length,0) > 6 && (
+            <div style={{ alignSelf: 'flex-end', margin: '18px 0' }}>
+              <button
+                onClick={() => {
+                  let yearsSubscribed=Object.keys(row.original.billingDetails)
+                  console.log(row.original)
+                  setCurrentYear(yearsSubscribed[yearsSubscribed.length-1])
+                  setSubscribedYears(yearsSubscribed)
+                  setShow(true);
+                  // setRowData(row.original);
+                }}
+              >
+                Show All
+              </button>
+            </div>
+          )
           }
         </div>
       </td>
@@ -652,6 +657,20 @@ function CompleteTable({ data, sortByDateCreated,getAddToolStatus }) {
       setFilteredData(addSerialNo(finalFilteredData));
     }
   };
+  const showPreviousYearSubscriptions=()=>{
+    if(subscribedYears.indexOf(currentYear)===0){
+      return
+    }
+    let currentIndex=subscribedYears.indexOf(currentYear);
+    setCurrentYear(subscribedYears[currentIndex-1])
+  }
+  const showNextYearSubscriptions=()=>{
+    if(subscribedYears.indexOf(currentYear)===subscribedYears.length-1){
+      return
+    }
+    let currentIndex=subscribedYears.indexOf(currentYear);
+    setCurrentYear(subscribedYears[currentIndex+1])
+  }
 
   return (
     <>
@@ -752,11 +771,11 @@ function CompleteTable({ data, sortByDateCreated,getAddToolStatus }) {
               <div className='d-flex justify-content-between px-1'>
                 <div>{rowData.softwareName}</div>
                 <div className='prev-next'>
-                  <button disabled={!canPreviousPage}>
+                  <button onClick={()=>showPreviousYearSubscriptions()}>
                     <img src={leftIcon} alt='prev' />
                   </button>{' '}
-                  {moment(rowData.createdAt).format('YYYY')}{' '}
-                  <button disabled={!canNextPage}>
+                  {moment(currentYear).format('YYYY')}{' '}
+                  <button  onClick={()=>showNextYearSubscriptions()}>
                     <img src={rightIcon} alt='next' />
                   </button>{' '}
                 </div>
@@ -794,13 +813,13 @@ function CompleteTable({ data, sortByDateCreated,getAddToolStatus }) {
                 })}
               </div>
               <div>
-                <span>
+                {/* <span>
                   {'Total Amount:  ₹'}
                   {rowData.billingDetails?.reduce(
                     (result, item) => Number(item.pricingInRupee) + result,
                     0
                   )}
-                </span>
+                </span> */}
               </div>
             </Modal.Body>
           </Modal>
