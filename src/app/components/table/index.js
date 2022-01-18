@@ -28,7 +28,7 @@ import { guest, superAdmin } from '../constants/constants';
 import { getUser } from '../utils/userDetails';
 
 toast.configure();
-function CompleteTable({ data, sortByDateCreated,getAddToolStatus }) {
+function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
   const [filteredData, setFilteredData] = useState([]);
   const [searchValue, setSearchValue] = useState();
   const [rowData, setRowData] = useState({});
@@ -40,12 +40,13 @@ function CompleteTable({ data, sortByDateCreated,getAddToolStatus }) {
   const [enteredValue, setEnteredValue] = useState('');
   const [emptySearch, setSearchText] = useState('');
   const [selectedFilter, setSelectedFilter] = useState({});
-  const [subscribedYears,setSubscribedYears]=useState([]);
-  const [currentYear,setCurrentYear]=useState([]);
-  const updateSatus=(value)=>{
-    getAddToolStatus(value)
-    
-  }
+  const [subscribedYears, setSubscribedYears] = useState([]);
+  const [currentYear, setCurrentYear] = useState([]);
+  const [allSubscriptionDetails, setAllSubscriptionDetails] = useState(null);
+  const [monthlyData, setMonthlyData] = useState([]);
+  const updateSatus = (value) => {
+    getAddToolStatus(value);
+  };
   const setDefaultFilterData = useCallback((filterData) => {
     if (filterData?.length) {
       let filterResult = filterData.filter((row) => row.status !== 'deleted');
@@ -87,7 +88,6 @@ function CompleteTable({ data, sortByDateCreated,getAddToolStatus }) {
           autoClose: 1000,
         });
         setIsModalOpen(false);
-        console.log(res.data);
         setTimeout(() => {
           window.location.reload();
         }, 1000);
@@ -211,54 +211,66 @@ function CompleteTable({ data, sortByDateCreated,getAddToolStatus }) {
         accessor: 'pricingInDollar',
         width: 125,
         sortType: (a, b) => {
-          let previousSubscriptionYear= Object.keys(a.original.billingDetails)
-          let currentSubscriptionYear= Object.keys(b.original.billingDetails)
+          let previousSubscriptionYear = Object.keys(a.original.billingDetails);
+          let currentSubscriptionYear = Object.keys(b.original.billingDetails);
           return customSorting(
-            a.original.billingDetails[previousSubscriptionYear[previousSubscriptionYear.length-1]][0].pricingInDollar.toString(),
-            b.original.billingDetails[currentSubscriptionYear[currentSubscriptionYear.length-1]][0].pricingInDollar.toString()
-          );
-        }
-        ,
-        Cell: ({
-          row: {
-            original: { billingDetails },
-          },
-        }) =>
-        {
-          let subscriptionYear= Object.keys(billingDetails)
-          let latestSubscriptionYear=subscriptionYear[subscriptionYear.length-1]
-         return billingDetails[latestSubscriptionYear][0].pricingInDollar?parseFloat(billingDetails[latestSubscriptionYear][0].pricingInDollar).toFixed(2)
-         :Number(0).toFixed(2)
-        }
-      },
-      {
-        Header: 'PRICING IN ₹',
-        accessor: 'pricingInRupee',
-        width: 125,
-        sortType: (a, b) => {
-          let previousSubscriptionYear= Object.keys(a.original.billingDetails)
-          let currentSubscriptionYear= Object.keys(b.original.billingDetails)
-          return customSorting(
-            a.original.billingDetails[previousSubscriptionYear[previousSubscriptionYear.length-1]][0].pricingInRupee.toString(),
-            b.original.billingDetails[currentSubscriptionYear[currentSubscriptionYear.length-1]][0].pricingInRupee.toString()
+            a.original.billingDetails[
+              previousSubscriptionYear[previousSubscriptionYear.length - 1]
+            ][0].pricingInDollar.toString(),
+            b.original.billingDetails[
+              currentSubscriptionYear[currentSubscriptionYear.length - 1]
+            ][0].pricingInDollar.toString()
           );
         },
         Cell: ({
           row: {
             original: { billingDetails },
           },
-        }) =>
-        {
-            let subscriptionYear= Object.keys(billingDetails)
-            let latestSubscriptionYear=subscriptionYear[subscriptionYear.length-1]
-           return billingDetails[latestSubscriptionYear][0].pricingInRupee?parseFloat(billingDetails[latestSubscriptionYear][0].pricingInRupee).toFixed(2)
-           :Number(0).toFixed(2)
-          }
+        }) => {
+          let subscriptionYear = Object.keys(billingDetails);
+          let latestSubscriptionYear =
+            subscriptionYear[subscriptionYear.length - 1];
+          return billingDetails[latestSubscriptionYear][0].pricingInDollar
+            ? parseFloat(
+                billingDetails[latestSubscriptionYear][0].pricingInDollar
+              ).toFixed(2)
+            : Number(0).toFixed(2);
+        },
+      },
+      {
+        Header: 'PRICING IN ₹',
+        accessor: 'pricingInRupee',
+        width: 125,
+        sortType: (a, b) => {
+          let previousSubscriptionYear = Object.keys(a.original.billingDetails);
+          let currentSubscriptionYear = Object.keys(b.original.billingDetails);
+          return customSorting(
+            a.original.billingDetails[
+              previousSubscriptionYear[previousSubscriptionYear.length - 1]
+            ][0].pricingInRupee.toString(),
+            b.original.billingDetails[
+              currentSubscriptionYear[currentSubscriptionYear.length - 1]
+            ][0].pricingInRupee.toString()
+          );
+        },
+        Cell: ({
+          row: {
+            original: { billingDetails },
+          },
+        }) => {
+          let subscriptionYear = Object.keys(billingDetails);
+          let latestSubscriptionYear =
+            subscriptionYear[subscriptionYear.length - 1];
+          return billingDetails[latestSubscriptionYear][0].pricingInRupee
+            ? parseFloat(
+                billingDetails[latestSubscriptionYear][0].pricingInRupee
+              ).toFixed(2)
+            : Number(0).toFixed(2);
+        },
       },
       {
         Header: 'TOTAL IN ₹',
         accessor: (originalRow) => {
-      
           let amount = Object.keys(originalRow.billingDetails).map(
             (item, index) => {
               return originalRow.billingDetails[item].reduce(
@@ -334,21 +346,40 @@ function CompleteTable({ data, sortByDateCreated,getAddToolStatus }) {
         },
         Cell: ({
           row: {
-            original: { nextBilling },
+            original: { billingDetails },
           },
-        }) => moment(nextBilling).format('DD-MM-YYYY'),
+        }) => {
+          let subscriptionYear = Object.keys(billingDetails);
+          let latestSubscriptionYear =
+            subscriptionYear[subscriptionYear.length - 1];
+
+          return billingDetails[latestSubscriptionYear]
+            .sort((a, b) =>
+              months.indexOf(a.billingMonth) > months.indexOf(b.billingMonth)
+                ? 1
+                : a.billingMonth === b.billingMonth
+                ? 0
+                : -1
+            )
+            .reverse()
+            .slice(0, 1)
+            .map((month, ind) =>
+              moment(month.nextBilling).format('DD-MM-YYYY')
+            );
+        },
       },
       {
         Header: 'TIMELINE',
-        accessor: (originalRow) => {
-          const todaysDate = moment().format('YYYY-MM-DD');
-          return moment(originalRow.nextBilling, 'YYYY-MM-DD').diff(
-            moment(todaysDate),
-            'days'
-          );
+        // accessor: (originalRow) => {
+        //   const todaysDate = moment().format('YYYY-MM-DD');
+        //   return moment(originalRow.nextBilling, 'YYYY-MM-DD').diff(
+        //     moment(todaysDate),
+        //     'days'
+        //   );
 
-          // return days ;
-        },
+        //   // return days ;
+        // }
+
         width: 100,
         sortType: (a, b) => {
           return customSorting(
@@ -360,14 +391,32 @@ function CompleteTable({ data, sortByDateCreated,getAddToolStatus }) {
 
         Cell: ({
           row: {
-            original: { nextBilling },
+            original: { billingDetails },
           },
         }) => {
+          let subscriptionYear = Object.keys(billingDetails);
+          let latestSubscriptionYear =
+            subscriptionYear[subscriptionYear.length - 1];
           const todaysDate = moment().format('YYYY-MM-DD');
-          const days = moment(nextBilling, 'YYYY-MM-DD').diff(
+          let latestSubscriptionDate = billingDetails[latestSubscriptionYear]
+            .sort((a, b) =>
+              months.indexOf(a.billingMonth) > months.indexOf(b.billingMonth)
+                ? 1
+                : a.billingMonth === b.billingMonth
+                ? 0
+                : -1
+            )
+            .reverse()
+            .slice(0, 1)
+            .map((month, ind) =>
+              moment(month.nextBilling).format('YYYY-MM-DD')
+            );
+
+          const days = moment(latestSubscriptionDate[0], 'YYYY-MM-DD').diff(
             moment(todaysDate),
             'days'
           );
+
           return (
             <div
               className={`timeline ${
@@ -456,71 +505,105 @@ function CompleteTable({ data, sortByDateCreated,getAddToolStatus }) {
     'november',
     'december',
   ];
+  const [count,setCount]=useState(0)
   const renderRowSubComponent = useCallback(
-    ({ row }) => (
-      
-      <td colSpan='12' className='rowexpandable'>
+    ({ row }) => {
+      let count=0;
+      let x=0
+      return(
+        <td colSpan='12' className='rowexpandable'>
         <div className='subscrit'>
           <h3 className='rowexpandfont'>Subscription for:</h3>
-      
-          {
-             Object.keys(row.original.billingDetails)
-             .reverse()
-             .map((item, index) => {
-              return row.original.billingDetails[item]
-              .sort((a,b)=> months.indexOf(a.billingMonth) > months.indexOf(b.billingMonth)?1:a.billingMonth === b.billingMonth?0:-1)
-              .map((month, ind) => (
-                 <div key={ind} className='label text-capitalize'>
-                  <label>
-                    {month.billingMonth}{'-'}{item.substring(2,4)}{' '}
-                    {month.description && (
-                      <img
-                        className='px-2 pointer'
-                        src={Note}
-                        title={month.description}
-                        alt='description'
-                      />
-                    )}{' '}
-                  </label>
-                  <div className='amount'>
-                    {month.pricingInRupee!==''?`${'₹'}${parseFloat(month.pricingInRupee).toFixed(2)}`:`${'₹'}${Number(0).toFixed(2)}`}
-                    {month.invoiceFiles?.length > 0 && (
-                      <img
-                        className='pl-3 pr-2 pointer'
-                        src={Download}
-                        onClick={() => downloadInvoice(row.original, item)}
-                        alt='download'
-                      />
-                   )}
-                  </div>
-                </div>
-               )
-              );
-            })
 
-          }
           {
-            //  let count = Object.values(row.original.billingDetails).reduce((previousVal,currentVal)=>Number(pre)+cur.length,0);
-          Object.values(row.original.billingDetails).reduce((previousVal,currentVal)=>Number(previousVal)+currentVal.length,0) > 6 && (
-            <div style={{ alignSelf: 'flex-end', margin: '18px 0' }}>
-              <button
-                onClick={() => {
-                  let yearsSubscribed=Object.keys(row.original.billingDetails)
-                  console.log(row.original)
-                  setCurrentYear(yearsSubscribed[yearsSubscribed.length-1])
-                  setSubscribedYears(yearsSubscribed)
-                  setShow(true);
-                  // setRowData(row.original);
-                }}
-              >
-                Show All
-              </button>
-            </div>
-          )
+          Object.keys(row.original.billingDetails)
+            .reverse()
+            .map((item, index) => {
+            return row.original.billingDetails[item]
+            .sort((a, b) =>
+              months.indexOf(a.billingMonth) >
+              months.indexOf(b.billingMonth)
+                ? 1
+                : a.billingMonth === b.billingMonth
+                ? 0
+                : -1
+            )
+            .reverse()
+
+            .map((month, ind) => {
+              let total = count+1
+              count=total
+              if(total<7){
+                return (
+                  <div key={ind} className='label text-capitalize'>
+                    <label>
+                      {month.billingMonth}
+                      {'-'}
+                      {item.substring(2, 4)}{' '}
+                      {month.description && (
+                        <img
+                          className='px-2 pointer'
+                          src={Note}
+                          title={month.description}
+                          alt='description'
+                        />
+                      )}{' '}
+                    </label>
+                    <div className='amount'>
+                      {month.pricingInRupee !== ''
+                        ? `${'₹'}${parseFloat(month.pricingInRupee).toFixed(
+                            2
+                          )}`
+                        : `${'₹'}${Number(0).toFixed(2)}`}
+                      {month.invoiceFiles?.length > 0 && (
+                        <img
+                          className='pl-3 pr-2 pointer'
+                          src={Download}
+                          onClick={() => downloadInvoice(row.original, item)}
+                          alt='download'
+                        />
+                      )}
+                    </div>
+                  </div>
+                );
+              }
+  
+            });
+ 
+            })}
+          {
+            Object.values(row.original.billingDetails).reduce(
+              (previousVal, currentVal,index,array) =>
+                Number(previousVal) + currentVal.length,
+              0
+            ) > 6 && (
+              <div style={{ alignSelf: 'flex-end', margin: '18px 0' }}>
+                <button
+                  onClick={() => {
+                    let yearsSubscribed = Object.keys(
+                      row.original.billingDetails
+                    );
+                    setAllSubscriptionDetails(row.original.billingDetails);
+                    setCurrentYear(yearsSubscribed[yearsSubscribed.length - 1]);
+                    setSubscribedYears(yearsSubscribed);
+                    setShow(true);
+                    displayMonthlySubscriptions(
+                      row.original.billingDetails,
+                      yearsSubscribed[yearsSubscribed.length - 1]
+                    );
+                    // setRowData(row.original);
+                  }}
+                >
+                  Show All
+                </button>
+              </div>
+            )
           }
         </div>
       </td>
-    ),
+      )
+ 
+    },
     [downloadInvoice]
   );
 
@@ -611,7 +694,6 @@ function CompleteTable({ data, sortByDateCreated,getAddToolStatus }) {
       const finalFilteredData = filterKeys.reduce((result, key) => {
         const filteredDataResult = result.filter((row) => {
           if (filterKeys.includes(key)) {
-            console.log(filterState[key]);
             if (filterState[key] === 'all') {
               return row.status !== 'deleted';
             } else if (filterState['status'] === 'deleted') {
@@ -631,11 +713,9 @@ function CompleteTable({ data, sortByDateCreated,getAddToolStatus }) {
                 );
                 if (days < 0) {
                   if (key === 'softwareType') {
-                    console.log('k*****y', key);
                     return row['softwareType'] === filterState['softwareType'];
                   }
                   if (key === 'billingCycle') {
-                    console.log('key', row);
                     return row['billingCycle'] === filterState['billingCycle'];
                   }
                   return row;
@@ -657,20 +737,33 @@ function CompleteTable({ data, sortByDateCreated,getAddToolStatus }) {
       setFilteredData(addSerialNo(finalFilteredData));
     }
   };
-  const showPreviousYearSubscriptions=()=>{
-    if(subscribedYears.indexOf(currentYear)===0){
-      return
+  const displayMonthlySubscriptions = (billingDetails, currentYear) => {
+    let monthlyInfo = [];
+    monthlyInfo = billingDetails[currentYear];
+    setMonthlyData(monthlyInfo);
+  };
+  const showPreviousYearSubscriptions = () => {
+    if (subscribedYears.indexOf(currentYear) === 0) {
+      return;
     }
-    let currentIndex=subscribedYears.indexOf(currentYear);
-    setCurrentYear(subscribedYears[currentIndex-1])
-  }
-  const showNextYearSubscriptions=()=>{
-    if(subscribedYears.indexOf(currentYear)===subscribedYears.length-1){
-      return
+    let currentIndex = subscribedYears.indexOf(currentYear);
+    setCurrentYear(subscribedYears[currentIndex - 1]);
+    displayMonthlySubscriptions(
+      allSubscriptionDetails,
+      subscribedYears[currentIndex - 1]
+    );
+  };
+  const showNextYearSubscriptions = () => {
+    if (subscribedYears.indexOf(currentYear) === subscribedYears.length - 1) {
+      return;
     }
-    let currentIndex=subscribedYears.indexOf(currentYear);
-    setCurrentYear(subscribedYears[currentIndex+1])
-  }
+    let currentIndex = subscribedYears.indexOf(currentYear);
+    setCurrentYear(subscribedYears[currentIndex + 1]);
+    displayMonthlySubscriptions(
+      allSubscriptionDetails,
+      subscribedYears[currentIndex + 1]
+    );
+  };
 
   return (
     <>
@@ -771,11 +864,11 @@ function CompleteTable({ data, sortByDateCreated,getAddToolStatus }) {
               <div className='d-flex justify-content-between px-1'>
                 <div>{rowData.softwareName}</div>
                 <div className='prev-next'>
-                  <button onClick={()=>showPreviousYearSubscriptions()}>
+                  <button onClick={() => showPreviousYearSubscriptions()}>
                     <img src={leftIcon} alt='prev' />
                   </button>{' '}
                   {moment(currentYear).format('YYYY')}{' '}
-                  <button  onClick={()=>showNextYearSubscriptions()}>
+                  <button onClick={() => showNextYearSubscriptions()}>
                     <img src={rightIcon} alt='next' />
                   </button>{' '}
                 </div>
@@ -783,7 +876,7 @@ function CompleteTable({ data, sortByDateCreated,getAddToolStatus }) {
               <div className='calenderGrid'>
                 {months.map((month) => {
                   const billingItem =
-                    rowData.billingDetails?.filter(
+                    monthlyData?.filter(
                       (item) => item.billingMonth === month
                     ) || [];
                   return (
@@ -795,7 +888,7 @@ function CompleteTable({ data, sortByDateCreated,getAddToolStatus }) {
                       {billingItem?.length !== 0 && (
                         <div className='amount'>
                           <span>{`₹${billingItem[0]?.pricingInRupee}`}</span>
-                          {billingItem[0].invoiceFiles.length > 0 && (
+                          {/* {billingItem[0].invoiceFiles.length > 0 && (
                             <img
                               src={Download}
                               // src={AttachIcon}
@@ -805,7 +898,7 @@ function CompleteTable({ data, sortByDateCreated,getAddToolStatus }) {
                               alt='download'
                               className='pointer px-1'
                             />
-                          )}
+                          )} */}
                         </div>
                       )}
                     </div>
