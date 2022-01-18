@@ -256,13 +256,39 @@ function Form({
    */
   const handleSubmit = (e) => {
     e.preventDefault();
-    let subscriptionYear = state.nextBilling.substring(0, 4);
     const newBillingRecord = {
       ...billingDetails,
       nextBilling: state.nextBilling,
       createdAt: moment().format('YYYY-MM-DD'),
     };
-    let subscriptionMonth = newBillingRecord.billingMonth;
+
+      let subscriptionYear = state.nextBilling.substring(0, 4);
+      let subscriptionMonth = newBillingRecord.billingMonth;
+
+      let billingInfo = {}; // {"2020" : ["Janauary","febrauary"] , "2021" : ["june","june","july"] , "2022" : ["august"] }
+
+      if(isEdit){
+        let availableYears = Object.keys(state.billingDetails)
+        availableYears.forEach(year => {
+          let subscriptionDetails = state.billingDetails[year];
+          let subscribedMonths = [];
+          subscriptionDetails.forEach((subscriptionInfo)=>{
+              if(!subscribedMonths.includes(subscriptionInfo.billingMonth)){
+                  subscribedMonths.push(subscriptionInfo.billingMonth)
+              }
+          })
+          billingInfo[year] = subscribedMonths
+        });
+  
+        if(billingInfo[subscriptionYear] && billingInfo[subscriptionYear].includes(subscriptionMonth)){
+          toast.error(`Subscription already done for ${subscriptionMonth}, ${subscriptionYear}`, {
+            autoClose: 3000,
+          });
+          return false;
+        }
+      }
+     
+
     let softwareToolDetails = JSON.parse(JSON.stringify(state));
     if (
       Object.keys(softwareToolDetails.billingDetails).includes(subscriptionYear)
