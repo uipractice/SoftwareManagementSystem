@@ -23,6 +23,8 @@ import { getApiUrl } from '../utils/helper';
 import FilterDropdown from './FilterDropdown';
 import Download from '../../assets/images/download.svg';
 import Note from '../../assets/images/note.svg';
+import UpdateForm from '../admin/UpdateForm';
+
 
 import { guest, superAdmin } from '../constants/constants';
 import { getUser } from '../utils/userDetails';
@@ -34,6 +36,8 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
   const [rowData, setRowData] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditFormOpen, toggleEditForm] = useState(false);
+  const [isUpdateFormOpen, toggleUpdateForm] = useState(false); // added for form update
+  const [selectedBillingMonth, updateSelectedBillingMonth] = useState({}); //added for from update
   const [show, setShow] = useState(false);
   const [noRecords, setNoRecords] = useState(false);
 
@@ -232,8 +236,8 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
             subscriptionYear[subscriptionYear.length - 1];
           return billingDetails[latestSubscriptionYear][0].pricingInDollar
             ? parseFloat(
-                billingDetails[latestSubscriptionYear][0].pricingInDollar
-              ).toFixed(2)
+              billingDetails[latestSubscriptionYear][0].pricingInDollar
+            ).toFixed(2)
             : Number(0).toFixed(2);
         },
       },
@@ -263,8 +267,8 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
             subscriptionYear[subscriptionYear.length - 1];
           return billingDetails[latestSubscriptionYear][0].pricingInRupee
             ? parseFloat(
-                billingDetails[latestSubscriptionYear][0].pricingInRupee
-              ).toFixed(2)
+              billingDetails[latestSubscriptionYear][0].pricingInRupee
+            ).toFixed(2)
             : Number(0).toFixed(2);
         },
       },
@@ -328,9 +332,8 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
               </div>
               {isMonthly && (
                 <div
-                  className={`arrow ${
-                    isExpanded ? 'arrow-bottom' : 'arrow-right'
-                  }`}
+                  className={`arrow ${isExpanded ? 'arrow-bottom' : 'arrow-right'
+                    }`}
                 />
               )}
             </div>
@@ -358,8 +361,8 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
               months.indexOf(a.billingMonth) > months.indexOf(b.billingMonth)
                 ? 1
                 : a.billingMonth === b.billingMonth
-                ? 0
-                : -1
+                  ? 0
+                  : -1
             )
             .reverse()
             .slice(0, 1)
@@ -403,8 +406,8 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
               months.indexOf(a.billingMonth) > months.indexOf(b.billingMonth)
                 ? 1
                 : a.billingMonth === b.billingMonth
-                ? 0
-                : -1
+                  ? 0
+                  : -1
             )
             .reverse()
             .slice(0, 1)
@@ -419,9 +422,8 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
 
           return (
             <div
-              className={`timeline ${
-                days >= 10 ? 'timelineGreen' : getTimeLineClass(days)
-              }`}
+              className={`timeline ${days >= 10 ? 'timelineGreen' : getTimeLineClass(days)
+                }`}
             >
               <p>{days === 0 ? `Today` : getExpiredText(days)}</p>
             </div>
@@ -435,9 +437,8 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
         Cell: ({ row }) => (
           <div>
             <img
-              className={`p-2 pointer ${
-                row.original.status === 'deleted' ? 'disableEditBtn' : ''
-              }`}
+              className={`p-2 pointer ${row.original.status === 'deleted' ? 'disableEditBtn' : ''
+                }`}
               src={Renew}
               alt='Evoke Technologies'
               height='31px'
@@ -447,9 +448,8 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
               }}
             />
             <img
-              className={`p-2 pointer ${
-                row.original.status === 'deleted' ? 'disableDeleteBtn' : ''
-              }`}
+              className={`p-2 pointer ${row.original.status === 'deleted' ? 'disableDeleteBtn' : ''
+                }`}
               src={DeleteImg}
               alt='Evoke Technologies'
               onClick={() => {
@@ -515,90 +515,93 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
           <div className='subscrit'>
             <h3 className='rowexpandfont'>Subscription for:</h3>
 
-            {Object.keys(row.original.billingDetails)
-              .reverse()
-              .map((item, index) => {
-                return row.original.billingDetails[item]
-                  .sort((a, b) =>
-                    months.indexOf(a.billingMonth) >
-                    months.indexOf(b.billingMonth)
-                      ? 1
-                      : a.billingMonth === b.billingMonth
-                      ? 0
-                      : -1
-                  )
-                  .reverse()
+            {
+              Object.keys(row.original.billingDetails)
+                .reverse()
+                .map((item, index) => {
+                  return row.original.billingDetails[item]
+                    .sort((a, b) =>
+                      months.indexOf(a.billingMonth) >
+                        months.indexOf(b.billingMonth)
+                        ? 1
+                        : a.billingMonth === b.billingMonth
+                          ? 0
+                          : -1
+                    )
+                    .reverse()
 
-                  .map((month, ind) => {
-                    let total = count + 1;
-                    count = total;
-                    if (total < 7) {
-                      return (
-                        <div key={ind} className='label text-capitalize'>
-                          <label>
-                            {month.billingMonth}
-                            {'-'}
-                            {item.substring(2, 4)}{' '}
-                            {month.description && (
-                              <img
-                                className='px-2 pointer'
-                                src={Note}
-                                title={month.description}
-                                alt='description'
-                              />
-                            )}{' '}
-                          </label>
-                          <div className='amount'>
-                            {month.pricingInRupee !== ''
-                              ? `${'₹'}${parseFloat(
-                                  month.pricingInRupee
-                                ).toFixed(2)}`
-                              : `${'₹'}${Number(0).toFixed(2)}`}
-                            {month.invoiceFiles?.length > 0 && (
-                              <img
-                                className='pl-3 pr-2 pointer'
-                                src={Download}
-                                onClick={() =>
-                                  downloadInvoice(row.original, item)
-                                }
-                                alt='download'
-                              />
-                            )}
+                    .map((month, ind) => {
+                      let total = count + 1
+                      count = total
+                      if (total < 7) {
+                        return (
+                          <div key={ind}
+                            className='label text-capitalize'
+                            onClick={() => {
+                              setRowData(row.original);
+                              updateSelectedBillingMonth(month);
+                              toggleUpdateForm(true);
+                            }}>
+                            <label>
+                              {month.billingMonth.substring(0,3)}
+                              {'-'}
+                              {item.substring(2, 4)}{' '}
+
+                            </label>
+                            <div className='amount'>
+                              {month.pricingInRupee !== ''
+                                ? `${'₹'}${parseFloat(month.pricingInRupee).toFixed(
+                                  2
+                                )}`
+                                : `${'₹'}${Number(0).toFixed(2)}`}
+                              {month.invoiceFiles?.length > 0 && (
+                                <img
+                                  className='pl-3 pr-2 pointer'
+                                  src={Download}
+                                  onClick={() => downloadInvoice(row.original, item)}
+                                  alt='download'
+                                />
+                              )}
+                            </div>
                           </div>
-                        </div>
+                        );
+                      }
+
+                    });
+
+                })}
+            {
+              Object.values(row.original.billingDetails).reduce(
+                (previousVal, currentVal, index, array) =>
+                  Number(previousVal) + currentVal.length,
+                0
+              ) > 6 && (
+                <div style={{ alignSelf: 'flex-end', margin: '18px 0' }}>
+                  <button
+                    onClick={() => {
+                      let yearsSubscribed = Object.keys(
+                        row.original.billingDetails
                       );
-                    }
-                  });
-              })}
-            {Object.values(row.original.billingDetails).reduce(
-              (previousVal, currentVal, index, array) =>
-                Number(previousVal) + currentVal.length,
-              0
-            ) > 6 && (
-              <div style={{ alignSelf: 'flex-end', margin: '18px 0' }}>
-                <button
-                  onClick={() => {
-                    let yearsSubscribed = Object.keys(
-                      row.original.billingDetails
-                    );
-                    setAllSubscriptionDetails(row.original.billingDetails);
-                    setCurrentYear(yearsSubscribed[yearsSubscribed.length - 1]);
-                    setSubscribedYears(yearsSubscribed);
-                    setShow(true);
-                    displayMonthlySubscriptions(
-                      row.original.billingDetails,
-                      yearsSubscribed[yearsSubscribed.length - 1]
-                    );
-                    // setRowData(row.original);
-                  }}
-                >
-                  Show All
-                </button>
-              </div>
-            )}
+                      setAllSubscriptionDetails(row.original.billingDetails);
+                      setCurrentYear(yearsSubscribed[yearsSubscribed.length - 1]);
+                      setSubscribedYears(yearsSubscribed);
+                      setShow(true);
+                      displayMonthlySubscriptions(
+                        row.original.billingDetails,
+                        yearsSubscribed[yearsSubscribed.length - 1]
+                      );
+                      // setRowData(row.original);
+                    }}
+                  >
+                    Show All
+                  </button>
+                </div>
+              )
+            }
           </div>
         </td>
-      );
+      )
+
     },
     [downloadInvoice]
   );
@@ -1038,7 +1041,7 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
                 const value = e.target.value - 1;
                 const enteredValue =
                   e.target.value.match(/^([1-9]\d*)?$/) &&
-                  e.target.value.match(/^([1-9]\d*)?$/)['input']
+                    e.target.value.match(/^([1-9]\d*)?$/)['input']
                     ? e.target.value
                     : '';
                 if (pageOptions.length > value) {
@@ -1066,8 +1069,40 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
           rowData={rowData}
           isEdit={true}
           updateToolStatus={updateSatus}
+          type="renew"
         />
       )}
+      
+      {isUpdateFormOpen && (
+        <UpdateForm
+        isOpen={isUpdateFormOpen}
+        closeModal={() => {
+          toggleUpdateForm(false);
+          setRowData(null);
+        }}
+        rowData={rowData}
+        isEdit={true}
+        updateToolStatus={updateSatus}
+        selectedMonth = {selectedBillingMonth}
+        type="update"
+      />
+
+      )}
+      {/* {isUpdateFormOpen && (
+        <Form
+        isOpen={isUpdateFormOpen}
+        closeModal={() => {
+          toggleUpdateForm(false);
+          setRowData(null);
+        }}
+        rowData={rowData}
+        isEdit={true}
+        updateToolStatus={updateSatus}
+        selectedMonth = {selectedBillingMonth}
+        type="update"
+      />
+
+      )} */}
     </>
   );
 }
