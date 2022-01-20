@@ -219,16 +219,22 @@ function Form({
     });
   };
 
-  const uploadInvoiceFiles = ({ _id: id, ...rest }, billing) => {
+  const uploadInvoiceFiles = (data,year,month) => {
     if (invoiceFiles && invoiceFiles.length > 0) {
       const formData = new FormData();
       for (let file in invoiceFiles) {
         formData.append('fileName', invoiceFiles[file]);
       }
+      formData.append('year', year);
+      formData.append('month', month);
       axios
-        .post(getApiUrl(`softwareInfo/multiple/${id}`), formData)
+        .post(getApiUrl(`softwareInfo/multiple/${data._id}`), formData)
         .then((res) => {
           console.log('Files Uploaded : ', res.data.status);
+          toast.success('Data Saved Successfully !', {
+            autoClose: 1000,
+            onClose: updateToolStatus(true),
+          });
         })
         .catch((err) => {
           console.log('Error in Upload : ', err);
@@ -261,7 +267,7 @@ function Form({
       nextBilling: state.nextBilling,
       createdAt: moment().format('YYYY-MM-DD'),
     };
-
+console.log('newBillingRecord',newBillingRecord)
       let subscriptionYear = state.nextBilling.substring(0, 4);
       let subscriptionMonth = newBillingRecord.billingMonth;
 
@@ -309,6 +315,7 @@ function Form({
           softwareToolDetails
         )
         .then((res) => {
+          console.log(subscriptionYear,subscriptionMonth)
           if (isEdit) {
             let subscribedYears = Object.keys(res.data.billingDetails);
             if (subscribedYears.includes(subscriptionYear)) {
@@ -322,15 +329,12 @@ function Form({
               uploadInvoiceFiles(renewedSubscription[0]);
             }
           } else {
-            uploadInvoiceFiles(res.data);
+            uploadInvoiceFiles(res.data,subscriptionYear,subscriptionMonth);
             setState(defaultFormData);
           }
 
           closeModal();
-          toast.success('Data Saved Successfully !', {
-            autoClose: 1000,
-            onClose: updateToolStatus(true),
-          });
+ 
         });
     }
   };
