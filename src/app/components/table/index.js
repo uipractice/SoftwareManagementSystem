@@ -373,15 +373,31 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
       },
       {
         Header: 'TIMELINE',
-        // accessor: (originalRow) => {
-        //   const todaysDate = moment().format('YYYY-MM-DD');
-        //   return moment(originalRow.nextBilling, 'YYYY-MM-DD').diff(
-        //     moment(todaysDate),
-        //     'days'
-        //   );
+        accessor: (originalRow) => {
+          console.log(originalRow)
+          const todaysDate = moment().format('YYYY-MM-DD');
+          let subscriptionYear = Object.keys(originalRow.billingDetails);
+          let latestSubscriptionYear =
+            subscriptionYear[subscriptionYear.length - 1];
+          let latestSubscriptionDate = originalRow.billingDetails[latestSubscriptionYear]
+            .sort((a, b) =>
+              months.indexOf(a.billingMonth) > months.indexOf(b.billingMonth)
+                ? 1
+                : a.billingMonth === b.billingMonth
+                  ? 0
+                  : -1
+            )
+            .reverse()
+            .slice(0, 1)
+            .map((month, ind) =>
+              moment(month.nextBilling).format('YYYY-MM-DD')
+            );
+          return moment(latestSubscriptionDate[0], 'YYYY-MM-DD').diff(
+            moment(todaysDate),
+            'days'
+          );
 
-        //   // return days ;
-        // }
+        },
 
         width: 100,
         sortType: (a, b) => {
@@ -481,14 +497,15 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
   };
 
   // Get S3 signed urls of the attachments for a Billing Month.
-  const downloadInvoice = useCallback((rowItemData, billingItem) => {
+  const downloadInvoice = useCallback((rowItemData, billingYear,billingMonth,invoiceFiles) => {
+ 
     axios
       .get(
-        getApiUrl(`softwareInfo/download/${rowItemData._id}/${billingItem._id}`)
+        getApiUrl(`softwareInfo/download/${rowItemData._id}/${billingYear}/${billingMonth}`)
       )
       .then((res) => {
         const files = res.data;
-        downloadFiles(files, billingItem.invoiceFiles);
+        downloadFiles(files, invoiceFiles);
       });
   }, []);
   const months = [
@@ -536,7 +553,7 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
                       if (total < 7) {
                         return (
                           <div key={ind}
-                            className='label text-capitalize'
+                            className='label text-capitalize text-align-center'
                             onClick={() => {
                               setRowData(row.original);
                               updateSelectedBillingMonth(month);
@@ -558,7 +575,7 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
                                 <img
                                   className='pl-3 pr-2 pointer'
                                   src={Download}
-                                  onClick={() => downloadInvoice(row.original, item)}
+                                  onClick={() => downloadInvoice(row.original, item,month.billingMonth,month.invoiceFiles)}
                                   alt='download'
                                 />
                               )}

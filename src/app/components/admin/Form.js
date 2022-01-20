@@ -231,6 +231,10 @@ function Form({
         .post(getApiUrl(`softwareInfo/multiple/${data._id}`), formData)
         .then((res) => {
           console.log('Files Uploaded : ', res.data.status);
+          toast.success('Data Saved Successfully !', {
+            autoClose: 1000,
+            onClose: updateToolStatus(true),
+          });
         })
         .catch((err) => {
           console.log('Error in Upload : ', err);
@@ -325,7 +329,7 @@ function Form({
                   return month;
                 }
               });
-              uploadInvoiceFiles(renewedSubscription[0]);
+              uploadInvoiceFiles(res.data,subscriptionYear, subscriptionMonth)
             }
           } else {
             uploadInvoiceFiles(res.data, subscriptionYear, subscriptionMonth);
@@ -333,10 +337,7 @@ function Form({
           }
 
           closeModal();
-          toast.success('Data Saved Successfully !', {
-            autoClose: 1000,
-            onClose: updateToolStatus(true),
-          });
+   
         });
     }
   };
