@@ -505,75 +505,73 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
     'november',
     'december',
   ];
-  const [count,setCount]=useState(0)
+  const [count, setCount] = useState(0);
   const renderRowSubComponent = useCallback(
     ({ row }) => {
-      let count=0;
-      let x=0
-      return(
+      let count = 0;
+      let x = 0;
+      return (
         <td colSpan='12' className='rowexpandable'>
-        <div className='subscrit'>
-          <h3 className='rowexpandfont'>Subscription for:</h3>
+          <div className='subscrit'>
+            <h3 className='rowexpandfont'>Subscription for:</h3>
 
-          {
-          Object.keys(row.original.billingDetails)
-            .reverse()
-            .map((item, index) => {
-            return row.original.billingDetails[item]
-            .sort((a, b) =>
-              months.indexOf(a.billingMonth) >
-              months.indexOf(b.billingMonth)
-                ? 1
-                : a.billingMonth === b.billingMonth
-                ? 0
-                : -1
-            )
-            .reverse()
+            {Object.keys(row.original.billingDetails)
+              .reverse()
+              .map((item, index) => {
+                return row.original.billingDetails[item]
+                  .sort((a, b) =>
+                    months.indexOf(a.billingMonth) >
+                    months.indexOf(b.billingMonth)
+                      ? 1
+                      : a.billingMonth === b.billingMonth
+                      ? 0
+                      : -1
+                  )
+                  .reverse()
 
-            .map((month, ind) => {
-              let total = count+1
-              count=total
-              if(total<7){
-                return (
-                  <div key={ind} className='label text-capitalize'>
-                    <label>
-                      {month.billingMonth}
-                      {'-'}
-                      {item.substring(2, 4)}{' '}
-                      {month.description && (
-                        <img
-                          className='px-2 pointer'
-                          src={Note}
-                          title={month.description}
-                          alt='description'
-                        />
-                      )}{' '}
-                    </label>
-                    <div className='amount'>
-                      {month.pricingInRupee !== ''
-                        ? `${'₹'}${parseFloat(month.pricingInRupee).toFixed(
-                            2
-                          )}`
-                        : `${'₹'}${Number(0).toFixed(2)}`}
-                      {month.invoiceFiles?.length > 0 && (
-                        <img
-                          className='pl-3 pr-2 pointer'
-                          src={Download}
-                          onClick={() => downloadInvoice(row.original, item)}
-                          alt='download'
-                        />
-                      )}
-                    </div>
-                  </div>
-                );
-              }
-  
-            });
- 
-            })}
-          {
-            Object.values(row.original.billingDetails).reduce(
-              (previousVal, currentVal,index,array) =>
+                  .map((month, ind) => {
+                    let total = count + 1;
+                    count = total;
+                    if (total < 7) {
+                      return (
+                        <div key={ind} className='label text-capitalize'>
+                          <label>
+                            {month.billingMonth}
+                            {'-'}
+                            {item.substring(2, 4)}{' '}
+                            {month.description && (
+                              <img
+                                className='px-2 pointer'
+                                src={Note}
+                                title={month.description}
+                                alt='description'
+                              />
+                            )}{' '}
+                          </label>
+                          <div className='amount'>
+                            {month.pricingInRupee !== ''
+                              ? `${'₹'}${parseFloat(
+                                  month.pricingInRupee
+                                ).toFixed(2)}`
+                              : `${'₹'}${Number(0).toFixed(2)}`}
+                            {month.invoiceFiles?.length > 0 && (
+                              <img
+                                className='pl-3 pr-2 pointer'
+                                src={Download}
+                                onClick={() =>
+                                  downloadInvoice(row.original, item)
+                                }
+                                alt='download'
+                              />
+                            )}
+                          </div>
+                        </div>
+                      );
+                    }
+                  });
+              })}
+            {Object.values(row.original.billingDetails).reduce(
+              (previousVal, currentVal, index, array) =>
                 Number(previousVal) + currentVal.length,
               0
             ) > 6 && (
@@ -597,12 +595,10 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
                   Show All
                 </button>
               </div>
-            )
-          }
-        </div>
-      </td>
-      )
- 
+            )}
+          </div>
+        </td>
+      );
     },
     [downloadInvoice]
   );
@@ -713,6 +709,7 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
                 );
                 if (days < 0) {
                   if (key === 'softwareType') {
+                    console.log('k*****y', key);
                     return row['softwareType'] === filterState['softwareType'];
                   }
                   if (key === 'billingCycle') {

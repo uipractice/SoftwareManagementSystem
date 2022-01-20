@@ -219,7 +219,7 @@ function Form({
     });
   };
 
-  const uploadInvoiceFiles = (data,year,month) => {
+  const uploadInvoiceFiles = (data, year, month) => {
     if (invoiceFiles && invoiceFiles.length > 0) {
       const formData = new FormData();
       for (let file in invoiceFiles) {
@@ -231,10 +231,6 @@ function Form({
         .post(getApiUrl(`softwareInfo/multiple/${data._id}`), formData)
         .then((res) => {
           console.log('Files Uploaded : ', res.data.status);
-          toast.success('Data Saved Successfully !', {
-            autoClose: 1000,
-            onClose: updateToolStatus(true),
-          });
         })
         .catch((err) => {
           console.log('Error in Upload : ', err);
@@ -267,39 +263,42 @@ function Form({
       nextBilling: state.nextBilling,
       createdAt: moment().format('YYYY-MM-DD'),
     };
-console.log('newBillingRecord',newBillingRecord)
-      let subscriptionYear = state.nextBilling.substring(0, 4);
-      let subscriptionMonth = newBillingRecord.billingMonth;
+    let subscriptionYear = state.nextBilling.substring(0, 4);
+    let subscriptionMonth = newBillingRecord.billingMonth;
 
-      let billingInfo = {}; // {"2020" : ["Janauary","febrauary"] , "2021" : ["june","june","july"] , "2022" : ["august"] }
+    let billingInfo = {}; // {"2020" : ["Janauary","febrauary"] , "2021" : ["june","june","july"] , "2022" : ["august"] }
 
-      if(isEdit){
-        let availableYears = Object.keys(state.billingDetails)
-        availableYears.forEach(year => {
-          let subscriptionDetails = state.billingDetails[year];
-          let subscribedMonths = [];
-          subscriptionDetails.forEach((subscriptionInfo)=>{
-              if(!subscribedMonths.includes(subscriptionInfo.billingMonth)){
-                  subscribedMonths.push(subscriptionInfo.billingMonth)
-              }
-          })
-          billingInfo[year] = subscribedMonths
+    if (isEdit) {
+      let availableYears = Object.keys(state.billingDetails);
+      availableYears.forEach((year) => {
+        let subscriptionDetails = state.billingDetails[year];
+        let subscribedMonths = [];
+        subscriptionDetails.forEach((subscriptionInfo) => {
+          if (!subscribedMonths.includes(subscriptionInfo.billingMonth)) {
+            subscribedMonths.push(subscriptionInfo.billingMonth);
+          }
         });
-  
-        if(billingInfo[subscriptionYear] && billingInfo[subscriptionYear].includes(subscriptionMonth)){
-          toast.error(`Subscription already done for ${subscriptionMonth}, ${subscriptionYear}`, {
+        billingInfo[year] = subscribedMonths;
+      });
+
+      if (
+        billingInfo[subscriptionYear] &&
+        billingInfo[subscriptionYear].includes(subscriptionMonth)
+      ) {
+        toast.error(
+          `Subscription already done for ${subscriptionMonth}, ${subscriptionYear}`,
+          {
             autoClose: 3000,
-          });
-          return false;
-        }
+          }
+        );
+        return false;
       }
-     
+    }
 
     let softwareToolDetails = JSON.parse(JSON.stringify(state));
     if (
       Object.keys(softwareToolDetails.billingDetails).includes(subscriptionYear)
     ) {
-
       softwareToolDetails.billingDetails[subscriptionYear].push(
         newBillingRecord
       );
@@ -315,7 +314,7 @@ console.log('newBillingRecord',newBillingRecord)
           softwareToolDetails
         )
         .then((res) => {
-          console.log(subscriptionYear,subscriptionMonth)
+          console.log(subscriptionYear, subscriptionMonth);
           if (isEdit) {
             let subscribedYears = Object.keys(res.data.billingDetails);
             if (subscribedYears.includes(subscriptionYear)) {
@@ -329,12 +328,15 @@ console.log('newBillingRecord',newBillingRecord)
               uploadInvoiceFiles(renewedSubscription[0]);
             }
           } else {
-            uploadInvoiceFiles(res.data,subscriptionYear,subscriptionMonth);
+            uploadInvoiceFiles(res.data, subscriptionYear, subscriptionMonth);
             setState(defaultFormData);
           }
 
           closeModal();
- 
+          toast.success('Data Saved Successfully !', {
+            autoClose: 1000,
+            onClose: updateToolStatus(true),
+          });
         });
     }
   };
