@@ -29,6 +29,7 @@ const nonMandatoryFields = [
     'invoiceFiles',
     'pricingInDollar',
     'pricingInRupee',
+    'description'
 ];
 
 function UpdateForm({
@@ -223,22 +224,33 @@ function UpdateForm({
         });
     };
 
-    const uploadInvoiceFiles = ({ _id: id, ...rest }, billing) => {
-        if (invoiceFiles && invoiceFiles.length > 0) {
-            const formData = new FormData();
-            for (let file in invoiceFiles) {
-                formData.append('fileName', invoiceFiles[file]);
-            }
-            axios
-                .post(getApiUrl(`softwareInfo/multiple/${id}`), formData)
-                .then((res) => {
-                    console.log('Files Uploaded : ', res.data.status);
-                })
-                .catch((err) => {
-                    console.log('Error in Upload : ', err);
-                });
-        }
-    };
+   const uploadInvoiceFiles = (data, year, month) => {
+    if (invoiceFiles && invoiceFiles.length > 0) {
+      const formData = new FormData();
+      for (let file in invoiceFiles) {
+        formData.append('fileName', invoiceFiles[file]);
+      }
+      formData.append('year', year);
+      formData.append('month', month);
+      axios
+        .post(getApiUrl(`softwareInfo/multiple/${data._id}`), formData)
+        .then((res) => {
+          console.log('Files Uploaded : ', res.data.status);
+          toast.success('Data Saved Successfully !', {
+            autoClose: 1000,
+            onClose: updateToolStatus(true),
+          });
+        })
+        .catch((err) => {
+          console.log('Error in Upload : ', err);
+        });
+    }else{
+      toast.success('Data Saved Successfully !', {
+        autoClose: 1000,
+        onClose: updateToolStatus(true),
+      });
+    }
+  };
     const handleAddFile = () => {
         document.getElementById('invoiceFiles').click();
     };
@@ -343,10 +355,10 @@ function UpdateForm({
                                     return month;
                                 }
                             });
-                            uploadInvoiceFiles(renewedSubscription[0]);
+                            uploadInvoiceFiles(res.data,subscriptionYear,subscriptionMonth);
                         }
                     } else {
-                        uploadInvoiceFiles(res.data);
+                        uploadInvoiceFiles(res.data,subscriptionYear,subscriptionMonth);
                         setState(defaultFormData);
                     }
 
@@ -517,7 +529,7 @@ function UpdateForm({
                         </div>
 
                         <div className='form-group col-md-2'>
-                            <label htmlFor='billingMonth'>For the month of *</label>
+                            <label htmlFor='billingMonth'>For the month of </label>
                             <select
                                 className='form-control'
                                 onChange={(e) => handleOnChange(e, 'billingDetails')}
@@ -542,7 +554,7 @@ function UpdateForm({
                         </div>
 
                         <div className='form-group col-md-2'>
-                            <label htmlFor='nextBilling'>Next Billing Date *</label>
+                            <label htmlFor='nextBilling'>Next Billing Date </label>
                             <input
                                 type='date'
                                 className='form-control'
@@ -559,7 +571,7 @@ function UpdateForm({
                             />
                         </div>
                         <div className='form-group col-md-2'>
-                            <label htmlFor='pricingInDollar'>Pricing in $ *</label>
+                            <label htmlFor='pricingInDollar'>Pricing in $ </label>
                             <NumberFormat
                                 thousandsGroupStyle='thousand'
                                 prefix='$ '
@@ -576,7 +588,7 @@ function UpdateForm({
                             />
                         </div>
                         <div className='form-group col-md-2'>
-                            <label htmlFor='pricingInRupee'>Pricing in ₹ *</label>
+                            <label htmlFor='pricingInRupee'>Pricing in ₹ </label>
                             <NumberFormat
                                 thousandsGroupStyle='thousand'
                                 value={billingDetails?.pricingInRupee}
@@ -595,7 +607,7 @@ function UpdateForm({
                     </div>
                     <div className='row'>
                         <div className='form-group col-md-6'>
-                            <label htmlFor='description'>Pricing Description *</label>
+                            <label htmlFor='description'>Pricing Description </label>
                             <textarea
                                 type='text'
                                 className='form-control long'
