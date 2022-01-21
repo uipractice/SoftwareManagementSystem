@@ -374,7 +374,6 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
       {
         Header: 'TIMELINE',
         accessor: (originalRow) => {
-          console.log(originalRow)
           const todaysDate = moment().format('YYYY-MM-DD');
           let subscriptionYear = Object.keys(originalRow.billingDetails);
           let latestSubscriptionYear =
@@ -729,7 +728,6 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
                 );
                 if (days < 0) {
                   if (key === 'softwareType') {
-                    console.log('k*****y', key);
                     return row['softwareType'] === filterState['softwareType'];
                   }
                   if (key === 'billingCycle') {

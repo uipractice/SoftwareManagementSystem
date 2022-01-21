@@ -29,6 +29,7 @@ const nonMandatoryFields = [
   'invoiceFiles',
   'pricingInDollar',
   'pricingInRupee',
+  'description'
 ];
 
 function Form({
@@ -239,6 +240,11 @@ function Form({
         .catch((err) => {
           console.log('Error in Upload : ', err);
         });
+    }else{
+      toast.success('Data Saved Successfully !', {
+        autoClose: 1000,
+        onClose: updateToolStatus(true),
+      });
     }
   };
   const handleAddFile = () => {
@@ -250,7 +256,6 @@ function Form({
     for (const file of fileInput.target.files) {
       files.push(file);
     }
-    console.log('files', files);
     setInvoiceFiles(files);
   };
 
@@ -318,7 +323,6 @@ function Form({
           softwareToolDetails
         )
         .then((res) => {
-          console.log(subscriptionYear, subscriptionMonth);
           if (isEdit) {
             let subscribedYears = Object.keys(res.data.billingDetails);
             if (subscribedYears.includes(subscriptionYear)) {
@@ -540,7 +544,7 @@ function Form({
               />
             </div>
             <div className='form-group col-md-2'>
-              <label htmlFor='pricingInDollar'>Pricing in $ *</label>
+              <label htmlFor='pricingInDollar'>Pricing in $ </label>
               <NumberFormat
                 thousandsGroupStyle='thousand'
                 prefix='$ '
@@ -556,7 +560,7 @@ function Form({
               />
             </div>
             <div className='form-group col-md-2'>
-              <label htmlFor='pricingInRupee'>Pricing in ₹ *</label>
+              <label htmlFor='pricingInRupee'>Pricing in ₹ </label>
               <NumberFormat
                 thousandsGroupStyle='thousand'
                 value={billingDetails?.pricingInRupee}
@@ -574,7 +578,7 @@ function Form({
           </div>
           <div className='row'>
             <div className='form-group col-md-6'>
-              <label htmlFor='description'>Pricing Description *</label>
+              <label htmlFor='description'>Pricing Description </label>
               <textarea
                 type='text'
                 className='form-control long'
