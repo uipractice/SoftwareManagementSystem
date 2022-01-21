@@ -553,19 +553,19 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
                       if (total < 7) {
                         return (
                           <div key={ind}
-                            className='label text-capitalize text-align-center'
-                            onClick={() => {
+                            className='label text-capitalize text-align-center pointer'
+                         >
+                            <label    onClick={() => {
                               setRowData(row.original);
                               updateSelectedBillingMonth(month);
                               toggleUpdateForm(true);
                             }}>
-                            <label>
                               {month.billingMonth.substring(0,3)}
                               {'-'}
                               {item.substring(2, 4)}{' '}
 
                             </label>
-                            <div className='amount'>
+                            <div className='amount pointer'>
                               {month.pricingInRupee !== ''
                                 ? `${'₹'}${parseFloat(month.pricingInRupee).toFixed(
                                   2
