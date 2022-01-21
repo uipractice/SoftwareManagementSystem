@@ -879,7 +879,6 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
             </Modal.Header>
             <Modal.Body className='rowexpandfont'>
               <div className='d-flex justify-content-between px-1'>
-                <div>{rowData.softwareName}</div>
                 <div className='prev-next'>
                   <button onClick={() => showPreviousYearSubscriptions()}>
                     <img src={leftIcon} alt='prev' />
