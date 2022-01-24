@@ -197,9 +197,9 @@ a:focus {
   cursor: pointer;
 }
 
-.text-capital {
+/* .text-capital {
   text-transform: capitalize;
-}
+} */
 
 .arrow {
   border: solid #57565c;

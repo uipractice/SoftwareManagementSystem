@@ -493,3 +493,6 @@ tfoot td {
     border-color: #209ec5;
     /* background-color: rgba(32, 158, 197, 0.05) !important; */
   }
+.text-align-center{
+  text-align: center !important;
+}
