@@ -552,13 +552,14 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
                       if (total < 7) {
                         return (
                           <div key={ind}
-                            className='label text-capitalize text-align-center pointer'
+                               className='label text-capitalize text-align-center pointer'
+                               onClick={() => {
+                                  setRowData(row.original);
+                                  updateSelectedBillingMonth(month);
+                                  toggleUpdateForm(true);
+                                }}
                          >
-                            <label    onClick={() => {
-                              setRowData(row.original);
-                              updateSelectedBillingMonth(month);
-                              toggleUpdateForm(true);
-                            }}>
+                            <label>
                               {month.billingMonth.substring(0,3)}
                               {'-'}
                               {item.substring(2, 4)}{' '}
@@ -570,14 +571,6 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
                                   2
                                 )}`
                                 : `${'₹'}${Number(0).toFixed(2)}`}
-                              {month.invoiceFiles?.length > 0 && (
-                                <img
-                                  className='pl-3 pr-2 pointer'
-                                  src={Download}
-                                  onClick={() => downloadInvoice(row.original, item,month.billingMonth,month.invoiceFiles)}
-                                  alt='download'
-                                />
-                              )}
                             </div>
                           </div>
                         );
@@ -902,17 +895,6 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
                       {billingItem?.length !== 0 && (
                         <div className='amount'>
                           <span>{`₹${billingItem[0]?.pricingInRupee}`}</span>
-                          {/* {billingItem[0].invoiceFiles.length > 0 && (
-                            <img
-                              src={Download}
-                              // src={AttachIcon}
-                              onClick={() =>
-                                downloadInvoice(rowData, billingItem[0])
-                              }
-                              alt='download'
-                              className='pointer px-1'
-                            />
-                          )} */}
                         </div>
                       )}
                     </div>

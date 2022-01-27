@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { ToggleButtonGroup, ToggleButton, Modal } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -6,6 +6,7 @@ import NumberFormat from 'react-number-format';
 import axios from 'axios';
 import moment from 'moment';
 import Upload from '../../assets/images/upload.svg';
+import Download from '../../assets/images/download.svg';
 // Helpers
 import { getApiUrl } from '../utils/helper';
 
@@ -44,13 +45,6 @@ function UpdateForm({
     const inputRef = useRef(null);
     const [state, setState] = useState({});
     const [invoiceFiles, setInvoiceFiles] = useState([]);
-    //   const [billingDetails, setBillingDetails] = useState({
-    //     pricingInDollar: '',
-    //     pricingInRupee: '',
-    //     billingMonth: moment().format('MMMM').toLowerCase(),
-    //     description: '',
-    //   });
-
     const [billingDetails, setBillingDetails] = useState({ ...selectedMonth });
 
     useEffect(() => {
@@ -189,68 +183,37 @@ function UpdateForm({
         }
     }
 
-    /**
-     * Resetting the billing details.
-     *
-     * @param {object} e contains event object.
-     * @return null.
-     */
-    const handleReset = (e) => {
-        e.preventDefault();
-        let resetData = { ...defaultFormData };
-        resetData.team = state.team;
-        resetData.owner = state.owner;
-        resetData.websiteUrl = state.websiteUrl;
-        resetData.softwareName = state.softwareName;
-        resetData.email = state.email;
-        isEdit
-            ? setState(resetData)
-            : setState({
-                ...state,
-                softwareName: '',
-                owner: '',
-                team: '',
-                websiteUrl: '',
-                email: '',
-                softwareType: 'software',
-                billingCycle: 'monthly',
-            });
-        setInvoiceFiles([]);
-        setBillingDetails({
-            pricingInDollar: '',
-            pricingInRupee: '',
-            billingMonth: moment().format('MMMM').toLowerCase(),
-            description: '',
-        });
-    };
+    const handleCancel = () => {
+        closeModal();
+    }
 
    const uploadInvoiceFiles = (data, year, month) => {
-    if (invoiceFiles && invoiceFiles.length > 0) {
-      const formData = new FormData();
-      for (let file in invoiceFiles) {
-        formData.append('fileName', invoiceFiles[file]);
-      }
-      formData.append('year', year);
-      formData.append('month', month);
-      axios
-        .post(getApiUrl(`softwareInfo/multiple/${data._id}`), formData)
-        .then((res) => {
-          console.log('Files Uploaded : ', res.data.status);
-          toast.success('Data Saved Successfully !', {
-            autoClose: 1000,
-            onClose: updateToolStatus(true),
-          });
-        })
-        .catch((err) => {
-          console.log('Error in Upload : ', err);
-        });
-    }else{
-      toast.success('Data Saved Successfully !', {
-        autoClose: 1000,
-        onClose: updateToolStatus(true),
-      });
-    }
-  };
+        if (invoiceFiles && invoiceFiles.length > 0) {
+            const formData = new FormData();
+            for (let file in invoiceFiles) {
+                formData.append('fileName', invoiceFiles[file]);
+            }
+            formData.append('year', year);
+            formData.append('month', month);
+            axios
+                .post(getApiUrl(`softwareInfo/multiple/${data._id}`), formData)
+                .then((res) => {
+                    console.log('Files Uploaded : ', res.data.status);
+                    toast.success('Data Saved Successfully !', {
+                        autoClose: 1000,
+                        onClose: updateToolStatus(true),
+                    });
+                })
+                .catch((err) => {
+                    console.log('Error in Upload : ', err);
+                });
+        } else {
+            toast.success('Data Saved Successfully !', {
+                autoClose: 1000,
+                onClose: updateToolStatus(true),
+            });
+        }
+    };
     const handleAddFile = () => {
         document.getElementById('invoiceFiles').click();
     };
@@ -262,6 +225,36 @@ function UpdateForm({
         }
         console.log('files', files);
         setInvoiceFiles(files);
+    };
+
+
+    const downloadInvoice = useCallback((invoiceFiles) => {
+        axios
+            .get(
+                getApiUrl(`softwareInfo/download/${rowData._id}/${billingDetails.createdAt.substring(0, 4)}/${billingDetails.billingMonth}`)
+            )
+            .then((res) => {
+                const files = res.data;
+                downloadFiles(files, invoiceFiles);
+            });
+    }, []);
+
+    const downloadFiles = (filesUrls, fileNames) => {
+        let index = 0;
+        for (let file of filesUrls) {
+            const link = document.createElement('a');
+            if (file.includes(fileNames)) {
+                link.href = file;
+                link.target = '_blank';
+                link.setAttribute('id', 'downloadFile');
+                link.setAttribute('download', fileNames);
+                document.body.appendChild(link);
+                link.click();
+                index += 1;
+                document.getElementById('downloadFile')?.remove();
+            }
+
+        }
     };
 
     /**
@@ -317,11 +310,12 @@ function UpdateForm({
                         element.description = billingDetails.description;
                         element.pricingInDollar = billingDetails.pricingInDollar;
                         element.pricingInRupee = billingDetails.pricingInRupee;
+                        element.invoiceFiles = billingDetails.invoiceFiles;
                         validmonth = true;
                     }
                 });
 
-                if(!validmonth){
+                if (!validmonth) {
                     toast.error(`Unable to update`, {
                         autoClose: 3000,
                     });
@@ -355,10 +349,10 @@ function UpdateForm({
                                     return month;
                                 }
                             });
-                            uploadInvoiceFiles(res.data,subscriptionYear,subscriptionMonth);
+                            uploadInvoiceFiles(res.data, subscriptionYear, subscriptionMonth);
                         }
                     } else {
-                        uploadInvoiceFiles(res.data,subscriptionYear,subscriptionMonth);
+                        uploadInvoiceFiles(res.data, subscriptionYear, subscriptionMonth);
                         setState(defaultFormData);
                     }
 
@@ -560,7 +554,7 @@ function UpdateForm({
                                 className='form-control'
                                 onChange={handleOnChange}
                                 name='nextBilling'
-                                value={state?.nextBilling}
+                                value={billingDetails?.nextBilling}
                                 //value={selectedMonth.nextBilling}
                                 // min={moment().subtract(1, 'month').format('YYYY-MM-DD')}
                                 max={
@@ -622,22 +616,43 @@ function UpdateForm({
                         <div className='form-group col-md-6'>
                             <label htmlFor='invoiceFiles'>Upload Invoice</label>
                             <div
-                                className={`form-control long dashed-box  ${(invoiceFiles === null || invoiceFiles.length <= 0) &&
+                                className={`form-control long dashed-box  ${(billingDetails.invoiceFiles === null || billingDetails.invoiceFiles.length <= 0) &&
                                     'pointer'
-                                    } ${(invoiceFiles === null || invoiceFiles.length > 0) &&
+                                    } ${(billingDetails.invoiceFiles === null || billingDetails.invoiceFiles.length > 0) &&
                                     'files-container'
                                     }`}
-                            // {...((invoiceFiles === null ||
-                            //   Object.keys(invoiceFiles).length <= 0) && {
-                            //   onClick: (e) => document.getElementById("invoiceFiles")?.click(),
-                            // })}
                             >
-                                {/* <div className="d-flex justify-content-center align-items-center h-100"> */}
 
                                 <div
-                                    className={`${invoiceFiles.length <= 0 && 'no-selected-items'}
-                  ${invoiceFiles.length > 0 && 'selected-items'}`}
+                                    className={`${billingDetails.invoiceFiles.length <= 0 && 'no-selected-items'}
+                                    ${billingDetails.invoiceFiles.length > 0 && 'selected-items'}`}
                                 >
+                                    {billingDetails.invoiceFiles.map((item, key) => (
+                                        <div>
+                                            <span
+                                                key={key}
+                                                className='file-close-icon'
+                                                onClick={() => {
+                                                    const fileState = [...invoiceFiles];
+                                                    const fileState2= [...billingDetails.invoiceFiles] 
+                                                    fileState.splice(key, 1);
+                                                    fileState2.splice(key, 1);
+                                                    setInvoiceFiles(fileState);
+                                                    setBillingDetails({ ...billingDetails, invoiceFiles: fileState2 })
+                                                }}
+                                            >
+                                                {/* {typeof(billingDetails.invoiceFiles[key]) == "string" ?billingDetails.invoiceFiles[key].split("_")[1]:billingDetails.invoiceFiles[key]["name"] } */}
+                                                {billingDetails.invoiceFiles[key].includes("_") ? billingDetails.invoiceFiles[key].split("_")[1] : billingDetails.invoiceFiles[key]}
+                                                &nbsp;&nbsp;
+                                            </span>
+                                            <img
+                                                className='pl-3 pr-2 pointer'
+                                                src={Download}
+                                                onClick={() => downloadInvoice(billingDetails.invoiceFiles[key])}
+                                                alt='download'
+                                            />
+                                        </div>
+                                    ))}
                                     {invoiceFiles.map((item, key) => (
                                         <div>
                                             <span
@@ -679,9 +694,9 @@ function UpdateForm({
                         <div className='col-md-12 text-center'>
                             <button
                                 className='form-control btn btn-primary'
-                                onClick={handleReset}
+                                onClick={handleCancel}
                             >
-                                Reset
+                                Cancel
                             </button>
                             <button
                                 className='form-control btn btn-primary share-btn'

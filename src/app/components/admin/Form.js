@@ -269,6 +269,7 @@ function Form({
     e.preventDefault();
     const newBillingRecord = {
       ...billingDetails,
+      invoiceFiles:[],
       nextBilling: state.nextBilling,
       createdAt: moment().format('YYYY-MM-DD'),
     };
