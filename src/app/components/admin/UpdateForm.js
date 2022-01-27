@@ -560,7 +560,8 @@ function UpdateForm({
                                 className='form-control'
                                 onChange={handleOnChange}
                                 name='nextBilling'
-                                value={state?.nextBilling}
+                                // value={state?.nextBilling}
+                                value={billingDetails?.nextBilling}
                                 //value={selectedMonth.nextBilling}
                                 // min={moment().subtract(1, 'month').format('YYYY-MM-DD')}
                                 max={

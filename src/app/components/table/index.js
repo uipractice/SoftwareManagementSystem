@@ -507,6 +507,7 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
         downloadFiles(files, invoiceFiles);
       });
   }, []);
+  let totalAmount = 0;
   const months = [
     'january',
     'february',
@@ -533,7 +534,7 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
 
             {
               Object.keys(row.original.billingDetails)
-                .reverse()
+                // .reverse()
                 .map((item, index) => {
                   return row.original.billingDetails[item]
                     .sort((a, b) =>
@@ -544,7 +545,7 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
                           ? 0
                           : -1
                     )
-                    .reverse()
+                    // .reverse()
 
                     .map((month, ind) => {
                       let total = count + 1
@@ -554,7 +555,7 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
                           <div key={ind}
                             className='label text-capitalize text-align-center pointer'
                          >
-                            <label    onClick={() => {
+                            <label onClick={() => {
                               setRowData(row.original);
                               updateSelectedBillingMonth(month);
                               toggleUpdateForm(true);
@@ -876,7 +877,7 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
               <h3>Subscription Details</h3>
             </Modal.Header>
             <Modal.Body className='rowexpandfont'>
-              <div className='d-flex justify-content-between px-1'>
+              <div className='d-flex justify-content-end px-1'>
                 <div className='prev-next'>
                   <button onClick={() => showPreviousYearSubscriptions()}>
                     <img src={leftIcon} alt='prev' />
@@ -928,6 +929,15 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
                   )}
                 </span> */}
               </div>
+              {months.map((month) => {
+                  const billingItem =
+                    monthlyData?.filter(
+                      (item) => item.billingMonth === month
+                    ) || [];
+                    totalAmount += billingItem[0]?.pricingInRupee ? Number(billingItem[0]?.pricingInRupee) : 0;
+                  return null;
+                })}
+                <span>Total spends: ₹{totalAmount}</span>
             </Modal.Body>
           </Modal>
         </div>
