@@ -38,6 +38,7 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
   const [isEditFormOpen, toggleEditForm] = useState(false);
   const [isUpdateFormOpen, toggleUpdateForm] = useState(false); // added for form update
   const [selectedBillingMonth, updateSelectedBillingMonth] = useState({}); //added for from update
+  const [selectedYear, updateSelectedYear] = useState("");
   const [show, setShow] = useState(false);
   const [noRecords, setNoRecords] = useState(false);
 
@@ -557,6 +558,7 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
                                onClick={() => {
                                   setRowData(row.original);
                                   updateSelectedBillingMonth(month);
+                                  updateSelectedYear(item)
                                   toggleUpdateForm(true);
                                 }}
                          >
@@ -1090,6 +1092,7 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
         isEdit={true}
         updateToolStatus={updateSatus}
         selectedMonth = {selectedBillingMonth}
+        selectedYear = {selectedYear}
         type="update"
       />
 

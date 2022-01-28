@@ -40,7 +40,8 @@ function UpdateForm({
     isEdit = false,
     updateToolStatus,
     selectedMonth,
-    type
+    type,
+    selectedYear
 }) {
     const inputRef = useRef(null);
     const [state, setState] = useState({});
@@ -133,8 +134,12 @@ function UpdateForm({
                 }),
             });
         } else if (e.target.name === 'nextBilling') {
-            setState({
-                ...state,
+            // setState({
+            //     ...state,
+            //     [e.target.name]: e.target.value,
+            // });
+            setBillingDetails({
+                ...billingDetails,
                 [e.target.name]: e.target.value,
             });
         } else if (url) {
@@ -266,8 +271,6 @@ function UpdateForm({
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        console.log("updated billing details-----------", billingDetails)
-
         const newBillingRecord = {
             ...billingDetails,
             nextBilling: state.nextBilling,
@@ -302,11 +305,12 @@ function UpdateForm({
 
 
         let softwareToolDetails = JSON.parse(JSON.stringify(state));
-        if (Object.keys(softwareToolDetails.billingDetails).includes(subscriptionYear)) {
+        if (Object.keys(softwareToolDetails.billingDetails).includes(selectedYear)) {
             if (type == "update") {
                 let validmonth = false;
-                softwareToolDetails.billingDetails[subscriptionYear].forEach(element => {
+                softwareToolDetails.billingDetails[selectedYear].forEach(element => {
                     if (element.billingMonth == billingDetails.billingMonth) {
+                        element.nextBilling = billingDetails.nextBilling;
                         element.description = billingDetails.description;
                         element.pricingInDollar = billingDetails.pricingInDollar;
                         element.pricingInRupee = billingDetails.pricingInRupee;
@@ -325,8 +329,6 @@ function UpdateForm({
             else{
                 softwareToolDetails.billingDetails[subscriptionYear].push(newBillingRecord);
             }
-
-            console.log("software tool details----------", softwareToolDetails);
            
         } else {
             softwareToolDetails.billingDetails[subscriptionYear] = [newBillingRecord];
