@@ -894,8 +894,8 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
                     >
                       {month}
                       {billingItem?.length !== 0 && (
-                        <div className='amount'>
-                          <span>{`₹${billingItem[0]?.pricingInRupee}`}</span>
+                        <div className='amount'>   
+                          <span>{billingItem[0]?.pricingInRupee !== ""?`₹${parseFloat(billingItem[0]?.pricingInRupee).toFixed(2)}`:`₹${Number(0).toFixed(2)}`}</span>
                         </div>
                       )}
                     </div>
@@ -919,7 +919,7 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
                     totalAmount += billingItem[0]?.pricingInRupee ? Number(billingItem[0]?.pricingInRupee) : 0;
                   return null;
                 })}
-                <span>Total spends: ₹{totalAmount}</span>
+                <span>Total spends: ₹{parseFloat(totalAmount).toFixed(2)}</span>
             </Modal.Body>
           </Modal>
         </div>
