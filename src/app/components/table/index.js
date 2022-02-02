@@ -38,6 +38,7 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
   const [isEditFormOpen, toggleEditForm] = useState(false);
   const [isUpdateFormOpen, toggleUpdateForm] = useState(false); // added for form update
   const [selectedBillingMonth, updateSelectedBillingMonth] = useState({}); //added for from update
+  const [deleteMonth, setDeleteMonth] = useState(false);
   const [selectedYear, updateSelectedYear] = useState("");
   const [show, setShow] = useState(false);
   const [noRecords, setNoRecords] = useState(false);
@@ -471,6 +472,7 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
               onClick={() => {
                 setRowData(row.original);
                 setIsModalOpen(true);
+                setDeleteMonth(false);
               }}
             />
           </div>
@@ -497,8 +499,8 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
   };
 
   // Get S3 signed urls of the attachments for a Billing Month.
-  const downloadInvoice = useCallback((rowItemData, billingYear,billingMonth,invoiceFiles) => {
- 
+  const downloadInvoice = useCallback((rowItemData, billingYear, billingMonth, invoiceFiles) => {
+
     axios
       .get(
         getApiUrl(`softwareInfo/download/${rowItemData._id}/${billingYear}/${billingMonth}`)
@@ -535,7 +537,7 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
 
             {
               Object.keys(row.original.billingDetails)
-                // .reverse()
+                 //.reverse()
                 .map((item, index) => {
                   return row.original.billingDetails[item]
                     .sort((a, b) =>
@@ -546,7 +548,7 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
                           ? 0
                           : -1
                     )
-                    // .reverse()
+                     //.reverse()
 
                     .map((month, ind) => {
                       let total = count + 1
@@ -554,21 +556,36 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
                       if (total < 7) {
                         return (
                           <div key={ind}
-                               className='label text-capitalize text-align-center pointer'
-                               onClick={() => {
-                                  setRowData(row.original);
-                                  updateSelectedBillingMonth(month);
-                                  updateSelectedYear(item)
-                                  toggleUpdateForm(true);
-                                }}
-                         >
+                            className='label text-capitalize text-align-center pointer'
+                          >
                             <label>
-                              {month.billingMonth.substring(0,3)}
+                              {month.billingMonth.substring(0, 3)}
                               {'-'}
                               {item.substring(2, 4)}{' '}
+                              <img
+                                className="p-2 pointer deleted"
+                                src={DeleteImg}
+                                alt='Evoke Technologies'
+                                onClick={()=>{
+                                  setIsModalOpen(true)
+                                  updateSelectedBillingMonth(month);
+                                  updateSelectedYear(item)
+                                  setDeleteMonth(true);
+                                  setRowData(row.original);
+                                }}
+                              />
+                              {/* <span className='file-close-icon'></span> */}
 
                             </label>
-                            <div className='amount pointer'>
+
+                            <div className='amount pointer'
+                            onClick={() => {
+                              setRowData(row.original);
+                              updateSelectedBillingMonth(month);
+                              updateSelectedYear(item)
+                              toggleUpdateForm(true);
+                            }}
+                            >
                               {month.pricingInRupee !== ''
                                 ? `${'₹'}${parseFloat(month.pricingInRupee).toFixed(
                                   2
@@ -776,6 +793,33 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
     );
   };
 
+  const handleDeleteMonth = () =>{
+    let selectedRow = {...rowData};
+    delete selectedRow.deleteReason;
+    let index = selectedRow.billingDetails[selectedYear].indexOf(selectedBillingMonth)
+    if(index > -1){
+      selectedRow.billingDetails[selectedYear].splice(index,1)
+      if(selectedRow.billingDetails[selectedYear].length == 0){
+        delete selectedRow.billingDetails[selectedYear]
+      }
+    }
+    
+      const renewUrl = `softwareInfo/renew/${rowData?._id}`;
+      axios
+          .post(getApiUrl(renewUrl) ,selectedRow)
+          .then((res) => {
+            toast.success('Data deleted successfully!', {
+              autoClose: 1000,
+            });
+            setIsModalOpen(false);
+            setDeleteMonth(false);
+            setTimeout(() => {
+              window.location.reload();
+            }, 1000);
+          })
+          .catch((err) => console.log(err.response));
+  }
+
   return (
     <>
       <div className='filter-row'>
@@ -840,6 +884,7 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
                   className='form-control btn cancel'
                   onClick={() => {
                     setIsModalOpen(false);
+                    setDeleteMonth(false);
                   }}
                 >
                   Cancel
@@ -847,7 +892,7 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
               </div>
               <div>
                 <button
-                  onClick={handleUpdateStatus}
+                  onClick={!deleteMonth? handleUpdateStatus : handleDeleteMonth}
                   disabled={!rowData?.deleteReason}
                   className='form-control btn btn-primary delete-btn'
                 >
@@ -896,8 +941,8 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
                     >
                       {month}
                       {billingItem?.length !== 0 && (
-                        <div className='amount'>   
-                          <span>{billingItem[0]?.pricingInRupee !== ""?`₹${parseFloat(billingItem[0]?.pricingInRupee).toFixed(2)}`:`₹${Number(0).toFixed(2)}`}</span>
+                        <div className='amount'>
+                          <span>{billingItem[0]?.pricingInRupee !== "" ? `₹${parseFloat(billingItem[0]?.pricingInRupee).toFixed(2)}` : `₹${Number(0).toFixed(2)}`}</span>
                         </div>
                       )}
                     </div>
@@ -914,14 +959,14 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
                 </span> */}
               </div>
               {months.map((month) => {
-                  const billingItem =
-                    monthlyData?.filter(
-                      (item) => item.billingMonth === month
-                    ) || [];
-                    totalAmount += billingItem[0]?.pricingInRupee ? Number(billingItem[0]?.pricingInRupee) : 0;
-                  return null;
-                })}
-                <span>Total spends: ₹{parseFloat(totalAmount).toFixed(2)}</span>
+                const billingItem =
+                  monthlyData?.filter(
+                    (item) => item.billingMonth === month
+                  ) || [];
+                totalAmount += billingItem[0]?.pricingInRupee ? Number(billingItem[0]?.pricingInRupee) : 0;
+                return null;
+              })}
+              <span>Total spends: ₹{parseFloat(totalAmount).toFixed(2)}</span>
             </Modal.Body>
           </Modal>
         </div>
@@ -1080,21 +1125,21 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
           type="renew"
         />
       )}
-      
+
       {isUpdateFormOpen && (
         <UpdateForm
-        isOpen={isUpdateFormOpen}
-        closeModal={() => {
-          toggleUpdateForm(false);
-          setRowData(null);
-        }}
-        rowData={rowData}
-        isEdit={true}
-        updateToolStatus={updateSatus}
-        selectedMonth = {selectedBillingMonth}
-        selectedYear = {selectedYear}
-        type="update"
-      />
+          isOpen={isUpdateFormOpen}
+          closeModal={() => {
+            toggleUpdateForm(false);
+            setRowData(null);
+          }}
+          rowData={rowData}
+          isEdit={true}
+          updateToolStatus={updateSatus}
+          selectedMonth={selectedBillingMonth}
+          selectedYear={selectedYear}
+          type="update"
+        />
 
       )}
       {/* {isUpdateFormOpen && (
