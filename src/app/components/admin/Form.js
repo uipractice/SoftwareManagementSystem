@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ToggleButtonGroup, ToggleButton, Modal } from 'react-bootstrap';
+import { ToggleButtonGroup, ToggleButton, Modal, Spinner } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import NumberFormat from 'react-number-format';
 import axios from 'axios';
 import moment from 'moment';
 import Upload from '../../assets/images/upload.svg';
+import './Container.css'
 // Helpers
 import { getApiUrl } from '../utils/helper';
 
@@ -48,6 +49,7 @@ function Form({
     billingMonth: moment().format('MMMM').toLowerCase(),
     description: '',
   });
+  const [isloading, setLoading] = useState(false)
 
   useEffect(() => {
     inputRef?.current?.focus();
@@ -193,6 +195,7 @@ function Form({
    */
   const handleReset = (e) => {
     e.preventDefault();
+    setLoading(false);
     let resetData = { ...defaultFormData };
     resetData.team = state.team;
     resetData.owner = state.owner;
@@ -236,6 +239,7 @@ function Form({
             autoClose: 1000,
             onClose: updateToolStatus(true),
           });
+          setLoading(false);
         })
         .catch((err) => {
           console.log('Error in Upload : ', err);
@@ -246,6 +250,7 @@ function Form({
         onClose: updateToolStatus(true),
       });
     }
+    setLoading(false);
   };
   const handleAddFile = () => {
     document.getElementById('invoiceFiles').click();
@@ -267,6 +272,7 @@ function Form({
    */
   const handleSubmit = (e) => {
     e.preventDefault();
+    setLoading(true);
     const newBillingRecord = {
       ...billingDetails,
       invoiceFiles:[],
@@ -295,12 +301,12 @@ function Form({
         billingInfo[subscriptionYear] &&
         billingInfo[subscriptionYear].includes(subscriptionMonth)
       ) {
-        toast.error(
-          `Subscription already done for ${subscriptionMonth}, ${subscriptionYear}`,
-          {
+        toast.error(`Subscription already done for ${subscriptionMonth}, ${subscriptionYear}`,
+{
             autoClose: 3000,
           }
         );
+        setLoading(false);
         return false;
       }
     }
@@ -342,7 +348,7 @@ function Form({
           }
 
           closeModal();
-   
+          setLoading(false);
         });
     }
   };
@@ -649,7 +655,7 @@ function Form({
           </div>
 
           <div className='form-group row share '>
-            <div className='col-md-12 text-center'>
+          {isloading ? <Spinner animation="border" variant="info" className='spinnericon'/> :<div className='col-md-12 text-center'>
               <button
                 className='form-control btn btn-primary'
                 onClick={handleReset}
@@ -672,7 +678,8 @@ function Form({
               >
                 {isEdit ? 'Renew' : 'Save'}
               </button>
-            </div>
+            </div> }
+            
           </div>
         </form>
       </Modal.Body>

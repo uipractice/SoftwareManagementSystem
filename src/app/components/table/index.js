@@ -482,6 +482,16 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
     []
   );
 
+  const calculateLength = (data) =>{
+    let keys = Object.keys(data);
+    console.log("data---",keys)
+    let count = 0;
+    Object.keys(data).forEach((year)=>{
+      count = count+ data[year].length
+    })
+    return count;
+  }
+
   // Download the signed urls fetched from S3.
   const downloadFiles = (filesUrls, fileNames) => {
     let index = 0;
@@ -530,6 +540,7 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
     ({ row }) => {
       let count = 0;
       let x = 0;
+      let length = calculateLength(row.original.billingDetails);
       return (
         <td colSpan='12' className='rowexpandable'>
           <div className='subscrit'>
@@ -562,7 +573,8 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
                               {month.billingMonth.substring(0, 3)}
                               {'-'}
                               {item.substring(2, 4)}{' '}
-                              <img
+                              
+                              {length !== count ? <img
                                 className="p-2 pointer deleted"
                                 src={DeleteImg}
                                 alt='Evoke Technologies'
@@ -573,7 +585,8 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
                                   setDeleteMonth(true);
                                   setRowData(row.original);
                                 }}
-                              />
+                              /> : ''}
+                             
                               {/* <span className='file-close-icon'></span> */}
 
                             </label>

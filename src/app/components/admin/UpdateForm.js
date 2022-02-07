@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { ToggleButtonGroup, ToggleButton, Modal } from 'react-bootstrap';
+import { ToggleButtonGroup, ToggleButton, Modal, Spinner, Container } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import NumberFormat from 'react-number-format';
@@ -9,6 +9,7 @@ import Upload from '../../assets/images/upload.svg';
 import Download from '../../assets/images/download.svg';
 // Helpers
 import { getApiUrl } from '../utils/helper';
+import './Container.css'
 
 toast.configure();
 
@@ -47,6 +48,7 @@ function UpdateForm({
     const [state, setState] = useState({});
     const [invoiceFiles, setInvoiceFiles] = useState([]);
     const [billingDetails, setBillingDetails] = useState({ ...selectedMonth });
+    const [isloading, setLoading] = useState(false)
 
     useEffect(() => {
         inputRef?.current?.focus();
@@ -192,7 +194,7 @@ function UpdateForm({
         closeModal();
     }
 
-   const uploadInvoiceFiles = (data, year, month) => {
+    const uploadInvoiceFiles = (data, year, month) => {
         if (invoiceFiles && invoiceFiles.length > 0) {
             const formData = new FormData();
             for (let file in invoiceFiles) {
@@ -204,19 +206,19 @@ function UpdateForm({
                 .post(getApiUrl(`softwareInfo/multiple/${data._id}`), formData)
                 .then((res) => {
                     console.log('Files Uploaded : ', res.data.status);
-                    toast.success('Data Saved Successfully !', {
-                        autoClose: 1000,
-                        onClose: updateToolStatus(true),
-                    });
+                    // toast.success('Data Saved Successfully !', {
+                    //     autoClose: 1000,
+                    //     onClose: updateToolStatus(true),
+                    // });
                 })
                 .catch((err) => {
                     console.log('Error in Upload : ', err);
                 });
         } else {
-            toast.success('Data Saved Successfully !', {
-                autoClose: 1000,
-                onClose: updateToolStatus(true),
-            });
+            // toast.success('Data Saved Successfully !', {
+            //     autoClose: 1000,
+            //     onClose: updateToolStatus(true),
+            // });
         }
     };
     const handleAddFile = () => {
@@ -270,7 +272,7 @@ function UpdateForm({
      */
     const handleSubmit = (e) => {
         e.preventDefault();
-
+        setLoading(true);
         const newBillingRecord = {
             ...billingDetails,
             nextBilling: state.nextBilling,
@@ -299,6 +301,7 @@ function UpdateForm({
                 toast.error(`Subscription already done for ${subscriptionMonth} , ${subscriptionYear}`, {
                     autoClose: 3000,
                 });
+                setLoading(false);
                 return false;
             }
         }
@@ -323,13 +326,14 @@ function UpdateForm({
                     toast.error(`Unable to update`, {
                         autoClose: 3000,
                     });
+                    setLoading(false);
                     return false;
                 }
             }
-            else{
+            else {
                 softwareToolDetails.billingDetails[subscriptionYear].push(newBillingRecord);
             }
-           
+
         } else {
             softwareToolDetails.billingDetails[subscriptionYear] = [newBillingRecord];
         }
@@ -363,6 +367,7 @@ function UpdateForm({
                         autoClose: 1000,
                         onClose: updateToolStatus(true),
                     });
+                    setLoading(false);
                 });
         }
     };
@@ -636,7 +641,7 @@ function UpdateForm({
                                                 className='file-close-icon'
                                                 onClick={() => {
                                                     const fileState = [...invoiceFiles];
-                                                    const fileState2= [...billingDetails.invoiceFiles] 
+                                                    const fileState2 = [...billingDetails.invoiceFiles]
                                                     fileState.splice(key, 1);
                                                     fileState2.splice(key, 1);
                                                     setInvoiceFiles(fileState);
@@ -693,7 +698,7 @@ function UpdateForm({
                     </div>
 
                     <div className='form-group row share '>
-                        <div className='col-md-12 text-center'>
+                        {isloading ? <Spinner animation="border" variant="info" className='spinnericon'/> : <div className='col-md-12 text-center'>
                             <button
                                 className='form-control btn btn-primary'
                                 onClick={handleCancel}
@@ -716,7 +721,9 @@ function UpdateForm({
                             >
                                 {isEdit ? 'Update' : 'Save'}
                             </button>
-                        </div>
+
+                        </div>}
+
                     </div>
                 </form>
             </Modal.Body>
