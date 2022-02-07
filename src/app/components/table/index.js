@@ -539,8 +539,8 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
   const renderRowSubComponent = useCallback(
     ({ row }) => {
       let count = 0;
-      let x = 0;
       let length = calculateLength(row.original.billingDetails);
+      let result = length - 6;
       return (
         <td colSpan='12' className='rowexpandable'>
           <div className='subscrit'>
@@ -564,50 +564,56 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
                     .map((month, ind) => {
                       let total = count + 1
                       count = total
-                      if (total < 7) {
-                        return (
-                          <div key={ind}
-                            className='label text-capitalize text-align-center pointer'
-                          >
-                            <label>
-                              {month.billingMonth.substring(0, 3)}
-                              {'-'}
-                              {item.substring(2, 4)}{' '}
-                              
-                              {length !== count ? <img
-                                className="p-2 pointer deleted"
-                                src={DeleteImg}
-                                alt='Evoke Technologies'
-                                onClick={()=>{
-                                  setIsModalOpen(true)
-                                  updateSelectedBillingMonth(month);
-                                  updateSelectedYear(item)
-                                  setDeleteMonth(true);
-                                  setRowData(row.original);
-                                }}
-                              /> : ''}
-                             
-                              {/* <span className='file-close-icon'></span> */}
 
-                            </label>
-
-                            <div className='amount pointer'
-                            onClick={() => {
-                              setRowData(row.original);
-                              updateSelectedBillingMonth(month);
-                              updateSelectedYear(item)
-                              toggleUpdateForm(true);
-                            }}
+                      if((result > 0 && count > result) || (result < 0)){
+                         // if (total < 7) {
+                          return (
+                            <div key={ind}
+                              className='label text-capitalize text-align-center pointer'
                             >
-                              {month.pricingInRupee !== ''
-                                ? `${'₹'}${parseFloat(month.pricingInRupee).toFixed(
-                                  2
-                                )}`
-                                : `${'₹'}${Number(0).toFixed(2)}`}
+                              <label>
+                                {month.billingMonth.substring(0, 3)}
+                                {'-'}
+                                {item.substring(2, 4)}{' '}
+                                
+                                {length !== count ? <img
+                                  className="p-2 pointer deleted"
+                                  src={DeleteImg}
+                                  alt='Evoke Technologies'
+                                  onClick={()=>{
+                                    setIsModalOpen(true)
+                                    updateSelectedBillingMonth(month);
+                                    updateSelectedYear(item)
+                                    setDeleteMonth(true);
+                                    setRowData(row.original);
+                                  }}
+                                /> : ''}
+                               
+                                {/* <span className='file-close-icon'></span> */}
+  
+                              </label>
+  
+                              <div className='amount pointer'
+                              onClick={() => {
+                                setRowData(row.original);
+                                updateSelectedBillingMonth(month);
+                                updateSelectedYear(item)
+                                toggleUpdateForm(true);
+                              }}
+                              >
+                                {month.pricingInRupee !== ''
+                                  ? `${'₹'}${parseFloat(month.pricingInRupee).toFixed(
+                                    2
+                                  )}`
+                                  : `${'₹'}${Number(0).toFixed(2)}`}
+                              </div>
                             </div>
-                          </div>
-                        );
+                          );
+                        //}
+
                       }
+
+                     
 
                     });
 
