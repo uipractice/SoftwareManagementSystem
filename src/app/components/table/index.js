@@ -482,14 +482,87 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
     []
   );
 
-  const calculateLength = (data) =>{
+  const calculateLength = (data) => {
     let keys = Object.keys(data);
-    console.log("data---",keys)
+
     let count = 0;
-    Object.keys(data).forEach((year)=>{
-      count = count+ data[year].length
+    Object.keys(data).forEach((year) => {
+      count = count + data[year].length
     })
     return count;
+  }
+
+  const financialYear = (billingInfo) => {
+    let financialYears = {};
+    let billingYears = Object.keys(billingInfo)
+    let months = ['january', 'february', 'march', 'april', 'may', 'june',
+      'july', 'august', 'september', 'october', 'november', 'december']
+
+    /** Identification of financial years for a given row 
+     * o/p : {"2020-2021": [],"2021-2022": [],"2022-2023": []}
+    */
+
+    if (billingYears.length == 1) {
+      let year = billingYears[0]
+      let key = year - 1 + "-" + Number(year)
+      let key2 = year + "-" + (Number(year)+Number(1))
+      financialYears[key] = []
+      financialYears[key2] = []
+    }
+    else {
+      billingYears.forEach((year, index) => {
+        if (index == 0) {
+          let key = year - 1 + "-" + Number(year)
+          financialYears[key] = []
+        }
+        else if (index == billingYears.length - 1) {
+          let key = billingYears[index - 1] + "-" + year
+          let key2 = year + "-" + (Number(year) + Number(1))
+          financialYears[key] = []
+          financialYears[key2] = []
+        }
+        else {
+          let key = billingYears[index - 1] + "-" + year
+          financialYears[key] = []
+        }
+      })
+    }
+
+
+    console.log("financial years---------", financialYears)
+
+    /**
+     * Assigning month to the respective financial years
+     */
+    billingYears.forEach((year) => {
+      billingInfo[year].forEach((subsMonth) => {
+        let monthIndex = months.indexOf(subsMonth.billingMonth)
+        if (monthIndex <= 2) {
+          let key = Number(year) - 1 + "-" + Number(year);
+          financialYears[key].push(subsMonth)
+        }
+        else {
+          let key = Number(year) + "-" + (Number(year) + Number(1));
+          console.log("key-------", key)
+          financialYears[key].push(subsMonth)
+        }
+      })
+    })
+
+    let fyears = Object.keys(financialYears)
+    let lastYear = financialYears[fyears[fyears.length - 1]]
+    if (lastYear.length == 0) {
+      delete financialYears[fyears[fyears.length - 1]]
+    }
+    let yearsSubscribed = Object.keys(financialYears)
+    setAllSubscriptionDetails(financialYears);
+    setCurrentYear(yearsSubscribed[yearsSubscribed.length - 1]);
+    setSubscribedYears(yearsSubscribed);
+    setShow(true);
+    displayMonthlySubscriptions(
+      financialYears,
+      yearsSubscribed[yearsSubscribed.length - 1]
+    );
   }
 
   // Download the signed urls fetched from S3.
@@ -535,6 +608,21 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
     'november',
     'december',
   ];
+
+  const financialMonth = [
+    'april',
+    'may',
+    'june',
+    'july',
+    'august',
+    'september',
+    'october',
+    'november',
+    'december',
+    'january',
+    'february',
+    'march',
+  ];
   const [count, setCount] = useState(0);
   const renderRowSubComponent = useCallback(
     ({ row }) => {
@@ -548,7 +636,7 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
 
             {
               Object.keys(row.original.billingDetails)
-                 //.reverse()
+                //.reverse()
                 .map((item, index) => {
                   return row.original.billingDetails[item]
                     .sort((a, b) =>
@@ -559,61 +647,61 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
                           ? 0
                           : -1
                     )
-                     //.reverse()
+                    //.reverse()
 
                     .map((month, ind) => {
                       let total = count + 1
                       count = total
 
-                      if((result > 0 && count > result) || (result < 0)){
-                         // if (total < 7) {
-                          return (
-                            <div key={ind}
-                              className='label text-capitalize text-align-center pointer'
-                            >
-                              <label>
-                                {month.billingMonth.substring(0, 3)}
-                                {'-'}
-                                {item.substring(2, 4)}{' '}
-                                
-                                {length !== count ? <img
-                                  className="p-2 pointer deleted"
-                                  src={DeleteImg}
-                                  alt='Evoke Technologies'
-                                  onClick={()=>{
-                                    setIsModalOpen(true)
-                                    updateSelectedBillingMonth(month);
-                                    updateSelectedYear(item)
-                                    setDeleteMonth(true);
-                                    setRowData(row.original);
-                                  }}
-                                /> : ''}
-                               
-                                {/* <span className='file-close-icon'></span> */}
-  
-                              </label>
-  
-                              <div className='amount pointer'
+                      if ((result >= 0 && count > result) || (result < 0)) {
+                        // if (total < 7) {
+                        return (
+                          <div key={ind}
+                            className='label text-capitalize text-align-center pointer'
+                          >
+                            <label>
+                              {month.billingMonth.substring(0, 3)}
+                              {'-'}
+                              {item.substring(2, 4)}{' '}
+
+                              {length !== count ? <img
+                                className="p-2 pointer deleted"
+                                src={DeleteImg}
+                                alt='Evoke Technologies'
+                                onClick={() => {
+                                  setIsModalOpen(true)
+                                  updateSelectedBillingMonth(month);
+                                  updateSelectedYear(item)
+                                  setDeleteMonth(true);
+                                  setRowData(row.original);
+                                }}
+                              /> : ''}
+
+                              {/* <span className='file-close-icon'></span> */}
+
+                            </label>
+
+                            <div className='amount pointer'
                               onClick={() => {
                                 setRowData(row.original);
                                 updateSelectedBillingMonth(month);
                                 updateSelectedYear(item)
                                 toggleUpdateForm(true);
                               }}
-                              >
-                                {month.pricingInRupee !== ''
-                                  ? `${'₹'}${parseFloat(month.pricingInRupee).toFixed(
-                                    2
-                                  )}`
-                                  : `${'₹'}${Number(0).toFixed(2)}`}
-                              </div>
+                            >
+                              {month.pricingInRupee !== ''
+                                ? `${'₹'}${parseFloat(month.pricingInRupee).toFixed(
+                                  2
+                                )}`
+                                : `${'₹'}${Number(0).toFixed(2)}`}
                             </div>
-                          );
+                          </div>
+                        );
                         //}
 
                       }
 
-                     
+
 
                     });
 
@@ -626,20 +714,21 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
               ) > 6 && (
                 <div style={{ alignSelf: 'flex-end', margin: '18px 0' }}>
                   <button
-                    onClick={() => {
-                      let yearsSubscribed = Object.keys(
-                        row.original.billingDetails
-                      );
-                      setAllSubscriptionDetails(row.original.billingDetails);
-                      setCurrentYear(yearsSubscribed[yearsSubscribed.length - 1]);
-                      setSubscribedYears(yearsSubscribed);
-                      setShow(true);
-                      displayMonthlySubscriptions(
-                        row.original.billingDetails,
-                        yearsSubscribed[yearsSubscribed.length - 1]
-                      );
-                      // setRowData(row.original);
-                    }}
+                    // onClick={() => {
+                    //   let yearsSubscribed = Object.keys(
+                    //     row.original.billingDetails
+                    //   );
+                    //   setAllSubscriptionDetails(row.original.billingDetails);
+                    //   setCurrentYear(yearsSubscribed[yearsSubscribed.length - 1]);
+                    //   setSubscribedYears(yearsSubscribed);
+                    //   setShow(true);
+                    //   displayMonthlySubscriptions(
+                    //     row.original.billingDetails,
+                    //     yearsSubscribed[yearsSubscribed.length - 1]
+                    //   );
+                    //   // setRowData(row.original);
+                    // }}
+                    onClick={() => financialYear(row.original.billingDetails)}
                   >
                     Show All
                   </button>
@@ -812,31 +901,31 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
     );
   };
 
-  const handleDeleteMonth = () =>{
-    let selectedRow = {...rowData};
+  const handleDeleteMonth = () => {
+    let selectedRow = { ...rowData };
     delete selectedRow.deleteReason;
     let index = selectedRow.billingDetails[selectedYear].indexOf(selectedBillingMonth)
-    if(index > -1){
-      selectedRow.billingDetails[selectedYear].splice(index,1)
-      if(selectedRow.billingDetails[selectedYear].length == 0){
+    if (index > -1) {
+      selectedRow.billingDetails[selectedYear].splice(index, 1)
+      if (selectedRow.billingDetails[selectedYear].length == 0) {
         delete selectedRow.billingDetails[selectedYear]
       }
     }
-    
-      const renewUrl = `softwareInfo/renew/${rowData?._id}`;
-      axios
-          .post(getApiUrl(renewUrl) ,selectedRow)
-          .then((res) => {
-            toast.success('Data deleted successfully!', {
-              autoClose: 1000,
-            });
-            setIsModalOpen(false);
-            setDeleteMonth(false);
-            setTimeout(() => {
-              window.location.reload();
-            }, 1000);
-          })
-          .catch((err) => console.log(err.response));
+
+    const renewUrl = `softwareInfo/renew/${rowData?._id}`;
+    axios
+      .post(getApiUrl(renewUrl), selectedRow)
+      .then((res) => {
+        toast.success('Data deleted successfully!', {
+          autoClose: 1000,
+        });
+        setIsModalOpen(false);
+        setDeleteMonth(false);
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      })
+      .catch((err) => console.log(err.response));
   }
 
   return (
@@ -911,7 +1000,7 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
               </div>
               <div>
                 <button
-                  onClick={!deleteMonth? handleUpdateStatus : handleDeleteMonth}
+                  onClick={!deleteMonth ? handleUpdateStatus : handleDeleteMonth}
                   disabled={!rowData?.deleteReason}
                   className='form-control btn btn-primary delete-btn'
                 >
@@ -941,14 +1030,14 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
                   <button onClick={() => showPreviousYearSubscriptions()}>
                     <img src={leftIcon} alt='prev' />
                   </button>{' '}
-                  {moment(currentYear).format('YYYY')}{' '}
+                  {currentYear}{' '}
                   <button onClick={() => showNextYearSubscriptions()}>
                     <img src={rightIcon} alt='next' />
                   </button>{' '}
                 </div>
               </div>
               <div className='calenderGrid'>
-                {months.map((month) => {
+                {financialMonth.map((month) => {
                   const billingItem =
                     monthlyData?.filter(
                       (item) => item.billingMonth === month

@@ -606,12 +606,7 @@ function Form({
                   (invoiceFiles === null || invoiceFiles.length > 0) &&
                   'files-container'
                 }`}
-                // {...((invoiceFiles === null ||
-                //   Object.keys(invoiceFiles).length <= 0) && {
-                //   onClick: (e) => document.getElementById("invoiceFiles")?.click(),
-                // })}
               >
-                {/* <div className="d-flex justify-content-center align-items-center h-100"> */}
 
                 <div
                   className={`${invoiceFiles.length <= 0 && 'no-selected-items'}

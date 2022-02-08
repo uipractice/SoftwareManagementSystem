@@ -367,6 +367,7 @@ function UpdateForm({
                         autoClose: 1000,
                         onClose: updateToolStatus(true),
                     });
+                    window.location.reload();
                     setLoading(false);
                 });
         }
