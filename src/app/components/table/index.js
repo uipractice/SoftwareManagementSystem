@@ -505,7 +505,7 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
     if (billingYears.length == 1) {
       let year = billingYears[0]
       let key = year - 1 + "-" + Number(year)
-      let key2 = year + "-" + (Number(year)+Number(1))
+      let key2 = year + "-" + (Number(year) + Number(1))
       financialYears[key] = []
       financialYears[key2] = []
     }
@@ -714,21 +714,10 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
               ) > 6 && (
                 <div style={{ alignSelf: 'flex-end', margin: '18px 0' }}>
                   <button
-                    // onClick={() => {
-                    //   let yearsSubscribed = Object.keys(
-                    //     row.original.billingDetails
-                    //   );
-                    //   setAllSubscriptionDetails(row.original.billingDetails);
-                    //   setCurrentYear(yearsSubscribed[yearsSubscribed.length - 1]);
-                    //   setSubscribedYears(yearsSubscribed);
-                    //   setShow(true);
-                    //   displayMonthlySubscriptions(
-                    //     row.original.billingDetails,
-                    //     yearsSubscribed[yearsSubscribed.length - 1]
-                    //   );
-                    //   // setRowData(row.original);
-                    // }}
-                    onClick={() => financialYear(row.original.billingDetails)}
+                    onClick={() => {
+                      financialYear(row.original.billingDetails)
+                      setRowData(row.original);
+                    }}
                   >
                     Show All
                   </button>
@@ -1042,14 +1031,46 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
                     monthlyData?.filter(
                       (item) => item.billingMonth === month
                     ) || [];
+                  let years = currentYear.split("-")
+                  let validYear;
+                  if (financialMonth.indexOf(month) < 9) {
+                    validYear = years[0]
+                  }
+                  else {
+                    validYear = years[0]
+                  }
                   return (
                     <div
                       key={month}
                       className='calenderGridItem text-capitalize'
                     >
                       {month}
+                      {billingItem.length != 0 ? <span>
+                        <img
+                        className='deleteCalendarMonth'
+                          style={{paddingLeft:"1em"}}
+                          src={DeleteImg}
+                          alt='Evoke Technologies'
+                          onClick={() => {
+                            setIsModalOpen(true)
+                            updateSelectedBillingMonth(billingItem[0]);
+                            updateSelectedYear(validYear)
+                            setDeleteMonth(true);
+                            setShow(false)
+                          }}
+                        />
+                      </span> : ''}
+
+
                       {billingItem?.length !== 0 && (
-                        <div className='amount'>
+                        <div className='amount'
+                          onClick={() => {
+                            setShow(false);
+                            updateSelectedBillingMonth(billingItem[0]);
+                            toggleUpdateForm(true);
+                            updateSelectedYear(validYear)
+                          }}
+                        >
                           <span>{billingItem[0]?.pricingInRupee !== "" ? `₹${parseFloat(billingItem[0]?.pricingInRupee).toFixed(2)}` : `₹${Number(0).toFixed(2)}`}</span>
                         </div>
                       )}

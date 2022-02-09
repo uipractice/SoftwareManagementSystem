@@ -1,3 +1,6 @@
+.deleteCalendarMonth{
+  padding-left: 1em;
+}
 .disableDeleteBtn {
   /* 
   cursor: not-allowed;   

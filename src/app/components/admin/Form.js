@@ -183,6 +183,7 @@ function Form({
       toast.error('Invalid email ID !', {
         autoClose: 1800,
       });
+      setLoading(false);
       return false;
     }
   }
