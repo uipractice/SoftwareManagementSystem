@@ -532,7 +532,7 @@ function UpdateForm({
                                 name='billingMonth'
                                 value={billingDetails?.billingMonth}
                                 //value={selectedMonth.billingMonth}
-                                disabled={state?.billingCycle === 'yearly'}
+                                disabled={state?.billingCycle === 'yearly' || isEdit}
                             >
                                 <option value='january'>January</option>
                                 <option value='february'>February</option>
