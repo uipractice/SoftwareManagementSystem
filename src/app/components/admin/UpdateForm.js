@@ -22,7 +22,7 @@ const defaultFormData = {
     email: '',
     websiteUrl: '',
     billingCycle: 'monthly',
-    nextBilling: moment().add(1, 'month').format('YYYY-MM-DD'),
+    nextBilling: moment().format('YYYY-MM-DD'),
     billingDetails: {}, // pricingInDollar pricingInRupee billingMonth nextBilling, desc, invoiceFiles
 };
 
@@ -52,12 +52,11 @@ function UpdateForm({
 
     useEffect(() => {
         inputRef?.current?.focus();
-        let stateData = defaultFormData;
+        let stateData = billingDetails;
         if (isEdit) {
             stateData = {
                 ...rowData,
                 nextBilling: moment(rowData?.nextBilling)
-                    .add(1, 'month')
                     .format('YYYY-MM-DD'),
             };
             const prevBillingDetails = {
@@ -131,15 +130,10 @@ function UpdateForm({
                 [e.target.name]: e.target.value,
                 ...(e.target.name === 'billingCycle' && {
                     nextBilling: moment()
-                        .add(1, `${billingCycle(e)}`)
                         .format('YYYY-MM-DD'),
                 }),
             });
         } else if (e.target.name === 'nextBilling') {
-            // setState({
-            //     ...state,
-            //     [e.target.name]: e.target.value,
-            // });
             setBillingDetails({
                 ...billingDetails,
                 [e.target.name]: e.target.value,
@@ -276,7 +270,7 @@ function UpdateForm({
         setLoading(true);
         const newBillingRecord = {
             ...billingDetails,
-            nextBilling: state.nextBilling,
+            nextBilling: billingDetails.nextBilling,
             createdAt: moment().format('YYYY-MM-DD'),
         };
 
