@@ -207,10 +207,10 @@ function UpdateForm({
                 .post(getApiUrl(`softwareInfo/multiple/${data._id}`), formData)
                 .then((res) => {
                     console.log('Files Uploaded : ', res.data.status);
-                    // toast.success('Data Saved Successfully !', {
-                    //     autoClose: 1000,
-                    //     onClose: updateToolStatus(true),
-                    // });
+                    toast.success('Files Uploaded Successfully !', {
+                        autoClose: 1000,
+                        onClose: updateToolStatus(true),
+                    });
                 })
                 .catch((err) => {
                     console.log('Error in Upload : ', err);
@@ -368,7 +368,6 @@ function UpdateForm({
                         autoClose: 1000,
                         onClose: updateToolStatus(true),
                     });
-                    window.location.reload();
                     setLoading(false);
                 });
         }

@@ -528,22 +528,19 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
       })
     }
 
-
-    console.log("financial years---------", financialYears)
-
     /**
      * Assigning month to the respective financial years
      */
     billingYears.forEach((year) => {
       billingInfo[year].forEach((subsMonth) => {
         let monthIndex = months.indexOf(subsMonth.billingMonth)
+        subsMonth["delete"] = true;
         if (monthIndex <= 2) {
           let key = Number(year) - 1 + "-" + Number(year);
           financialYears[key].push(subsMonth)
         }
         else {
           let key = Number(year) + "-" + (Number(year) + Number(1));
-          console.log("key-------", key)
           financialYears[key].push(subsMonth)
         }
       })
@@ -554,6 +551,7 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
     if (lastYear.length == 0) {
       delete financialYears[fyears[fyears.length - 1]]
     }
+    financialYears[fyears[fyears.length - 1]][0]["delete"] = false;   
     let yearsSubscribed = Object.keys(financialYears)
     setAllSubscriptionDetails(financialYears);
     setCurrentYear(yearsSubscribed[yearsSubscribed.length - 1]);
@@ -636,7 +634,6 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
 
             {
               Object.keys(row.original.billingDetails)
-                //.reverse()
                 .map((item, index) => {
                   return row.original.billingDetails[item]
                     .sort((a, b) =>
@@ -647,14 +644,12 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
                           ? 0
                           : -1
                     )
-                    //.reverse()
 
                     .map((month, ind) => {
                       let total = count + 1
                       count = total
 
                       if ((result >= 0 && count > result) || (result < 0)) {
-                        // if (total < 7) {
                         return (
                           <div key={ind}
                             className='label text-capitalize text-align-center pointer'
@@ -677,8 +672,6 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
                                 }}
                               /> : ''}
 
-                              {/* <span className='file-close-icon'></span> */}
-
                             </label>
 
                             <div className='amount pointer'
@@ -697,7 +690,6 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
                             </div>
                           </div>
                         );
-                        //}
 
                       }
 
@@ -1037,7 +1029,7 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
                     validYear = years[0]
                   }
                   else {
-                    validYear = years[0]
+                    validYear = years[1]
                   }
                   return (
                     <div
@@ -1045,9 +1037,9 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
                       className='calenderGridItem text-capitalize'
                     >
                       {month}
-                      {billingItem.length != 0 ? <span>
+                      {billingItem.length != 0 && billingItem[0].delete ? <span>
                         <img
-                        className='deleteCalendarMonth'
+                        className='deleteCalendarMonth pointer'
                           style={{paddingLeft:"1em"}}
                           src={DeleteImg}
                           alt='Evoke Technologies'
@@ -1063,7 +1055,7 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
 
 
                       {billingItem?.length !== 0 && (
-                        <div className='amount'
+                        <div className='amount pointer'
                           onClick={() => {
                             setShow(false);
                             updateSelectedBillingMonth(billingItem[0]);
