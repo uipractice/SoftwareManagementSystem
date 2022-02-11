@@ -107,11 +107,11 @@ const Header = ({ validate }) => {
                         <img src={dashboardicon} alt='logout' />{' '}
                         <span>Dashboard</span>
                       </div>
-                      {JSON.parse(getUser()).role === superAdmin && 
+                      {/* {JSON.parse(getUser()).role === superAdmin && 
                       <div className='menu-list-item' onClick={handleUserDetails}>
                         <img src={usermanagementicon} alt='logout' />{' '}
                         <span>User Management</span>
-                      </div>}
+                      </div>} */}
                       <div
                         className='menu-list-item'
                         onClick={() => setFeedback(true)}

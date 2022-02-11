@@ -647,12 +647,15 @@ function UpdateForm({
                                                 {billingDetails.invoiceFiles[key].includes("_") ? billingDetails.invoiceFiles[key].split("_")[1] : billingDetails.invoiceFiles[key]}
                                                 &nbsp;&nbsp;
                                             </span>
-                                            <img
+                                            <span>
+                                                <img
                                                 className='pl-3 pr-2 pointer'
                                                 src={Download}
                                                 onClick={() => downloadInvoice(billingDetails.invoiceFiles[key])}
                                                 alt='download'
                                             />
+                                            </span>
+                                            
                                         </div>
                                     ))}
                                     {invoiceFiles.map((item, key) => (
