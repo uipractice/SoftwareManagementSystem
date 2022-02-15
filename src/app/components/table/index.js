@@ -1037,7 +1037,7 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
                       className='calenderGridItem text-capitalize'
                     >
                       {month}
-                      {billingItem.length != 0 && billingItem[0].delete ? <span>
+                      {billingItem.length != 0 && billingItem[0].delete ? <span className='delete'>
                         <img
                         className='deleteCalendarMonth pointer'
                           style={{paddingLeft:"1em"}}
