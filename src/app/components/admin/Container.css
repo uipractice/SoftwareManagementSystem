@@ -312,3 +312,12 @@ a:hover {
   right: 0;
   top: 15px;
 }
+
+.spinnericon{
+  position: fixed;
+  left: 50%;
+  margin: -15px;
+  color: #209ec5 !important;
+  height: 25px;
+  width: 25px;
+}

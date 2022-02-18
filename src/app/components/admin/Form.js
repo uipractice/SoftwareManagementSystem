@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ToggleButtonGroup, ToggleButton, Modal } from 'react-bootstrap';
+import { ToggleButtonGroup, ToggleButton, Modal, Spinner } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import NumberFormat from 'react-number-format';
 import axios from 'axios';
 import moment from 'moment';
 import Upload from '../../assets/images/upload.svg';
+import './Container.css'
 // Helpers
 import { getApiUrl } from '../utils/helper';
 
@@ -21,12 +22,24 @@ const defaultFormData = {
   websiteUrl: '',
   billingCycle: 'monthly',
   nextBilling: moment().add(1, 'month').format('YYYY-MM-DD'),
-  billingDetails: [], // pricingInDollar pricingInRupee billingMonth nextBilling, desc, invoiceFiles
+  billingDetails: {}, // pricingInDollar pricingInRupee billingMonth nextBilling, desc, invoiceFiles
 };
 
-const nonMandatoryFields = ['websiteUrl', 'invoiceFiles'];
+const nonMandatoryFields = [
+  'websiteUrl',
+  'invoiceFiles',
+  'pricingInDollar',
+  'pricingInRupee',
+  'description'
+];
 
-function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) {
+function Form({
+  isOpen,
+  closeModal,
+  rowData,
+  isEdit = false,
+  updateToolStatus,
+}) {
   const inputRef = useRef(null);
   const [state, setState] = useState({});
   const [invoiceFiles, setInvoiceFiles] = useState([]);
@@ -36,6 +49,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
     billingMonth: moment().format('MMMM').toLowerCase(),
     description: '',
   });
+  const [isloading, setLoading] = useState(false)
 
   useEffect(() => {
     inputRef?.current?.focus();
@@ -48,7 +62,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
           .format('YYYY-MM-DD'),
       };
       const prevBillingDetails = {
-        ...rowData?.billingDetails?.[rowData.billingDetails.length - 1],
+        // ...rowData?.billingDetails?.[rowData.billingDetails.length - 1],
         ...(rowData?.billingCycle === 'monthly' && {
           billingMonth: moment(rowData.nextBilling)
             .format('MMMM')
@@ -63,7 +77,6 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
     }
     setState(stateData);
   }, [isEdit, rowData]);
-
   const setTargetName = (value, e) => {
     if (value.match(/[a-zA-Z0-9]+([\s]+)*$/)) {
       setState({
@@ -76,19 +89,19 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
         [e.target.name]: '',
       });
     }
-  }
+  };
 
   const getBillingDetails = (data) => {
     return data.match(/[a-zA-Z0-9]+([\s]+)*$/)
-    ? data.replace(/[^a-zA-Z0-9 ]/g, '')
-    : '';
-  }
+      ? data.replace(/[^a-zA-Z0-9 ]/g, '')
+      : '';
+  };
   const settingBillingDetails = (priceSection, value) => {
-    return  !priceSection ? value : '';
-  }
+    return !priceSection ? value : '';
+  };
   const billingCycle = (e) => {
-    return e.target.value === 'monthly' ? 'month' : 'year'
-  }
+    return e.target.value === 'monthly' ? 'month' : 'year';
+  };
   /**
    * Setting billing details.
    *
@@ -109,7 +122,9 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
       setBillingDetails({
         ...billingDetails,
         [e.target.name]:
-          priceSection && value > 0 ? value : settingBillingDetails(priceSection, value),
+          priceSection && value > 0
+            ? value
+            : settingBillingDetails(priceSection, value),
       });
     } else if (e.target.name === 'billingCycle') {
       setState({
@@ -168,6 +183,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
       toast.error('Invalid email ID !', {
         autoClose: 1800,
       });
+      setLoading(false);
       return false;
     }
   }
@@ -180,6 +196,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
    */
   const handleReset = (e) => {
     e.preventDefault();
+    setLoading(false);
     let resetData = { ...defaultFormData };
     resetData.team = state.team;
     resetData.owner = state.owner;
@@ -207,21 +224,34 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
     });
   };
 
-  const uploadInvoiceFiles = ({ _id: id, ...rest }, billing) => {
+  const uploadInvoiceFiles = (data, year, month) => {
     if (invoiceFiles && invoiceFiles.length > 0) {
       const formData = new FormData();
       for (let file in invoiceFiles) {
         formData.append('fileName', invoiceFiles[file]);
       }
+      formData.append('year', year);
+      formData.append('month', month);
       axios
-        .post(getApiUrl(`softwareInfo/multiple/${id}`), formData)
+        .post(getApiUrl(`softwareInfo/multiple/${data._id}`), formData)
         .then((res) => {
           console.log('Files Uploaded : ', res.data.status);
+          toast.success('Data Saved Successfully !', {
+            autoClose: 1000,
+            onClose: updateToolStatus(true),
+          });
+          setLoading(false);
         })
         .catch((err) => {
           console.log('Error in Upload : ', err);
         });
+    }else{
+      toast.success('Data Saved Successfully !', {
+        autoClose: 1000,
+        onClose: updateToolStatus(true),
+      });
     }
+    setLoading(false);
   };
   const handleAddFile = () => {
     document.getElementById('invoiceFiles').click();
@@ -232,7 +262,6 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
     for (const file of fileInput.target.files) {
       files.push(file);
     }
-    console.log('files', files);
     setInvoiceFiles(files);
   };
 
@@ -244,41 +273,83 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
    */
   const handleSubmit = (e) => {
     e.preventDefault();
+    setLoading(true);
     const newBillingRecord = {
       ...billingDetails,
+      invoiceFiles:[],
       nextBilling: state.nextBilling,
       createdAt: moment().format('YYYY-MM-DD'),
     };
-    state.billingDetails.push(newBillingRecord);
-    console.log('state', state);
-    if (ValidateEmail(state.email)) {
+    let subscriptionYear = state.nextBilling.substring(0, 4);
+    let subscriptionMonth = newBillingRecord.billingMonth;
+
+    let billingInfo = {}; // {"2020" : ["Janauary","febrauary"] , "2021" : ["june","june","july"] , "2022" : ["august"] }
+
+    if (isEdit) {
+      let availableYears = Object.keys(state.billingDetails);
+      availableYears.forEach((year) => {
+        let subscriptionDetails = state.billingDetails[year];
+        let subscribedMonths = [];
+        subscriptionDetails.forEach((subscriptionInfo) => {
+          if (!subscribedMonths.includes(subscriptionInfo.billingMonth)) {
+            subscribedMonths.push(subscriptionInfo.billingMonth);
+          }
+        });
+        billingInfo[year] = subscribedMonths;
+      });
+
+      if (
+        billingInfo[subscriptionYear] &&
+        billingInfo[subscriptionYear].includes(subscriptionMonth)
+      ) {
+        toast.error(`Subscription already done for ${subscriptionMonth}, ${subscriptionYear}`,
+{
+            autoClose: 3000,
+          }
+        );
+        setLoading(false);
+        return false;
+      }
+    }
+
+    let softwareToolDetails = JSON.parse(JSON.stringify(state));
+    if (
+      Object.keys(softwareToolDetails.billingDetails).includes(subscriptionYear)
+    ) {
+      softwareToolDetails.billingDetails[subscriptionYear].push(
+        newBillingRecord
+      );
+    } else {
+      softwareToolDetails.billingDetails[subscriptionYear] = [newBillingRecord];
+    }
+
+    if (ValidateEmail(softwareToolDetails.email)) {
       const renewUrl = `softwareInfo/renew/${rowData?._id}`;
       axios
         .post(
-          `${
-            isEdit
-              ? getApiUrl(renewUrl)
-              : getApiUrl('softwareInfo/create')
-          }`,
-          isEdit ? newBillingRecord : state
+          `${isEdit ? getApiUrl(renewUrl) : getApiUrl('softwareInfo/create')}`,
+          softwareToolDetails
         )
         .then((res) => {
-          if (res.data && Object.keys(res.data)?.length) {
-            uploadInvoiceFiles(res.data);
-            closeModal();
-            toast.success('Data Saved Successfully !', {
-              autoClose: 1000,
-              onClose:updateToolStatus(true)
-            });
-            
-            // setTimeout(() => {
-            //   window.location.reload();
-            // }, 1000);
+          if (isEdit) {
+            let subscribedYears = Object.keys(res.data.billingDetails);
+            if (subscribedYears.includes(subscriptionYear)) {
+              let renewedSubscription = res.data.billingDetails[
+                subscriptionYear
+              ].filter((month, ind) => {
+                if (month.billingMonth === subscriptionMonth) {
+                  return month;
+                }
+              });
+              uploadInvoiceFiles(res.data,subscriptionYear, subscriptionMonth)
+            }
           } else {
-            toast.error('Data Saved FAILED !', {
-              autoClose: 2000,
-            });
+            uploadInvoiceFiles(res.data, subscriptionYear, subscriptionMonth);
+            setState(defaultFormData);
           }
+
+          closeModal();
+          setLoading(false);
         });
     }
   };
@@ -348,7 +419,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
             </div>
             <div className='form-group col-md-4'>
               <label htmlFor='websiteUrl'>URL </label>
-              <span class='help-text'>( Ex: https:// )</span>
+              <span className='help-text'>( Ex: https:// )</span>
               <input
                 type='text'
                 className='form-control'
@@ -473,15 +544,15 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
                 name='nextBilling'
                 value={state?.nextBilling}
                 // min={moment().subtract(1, 'month').format('YYYY-MM-DD')}
-                // max={
-                //   state.billingCycle === 'yearly'
-                //     ? ''
-                //     : moment().add(1, 'month').format('YYYY-MM-DD')
-                // }
+                max={
+                  state.billingCycle === 'yearly'
+                    ? ''
+                    : moment().add(1, 'month').format('YYYY-MM-DD')
+                }
               />
             </div>
             <div className='form-group col-md-2'>
-              <label htmlFor='pricingInDollar'>Pricing in $ *</label>
+              <label htmlFor='pricingInDollar'>Pricing in $ </label>
               <NumberFormat
                 thousandsGroupStyle='thousand'
                 prefix='$ '
@@ -497,7 +568,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
               />
             </div>
             <div className='form-group col-md-2'>
-              <label htmlFor='pricingInRupee'>Pricing in ₹ *</label>
+              <label htmlFor='pricingInRupee'>Pricing in ₹ </label>
               <NumberFormat
                 thousandsGroupStyle='thousand'
                 value={billingDetails?.pricingInRupee}
@@ -515,7 +586,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
           </div>
           <div className='row'>
             <div className='form-group col-md-6'>
-              <label htmlFor='description'>Pricing Description *</label>
+              <label htmlFor='description'>Pricing Description </label>
               <textarea
                 type='text'
                 className='form-control long'
@@ -526,8 +597,8 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
                 style={{ resize: 'none' }}
               />
             </div>
-            <div className="form-group col-md-6">
-              <label htmlFor="invoiceFiles">Upload Invoice</label>
+            <div className='form-group col-md-6'>
+              <label htmlFor='invoiceFiles'>Upload Invoice</label>
               <div
                 className={`form-control long dashed-box  ${
                   (invoiceFiles === null || invoiceFiles.length <= 0) &&
@@ -536,12 +607,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
                   (invoiceFiles === null || invoiceFiles.length > 0) &&
                   'files-container'
                 }`}
-                // {...((invoiceFiles === null ||
-                //   Object.keys(invoiceFiles).length <= 0) && {
-                //   onClick: (e) => document.getElementById("invoiceFiles")?.click(),
-                // })}
               >
-                {/* <div className="d-flex justify-content-center align-items-center h-100"> */}
 
                 <div
                   className={`${invoiceFiles.length <= 0 && 'no-selected-items'}
@@ -551,7 +617,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
                     <div>
                       <span
                         key={key}
-                        className="file-close-icon"
+                        className='file-close-icon'
                         onClick={() => {
                           const fileState = [...invoiceFiles];
                           fileState.splice(key, 1);
@@ -565,10 +631,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
                   ))}
                 </div>
                 <div className='addFileBtn'>
-                  <a
-                    onClick={(e) => handleAddFile()}
-                    href='javascript:void(0)'
-                  >
+                  <a onClick={(e) => handleAddFile()} href='javascript:void(0)'>
                     Add files here
                     <img className='px-2' src={Upload} alt='download' />
                   </a>
@@ -588,7 +651,7 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
           </div>
 
           <div className='form-group row share '>
-            <div className='col-md-12 text-center'>
+          {isloading ? <Spinner animation="border" variant="info" className='spinnericon'/> :<div className='col-md-12 text-center'>
               <button
                 className='form-control btn btn-primary'
                 onClick={handleReset}
@@ -611,7 +674,8 @@ function Form({ isOpen, closeModal, rowData, isEdit = false,updateToolStatus }) 
               >
                 {isEdit ? 'Renew' : 'Save'}
               </button>
-            </div>
+            </div> }
+            
           </div>
         </form>
       </Modal.Body>

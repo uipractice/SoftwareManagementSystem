@@ -1,9 +1,15 @@
+.deleteCalendarMonth{
+  padding-left: 1em;
+}
 .disableDeleteBtn {
   /* 
   cursor: not-allowed;   
   display: none; */
   pointer-events: none;
   opacity: 0.3;
+}
+.subscrit .deleted{
+  padding-top: 3px !important;
 }
 .disableEditBtn {
   pointer-events: none;
@@ -449,7 +455,14 @@ tfoot td {
   font-size: 14px;
   line-height: 17px;
   color: #929292;
+  position: relative;
 }
+
+.calenderGrid .calenderGridItem .delete{
+  position: absolute;
+    right: 15px;
+    top: 8px;
+ }
 .calenderGrid .amount {
   display: flex;
   height: auto;
@@ -493,3 +506,6 @@ tfoot td {
     border-color: #209ec5;
     /* background-color: rgba(32, 158, 197, 0.05) !important; */
   }
+.text-align-center{
+  text-align: center !important;
+}

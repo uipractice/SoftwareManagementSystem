@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import AuthServices from '../../services/AuthServices';
 import { saveAuthToken } from "../utils/authToken";
+import { saveUser } from "../utils/userDetails";
 
 toast.configure();
 
@@ -43,6 +44,7 @@ function Login() {
       .then((res) => {
         if (res.data.accessToken) {
           saveAuthToken(res.data.accessToken)
+          saveUser(JSON.stringify(res.data.user))
           history.push("/admin");
         } else {
           toast.error(res.data.message + ` ${"!!"}`, {
