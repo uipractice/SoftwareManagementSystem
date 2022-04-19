@@ -13,12 +13,12 @@ export default function AdminDashboard() {
   const [loading, setIsLoading] = useState(true);
   const [sortType,setSortType]=useState(false)
 
-  const getSoftwareInfo =(sortType)=>{
+  const getSoftwareInfo =(sortTypee)=>{
     axios(getApiUrl(`softwareInfo`))
     .then((res) => {
       setData(res.data);
       setIsLoading(false);
-      setSortType(sortType)
+      setSortType(sortTypee)
     })
     .catch((err) => {
       setIsLoading(false);
@@ -29,22 +29,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     getSoftwareInfo(sortType);
   }, []);
-  // useEffect(() => {
- 
-  //   if(data.length>0){
-  //     console.log("data",data)
-  //     setIsLoading(false);
-  //   }
-   
-  // }, [data]);
-  // useEffect(() => {
-   
-  //   if(!loading){
-  //     console.log("loading",loading)
-  //     setSortType(sortType)
-  //   }
-   
-  // }, [loading]);
+  
   const addToolstatus=(value)=>{
     if(value){
       getSoftwareInfo(value);

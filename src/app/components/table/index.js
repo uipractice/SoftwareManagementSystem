@@ -18,12 +18,12 @@ import leftIcon from '../../assets/images/left-icon.svg';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import moment, { monthsShort } from 'moment';
-import Form from '../admin/Form';
 import { getApiUrl } from '../utils/helper';
 import FilterDropdown from './FilterDropdown';
 import Download from '../../assets/images/download.svg';
 import Note from '../../assets/images/note.svg';
-import UpdateForm from '../admin/UpdateForm';
+
+import Form_new from '../admin/Form_new';
 
 
 import { guest, superAdmin } from '../constants/constants';
@@ -551,6 +551,7 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
     if (lastYear.length == 0) {
       delete financialYears[fyears[fyears.length - 1]]
     }
+    fyears = Object.keys(financialYears)
     financialYears[fyears[fyears.length - 1]][0]["delete"] = false;   
     let yearsSubscribed = Object.keys(financialYears)
     setAllSubscriptionDetails(financialYears);
@@ -1233,51 +1234,34 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
         )}
       </div>
 
-      {isEditFormOpen && (
-        <Form
-          isOpen={isEditFormOpen}
-          closeModal={() => {
-            toggleEditForm(false);
-            setRowData(null);
-          }}
-          rowData={rowData}
-          isEdit={true}
-          updateToolStatus={updateSatus}
-          type="renew"
-        />
-      )}
-
-      {isUpdateFormOpen && (
-        <UpdateForm
-          isOpen={isUpdateFormOpen}
-          closeModal={() => {
-            toggleUpdateForm(false);
-            setRowData(null);
-          }}
-          rowData={rowData}
-          isEdit={true}
-          updateToolStatus={updateSatus}
-          selectedMonth={selectedBillingMonth}
-          selectedYear={selectedYear}
-          type="update"
-        />
-
-      )}
-      {/* {isUpdateFormOpen && (
-        <Form
-        isOpen={isUpdateFormOpen}
+      {isUpdateFormOpen ?<Form_new
+        type={"edit"}
         closeModal={() => {
           toggleUpdateForm(false);
           setRowData(null);
         }}
         rowData={rowData}
-        isEdit={true}
+        selectedMonth={selectedBillingMonth}
+        isOpen = {isUpdateFormOpen}
+        selectedYear={selectedYear}
         updateToolStatus={updateSatus}
-        selectedMonth = {selectedBillingMonth}
-        type="update"
-      />
+      /> :''}
 
-      )} */}
+      {isEditFormOpen ? (
+        <Form_new
+          type={"renew"}
+          closeModal={() => {
+            toggleEditForm(false);
+            setRowData(null);
+          }}
+          rowData={rowData}
+          selectedMonth={selectedBillingMonth}
+          isOpen = {isEditFormOpen}
+          updateToolStatus={updateSatus}
+        />
+      ) : (
+        ""
+      )}
     </>
   );
 }
