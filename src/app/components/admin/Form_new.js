@@ -249,70 +249,86 @@ export default function Form_new({
     setLoading(false);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setLoading(true);
-    let billingRecord = {
-      ...billingDetails,
-      invoiceFiles: [],
-      nextBilling: data.nextBilling,
-      createdAt: moment().format("YYYY-MM-DD"),
-    };
-    if (type == "new" || type == "renew") {
-      billingRecord = {
-        ...billingDetails,
-        invoiceFiles: [],
-        nextBilling: data.nextBilling,
-        createdAt: moment().format("YYYY-MM-DD"),
-      };
-    } else if (type == "edit") {
-      billingRecord = {
+  function createBillingRecord(){
+    if(type == 'edit'){
+      return {
         ...billingDetails,
         invoiceFiles:[...invoiceFiles],
         nextBilling: data.nextBilling,
         createdAt: moment().format("YYYY-MM-DD"),
       };
     }
+    else{
+      return {
+        ...billingDetails,
+        invoiceFiles: [],
+        nextBilling: data.nextBilling,
+        createdAt: moment().format("YYYY-MM-DD"),
+      };
+    }
+  }
 
+  function findYearByMonth(sMonth, sYear){
+    if(sMonth == 'december'){
+      sYear = Number(sYear) - 1;
+      return sYear+''
+    }
+    else{
+      return sYear
+    }
+  }
+
+  function findBillingInfo(subYear, subMonth){
+    let billingInfo = {};
+    let availableYears = Object.keys(data.billingDetails);
+    availableYears.forEach((year) => {
+      let subscriptionDetails = data.billingDetails[year];
+      let subscribedMonths = [];
+      subscriptionDetails.forEach((subscriptionInfo) => {
+        if (!subscribedMonths.includes(subscriptionInfo.billingMonth)) {
+          subscribedMonths.push(subscriptionInfo.billingMonth);
+        }
+      });
+      billingInfo[year] = subscribedMonths;
+    });
+
+    if (
+      billingInfo[subYear] &&
+      billingInfo[subYear].includes(subMonth)
+    ) {
+      toast.error(
+        `Subscription already done for ${subMonth} , ${subYear}`,
+        {
+          autoClose: 3000,
+        }
+      );
+      setLoading(false);
+      return false;
+    }
+    return billingInfo;
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setLoading(true);
+    let billingRecord = createBillingRecord();
+    
     let subscriptionYear = data.nextBilling.substring(0, 4);
     let subscriptionMonth = billingRecord.billingMonth;
 
-    if(subscriptionMonth == 'december'){
-      subscriptionYear = Number(subscriptionYear) - 1;
-      subscriptionYear+=''
-    }
+    subscriptionYear = findYearByMonth(subscriptionMonth, subscriptionYear)
 
     let billingInfo = {};
 
     if (type == "renew") {
-      let availableYears = Object.keys(data.billingDetails);
-      availableYears.forEach((year) => {
-        let subscriptionDetails = data.billingDetails[year];
-        let subscribedMonths = [];
-        subscriptionDetails.forEach((subscriptionInfo) => {
-          if (!subscribedMonths.includes(subscriptionInfo.billingMonth)) {
-            subscribedMonths.push(subscriptionInfo.billingMonth);
-          }
-        });
-        billingInfo[year] = subscribedMonths;
-      });
-
-      if (
-        billingInfo[subscriptionYear] &&
-        billingInfo[subscriptionYear].includes(subscriptionMonth)
-      ) {
-        toast.error(
-          `Subscription already done for ${subscriptionMonth} , ${subscriptionYear}`,
-          {
-            autoClose: 3000,
-          }
-        );
-        setLoading(false);
-        return false;
+      billingInfo = findBillingInfo(subscriptionYear, subscriptionMonth)
+      if(!billingInfo){
+        return false
       }
     }
 
     let softwareToolDetails = JSON.parse(JSON.stringify(data));
+    
     if (type == "renew") {
       if (Object.keys(softwareToolDetails.billingDetails).includes(subscriptionYear)) {
         softwareToolDetails.billingDetails[subscriptionYear].push(billingRecord);

@@ -17,17 +17,17 @@ import rightIcon from '../../assets/images/right-icon.svg';
 import leftIcon from '../../assets/images/left-icon.svg';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import moment, { monthsShort } from 'moment';
+import moment from 'moment';
 import { getApiUrl } from '../utils/helper';
 import FilterDropdown from './FilterDropdown';
-import Download from '../../assets/images/download.svg';
-import Note from '../../assets/images/note.svg';
+
 
 import Form_new from '../admin/Form_new';
 
 
-import { guest, superAdmin } from '../constants/constants';
+import { guest } from '../constants/constants';
 import { getUser } from '../utils/userDetails';
+import { findFilteredData } from '../common/commonFunctions';
 
 toast.configure();
 function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
@@ -125,6 +125,20 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
   const getExpiredText = (days) => {
     return days < 0 ? `Expired` : `${days} day${getExpiredDays(days)}`;
   };
+
+  const sortMonth = (a,b) => {
+    return a === b ? 0 : -1
+  }
+
+  const sortArray = (arrayDetails) =>{
+      return arrayDetails.sort((a, b) =>
+      months.indexOf(a.billingMonth) > months.indexOf(b.billingMonth)
+        ? 1
+        : sortMonth(a.billingMonth, b.billingMonth)
+    )
+  }
+  
+
   const columns = React.useMemo(
     () => [
       {
@@ -358,14 +372,8 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
           let latestSubscriptionYear =
             subscriptionYear[subscriptionYear.length - 1];
 
-          return billingDetails[latestSubscriptionYear]
-            .sort((a, b) =>
-              months.indexOf(a.billingMonth) > months.indexOf(b.billingMonth)
-                ? 1
-                : a.billingMonth === b.billingMonth
-                  ? 0
-                  : -1
-            )
+            let result = sortArray(billingDetails[latestSubscriptionYear]) 
+          return result         
             .reverse()
             .slice(0, 1)
             .map((month, ind) =>
@@ -380,14 +388,7 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
           let subscriptionYear = Object.keys(originalRow.billingDetails);
           let latestSubscriptionYear =
             subscriptionYear[subscriptionYear.length - 1];
-          let latestSubscriptionDate = originalRow.billingDetails[latestSubscriptionYear]
-            .sort((a, b) =>
-              months.indexOf(a.billingMonth) > months.indexOf(b.billingMonth)
-                ? 1
-                : a.billingMonth === b.billingMonth
-                  ? 0
-                  : -1
-            )
+          let latestSubscriptionDate = sortArray(originalRow.billingDetails[latestSubscriptionYear])
             .reverse()
             .slice(0, 1)
             .map((month, ind) =>
@@ -418,14 +419,7 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
           let latestSubscriptionYear =
             subscriptionYear[subscriptionYear.length - 1];
           const todaysDate = moment().format('YYYY-MM-DD');
-          let latestSubscriptionDate = billingDetails[latestSubscriptionYear]
-            .sort((a, b) =>
-              months.indexOf(a.billingMonth) > months.indexOf(b.billingMonth)
-                ? 1
-                : a.billingMonth === b.billingMonth
-                  ? 0
-                  : -1
-            )
+          let latestSubscriptionDate = sortArray(billingDetails[latestSubscriptionYear])
             .reverse()
             .slice(0, 1)
             .map((month, ind) =>
@@ -482,12 +476,11 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
     []
   );
 
-  const calculateLength = (data) => {
-    let keys = Object.keys(data);
+  const calculateLength = (swdata) => {
 
     let count = 0;
-    Object.keys(data).forEach((year) => {
-      count = count + data[year].length
+    Object.keys(swdata).forEach((year) => {
+      count = count + swdata[year].length
     })
     return count;
   }
@@ -495,7 +488,7 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
   const financialYear = (billingInfo) => {
     let financialYears = {};
     let billingYears = Object.keys(billingInfo)
-    let months = ['january', 'february', 'march', 'april', 'may', 'june',
+    let fmonths = ['january', 'february', 'march', 'april', 'may', 'june',
       'july', 'august', 'september', 'october', 'november', 'december']
 
     /** Identification of financial years for a given row 
@@ -533,7 +526,7 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
      */
     billingYears.forEach((year) => {
       billingInfo[year].forEach((subsMonth) => {
-        let monthIndex = months.indexOf(subsMonth.billingMonth)
+        let monthIndex = fmonths.indexOf(subsMonth.billingMonth)
         subsMonth["delete"] = true;
         if (monthIndex <= 2) {
           let key = Number(year) - 1 + "-" + Number(year);
@@ -622,10 +615,9 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
     'february',
     'march',
   ];
-  const [count, setCount] = useState(0);
   const renderRowSubComponent = useCallback(
     ({ row }) => {
-      let count = 0;
+      let swcount = 0;
       let length = calculateLength(row.original.billingDetails);
       let result = length - 6;
       return (
@@ -636,21 +628,12 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
             {
               Object.keys(row.original.billingDetails)
                 .map((item, index) => {
-                  return row.original.billingDetails[item]
-                    .sort((a, b) =>
-                      months.indexOf(a.billingMonth) >
-                        months.indexOf(b.billingMonth)
-                        ? 1
-                        : a.billingMonth === b.billingMonth
-                          ? 0
-                          : -1
-                    )
-
+                  return sortArray(row.original.billingDetails[item])
                     .map((month, ind) => {
-                      let total = count + 1
-                      count = total
+                      let total = swcount + 1
+                      swcount = total
 
-                      if ((result >= 0 && count > result) || (result < 0)) {
+                      if ((result >= 0 && swcount > result) || (result < 0)) {
                         return (
                           <div key={ind}
                             className='label text-capitalize text-align-center pointer'
@@ -660,7 +643,7 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
                               {'-'}
                               {item.substring(2, 4)}{' '}
 
-                              {length !== count ? <img
+                              {length !== swcount ? <img
                                 className="p-2 pointer deleted"
                                 src={DeleteImg}
                                 alt='Evoke Technologies'
@@ -807,46 +790,8 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
     setSelectedFilter(filterState);
     setSearchText('empty');
     const filterKeys = Object.keys(filterState);
-
     if (filterKeys?.length) {
-      const finalFilteredData = filterKeys.reduce((result, key) => {
-        const filteredDataResult = result.filter((row) => {
-          if (filterKeys.includes(key)) {
-            if (filterState[key] === 'all') {
-              return row.status !== 'deleted';
-            } else if (filterState['status'] === 'deleted') {
-              if (filterState['softwareType'] && row.status === 'deleted') {
-                return row[key] === filterState[key];
-              }
-              if (filterState['billingCycle'] && row.status === 'deleted') {
-                return row[key] === filterState[key];
-              }
-              return row.status === 'deleted';
-            } else if (filterState['status'] === 'expired') {
-              if (row.status !== 'deleted') {
-                const todaysDate = moment().format('YYYY-MM-DD');
-                const days = moment(row.nextBilling, 'YYYY-MM-DD').diff(
-                  moment(todaysDate),
-                  'days'
-                );
-                if (days < 0) {
-                  if (key === 'softwareType') {
-                    return row['softwareType'] === filterState['softwareType'];
-                  }
-                  if (key === 'billingCycle') {
-                    return row['billingCycle'] === filterState['billingCycle'];
-                  }
-                  return row;
-                }
-              }
-            } else {
-              return row[key] === filterState[key] && row.status !== 'deleted';
-            }
-          }
-        });
-        result = [...filteredDataResult];
-        return result;
-      }, data);
+      const finalFilteredData = findFilteredData(filterState,data,filterKeys)
       if (finalFilteredData.length > 0) {
         setNoRecords(false);
       } else {
@@ -855,9 +800,9 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
       setFilteredData(addSerialNo(finalFilteredData));
     }
   };
-  const displayMonthlySubscriptions = (billingDetails, currentYear) => {
+  const displayMonthlySubscriptions = (billingDetails, currentyear) => {
     let monthlyInfo = [];
-    monthlyInfo = billingDetails[currentYear];
+    monthlyInfo = billingDetails[currentyear];
     setMonthlyData(monthlyInfo);
   };
   const showPreviousYearSubscriptions = () => {
@@ -1071,15 +1016,6 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
                   );
                 })}
               </div>
-              <div>
-                {/* <span>
-                  {'Total Amount:  ₹'}
-                  {rowData.billingDetails?.reduce(
-                    (result, item) => Number(item.pricingInRupee) + result,
-                    0
-                  )}
-                </span> */}
-              </div>
               {months.map((month) => {
                 const billingItem =
                   monthlyData?.filter(
@@ -1176,18 +1112,6 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
                 <b>{start}</b> to <b>{end}</b> of <b>{filteredData.length}</b>
               </span>
             )}
-            {/* <label>Rows per page:</label>
-        <select
-          value={pageSize}
-          onChange={(e) => setPageSize(Number(e.target.value))}
-          className='pageNum'
-        >
-          {[10, 20, 50, 100].map((pageSize, i) => (
-            <option key={pageSize} value={pageSize}>
-              {pageSize}
-            </option>
-          ))}
-        </select> */}
             {!noRecords && (
               <span>
                 Page{' '}
@@ -1214,14 +1138,14 @@ function CompleteTable({ data, sortByDateCreated, getAddToolStatus }) {
               type='number'
               onChange={(e) => {
                 const value = e.target.value - 1;
-                const enteredValue =
+                const enteredInputValue =
                   e.target.value.match(/^([1-9]\d*)?$/) &&
                     e.target.value.match(/^([1-9]\d*)?$/)['input']
                     ? e.target.value
                     : '';
                 if (pageOptions.length > value) {
                   gotoPage(value);
-                  setEnteredValue(enteredValue);
+                  setEnteredValue(enteredInputValue);
                   setNoRecords(false);
                 } else {
                   setEnteredValue(e.target.value);
