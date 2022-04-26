@@ -1,6 +1,6 @@
 // common
 import React, { useState } from 'react';
-import { Redirect, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import axios from 'axios';
@@ -10,7 +10,6 @@ import ProfileIcon from '../../assets/images/user-icon.svg';
 import FeedbackIcon from '../../assets/images/feedback.svg';
 import LogoutIcon from '../../assets/images/Logout_icon.svg';
 import dashboardicon from '../../assets/images/dashboardicon.svg';
-import usermanagementicon from '../../assets/images/usermanagementicon.svg';
 import { clearTokens } from '../utils/authToken';
 // components
 import Feedback from '../admin/Feedback';
@@ -18,8 +17,7 @@ import Feedback from '../admin/Feedback';
 import './NavBar.css';
 // helpers
 import { getApiUrl } from '../utils/helper';
-import { superAdmin } from '../constants/constants';
-import { getUser } from "../utils/userDetails";
+
 
 const Header = ({ validate }) => {
   function handleLogout() {
@@ -30,10 +28,6 @@ const Header = ({ validate }) => {
 
   function handleDashboard(){
     return history.push('/admin');
-  }
-
-  function handleUserDetails(){
-    return history.push('/user-details');
   }
 
   const history = useHistory();
@@ -86,12 +80,6 @@ const Header = ({ validate }) => {
         </div>
 
         <ul className='navbar-nav px-3'>
-          {/* <li className='notification-btn'>
-            <div>
-              <img src={NotificationIcon} alt='NoticicationIcon' />
-            </div>
-          </li>
-          <li className='vertical-line'></li> */}
 
           <li className='nav-item text-nowrap'>
             <OverlayTrigger
@@ -107,11 +95,6 @@ const Header = ({ validate }) => {
                         <img src={dashboardicon} alt='logout' />{' '}
                         <span>Dashboard</span>
                       </div>
-                      {/* {JSON.parse(getUser()).role === superAdmin && 
-                      <div className='menu-list-item' onClick={handleUserDetails}>
-                        <img src={usermanagementicon} alt='logout' />{' '}
-                        <span>User Management</span>
-                      </div>} */}
                       <div
                         className='menu-list-item'
                         onClick={() => setFeedback(true)}

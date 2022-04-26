@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './Container.css';
-import Form from './Form';
+import Form_new from './Form_new';
 
 export function DashboardHeader({getAddToolStatus}) {
   const [isShown, setIsShown] = useState(false);
@@ -28,7 +28,7 @@ export function DashboardHeader({getAddToolStatus}) {
           ADD TOOL/SOFTWARE
         </button>
 
-        {isShown && <Form isOpen={isShown} closeModal={closeModal}  updateToolStatus={updateSatus}/>}
+        {isShown && <Form_new type={'new'} isOpen={isShown} closeModal={closeModal}  updateToolStatus={updateSatus}/>}
       </div>
     </div>
   );
